@@ -11,15 +11,18 @@ public class JDialogSplash extends javax.swing.JDialog {
     /**
      * Creates new form JDialogSplash
      */
-    public JDialogSplash(java.awt.Frame parent) {
+    public JDialogSplash(java.awt.Frame parent, boolean forceBackground) {
         super(parent, false);
         initComponents();
         setLocationRelativeTo(null);
-        
+
         // Transparent BG
         getRootPane().setOpaque(false);
         getContentPane().setBackground(new Color(0, 0, 0, 0));
-        setBackground(new Color(0, 0, 0, 0));
+        if (!forceBackground) {
+            setBackground(new Color(0, 0, 0, 0));
+        }
+        setSize(400, 120);
 
     }
 
@@ -38,7 +41,8 @@ public class JDialogSplash extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("APManager");
-        setMinimumSize(new java.awt.Dimension(400, 300));
+        setMaximumSize(new java.awt.Dimension(400, 120));
+        setMinimumSize(new java.awt.Dimension(400, 120));
         setUndecorated(true);
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
