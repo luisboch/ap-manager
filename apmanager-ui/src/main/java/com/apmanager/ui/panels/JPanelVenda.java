@@ -55,6 +55,7 @@ public class JPanelVenda extends javax.swing.JPanel implements AdminPanel {
         jButtonCloseSale = new Button(this, KeyEvent.VK_F8);
         jButtonAlterQuantity = new Button(this, KeyEvent.VK_F7);
         jButtonRemove = new Button(this, KeyEvent.VK_DELETE);
+        jButton1 = new Button(this, KeyEvent.VK_F6);
 
         jTable1.setBackground(new java.awt.Color(245, 245, 245));
         jTable1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -74,6 +75,8 @@ public class JPanelVenda extends javax.swing.JPanel implements AdminPanel {
 
         jButtonRemove.setText("Remover");
 
+        jButton1.setText("Orçamento");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -81,9 +84,11 @@ public class JPanelVenda extends javax.swing.JPanel implements AdminPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonRemove)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonAlterQuantity)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonCloseSale)
                 .addContainerGap())
         );
@@ -94,7 +99,8 @@ public class JPanelVenda extends javax.swing.JPanel implements AdminPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCloseSale)
                     .addComponent(jButtonAlterQuantity)
-                    .addComponent(jButtonRemove))
+                    .addComponent(jButtonRemove)
+                    .addComponent(jButton1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -120,6 +126,7 @@ public class JPanelVenda extends javax.swing.JPanel implements AdminPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonAlterQuantity;
     private javax.swing.JButton jButtonCloseSale;
     private javax.swing.JButton jButtonRemove;
