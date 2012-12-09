@@ -10,6 +10,7 @@ import com.apmanager.ui.panels.admin.JPanelVendas;
 import com.apmanager.ui.panels.product.JPanelProduct;
 import com.apmanager.ui.panels.productbrand.JPanelProductBrand;
 import com.apmanager.ui.panels.shelf.JPanelShelf;
+import com.apmanager.ui.panels.stock.JPanelStock;
 import com.apmanager.ui.panels.vehicle.JPanelVehicle;
 import com.apmanager.ui.panels.vehiclebrand.JPanelVehicleBrand;
 import javax.swing.JPanel;
@@ -26,7 +27,8 @@ public enum WindowType {
     VEHICLE_BRAND_CRUD(JPanelVehicleBrand.class, "Marcas de Veículos"),
     SHELF_CRUD(JPanelShelf.class, "Prateleiras"),
     VEHICLE_CRUD(JPanelVehicle.class,"Veículos"),
-    PRODUCT_BRAND_CRUD(JPanelProductBrand.class, "Marcas de Produtos");
+    PRODUCT_BRAND_CRUD(JPanelProductBrand.class, "Marcas de Produtos"),
+    STOCK(JPanelStock.class, "Estoque");
 
     private Class<? extends JPanel> destined;
     private String title;
