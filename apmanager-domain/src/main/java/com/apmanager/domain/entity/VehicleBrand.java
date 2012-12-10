@@ -19,6 +19,8 @@ public class VehicleBrand implements Entity {
     private String description;
 
     private Date registerDate;
+    
+    private boolean status;
 
     /**
      *
@@ -68,5 +70,15 @@ public class VehicleBrand implements Entity {
 
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
+    }
+
+    @Override
+    public boolean isActive() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(boolean newStatus) {
+        this.status = newStatus;
     }
 }

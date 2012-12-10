@@ -30,6 +30,7 @@ public class Shelf implements Entity {
 
     private String description;
 
+    private boolean status = true;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date registerDate;
 
@@ -82,4 +83,16 @@ public class Shelf implements Entity {
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
+    
+    @Override
+    public boolean isActive() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(boolean newStatus) {
+        status = newStatus;
+    }
+    
+    
 }

@@ -23,7 +23,10 @@ public class VehicleModel implements Entity {
     private FuelType fuelType;
 
     private Date registerDate;
+    
+    private boolean status;
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -72,7 +75,18 @@ public class VehicleModel implements Entity {
         this.registerDate = registerDate;
     }
 
+    @Override
     public void setId(Serializable id) {
         this.id = (Integer) id;
+    }
+
+    @Override
+    public void setStatus(boolean newStatus) {
+        this.status = newStatus;
+    }
+
+    @Override
+    public boolean isActive() {
+        return status;
     }
 }

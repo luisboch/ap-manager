@@ -13,4 +13,6 @@ import java.io.Serializable;
 public interface Entity extends Serializable{
     Serializable getId();
     void setId(Serializable id);
+    void setStatus(boolean newStatus);
+    boolean isActive();
 }

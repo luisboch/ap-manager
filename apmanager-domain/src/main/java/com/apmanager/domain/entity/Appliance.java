@@ -18,6 +18,8 @@ public class Appliance implements Entity {
     private String description;
 
     private VehicleModel model;
+    
+    private boolean status;
 
     public Long getId() {
         return id;
@@ -53,5 +55,15 @@ public class Appliance implements Entity {
 
     public void setModel(VehicleModel model) {
         this.model = model;
+    }
+
+    @Override
+    public boolean isActive() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(boolean newStatus) {
+        this.status = newStatus;
     }
 }

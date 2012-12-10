@@ -19,6 +19,8 @@ public class ProductBrand implements Entity {
     private String description;
 
     private Date registerDate;
+    
+    private boolean status = true;
 
     /**
      *
@@ -69,4 +71,17 @@ public class ProductBrand implements Entity {
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
+
+    @Override
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    @Override
+    public boolean isActive() {
+        return status;
+    }
+
+    
+    
 }

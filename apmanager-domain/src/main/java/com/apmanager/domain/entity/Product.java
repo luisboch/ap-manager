@@ -45,6 +45,8 @@ public class Product implements Entity {
 
     @Transient
     private String barcode;
+    
+    private String additionalCode;
 
     @Transient
     private Integer maxDiscountPercent;
@@ -61,6 +63,10 @@ public class Product implements Entity {
     @ManyToOne(fetch= FetchType.LAZY)
     private Shelf shelf;
 
+    private Integer minQuantity; 
+    
+    private boolean status = true;
+    
     @Override
     public Long getId() {
         return id;
@@ -70,6 +76,7 @@ public class Product implements Entity {
         this.id = id;
     }
 
+    @Override
     public void setId(Serializable id) {
         this.id = (Long) id;
     }
@@ -169,4 +176,39 @@ public class Product implements Entity {
     public void setShelf(Shelf shelf) {
         this.shelf = shelf;
     }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    
+    @Override
+    public boolean isActive() {
+        return status;
+    }
+    
+    public Integer getMinQuantity() {
+        return minQuantity;
+    }
+
+    public void setMinQuantity(Integer minQuantity) {
+        this.minQuantity = minQuantity;
+    }
+
+    public String getAdditionalCode() {
+        return additionalCode;
+    }
+
+    public void setAdditionalCode(String additionalCode) {
+        this.additionalCode = additionalCode;
+    }
+    
 }
