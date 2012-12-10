@@ -5,7 +5,6 @@
 package com.apmanager.domain.dao;
 
 import com.apmanager.domain.entity.Entity;
-
 import javax.persistence.EntityManager;
 
 /**
@@ -13,7 +12,7 @@ import javax.persistence.EntityManager;
  * @author luis
  */
 public abstract class GenericDAO<E extends Entity> implements EntityDAO<E> {
-    private EntityManager em;
+    protected EntityManager em;
     public GenericDAO(EntityManager em) {
         this.em = em;
     }

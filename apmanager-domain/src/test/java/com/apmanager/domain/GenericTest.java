@@ -10,5 +10,4 @@ package com.apmanager.domain;
  */
 public abstract class GenericTest{
     
-    
 }
