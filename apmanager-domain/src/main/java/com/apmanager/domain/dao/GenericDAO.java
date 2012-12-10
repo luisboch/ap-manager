@@ -5,6 +5,7 @@
 package com.apmanager.domain.dao;
 
 import com.apmanager.domain.entity.Entity;
+
 import javax.persistence.EntityManager;
 
 /**
