@@ -5,19 +5,36 @@ package com.apmanager.domain.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
 
 /**
  *
  * @author luis
  */
+
+@javax.persistence.Entity 
+@Table (name="marcas_de_veiculos")
 public class VehicleBrand implements Entity {
-
+    
+    @Id
+    @SequenceGenerator(name="VehicleBrand-seq", allocationSize=1,
+            sequenceName="marcas_de_veiculos_id_seq")
+    @GeneratedValue(generator="VehicleBrand-seq")
     private Integer id;
-
+    
+    @Column (name="nome", nullable=false)
     private String name;
 
+    @Column (name="descricao")
     private String description;
 
+    @Column (name="data_do_registro", nullable=false, updatable=false)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date registerDate;
     
     private boolean status;
