@@ -51,9 +51,9 @@ public class Main {
                     }
                     splash.setVisible(true);
                     splash.setMessage("Iniciando Banco de Dados...", 15);
-                    EntityManagerFactory emf = Persistence.createEntityManagerFactory("testPU");
+                    EntityManagerFactory emf = Persistence.createEntityManagerFactory("apmanager-pu");
                     EntityManager em = emf.createEntityManager();
-                    GenericDAO dao = new GenericDAO(em);
+                    
                     splash.setMessage("Aplicando alterações...", 60);
                     Application app = Application.getInstance();
                     splash.setMessage("Concluindo...", 95);

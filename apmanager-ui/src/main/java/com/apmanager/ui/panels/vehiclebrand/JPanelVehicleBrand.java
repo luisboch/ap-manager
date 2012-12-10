@@ -260,6 +260,16 @@ public class JPanelVehicleBrand extends AbstractAdminPanel implements AdminPanel
                     public void setId(Serializable id) {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
+
+                    @Override
+                    public void setStatus(boolean newStatus) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    @Override
+                    public boolean isActive() {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
                 });
                 
                 UIUtils.remove(entitys);
