@@ -26,6 +26,7 @@
     <class>com.apmanager.domain.entity.Shelf</class>
     <class>com.apmanager.domain.entity.VehicleBrand</class>
     <class>com.apmanager.domain.entity.Vehicle</class>
+    <class>com.apmanager.domain.entity.VehicleModel</class>
     <shared-cache-mode>NONE</shared-cache-mode>
   </persistence-unit>
 </persistence>
