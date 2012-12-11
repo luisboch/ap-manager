@@ -19,7 +19,6 @@ public class Appliance implements Entity {
 
     private VehicleModel model;
     
-    private boolean status;
 
     public Long getId() {
         return id;
@@ -59,11 +58,11 @@ public class Appliance implements Entity {
 
     @Override
     public boolean isActive() {
-        return status;
+        return true;
     }
 
     @Override
     public void setStatus(boolean newStatus) {
-        this.status = newStatus;
+        throw new IllegalStateException("not implemented yet!");
     }
 }
