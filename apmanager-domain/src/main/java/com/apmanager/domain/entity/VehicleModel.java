@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -31,6 +32,7 @@ public class VehicleModel implements Entity {
     private Integer id;
 
     @ManyToOne(fetch= FetchType.LAZY)
+    @JoinColumn(name="veiculo_id")
     private Vehicle vehicle;
 
     @Column(name="ano")
