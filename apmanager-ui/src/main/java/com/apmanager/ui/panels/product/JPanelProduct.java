@@ -275,5 +275,9 @@ public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
         });
         
     }
+
+    @Override
+    protected void search() {
     
+    }
 }

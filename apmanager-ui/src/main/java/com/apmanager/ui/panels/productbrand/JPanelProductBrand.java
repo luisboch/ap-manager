@@ -4,17 +4,17 @@
  */
 package com.apmanager.ui.panels.productbrand;
 
-import com.apmanager.domain.entity.Entity;
+import com.apmanager.domain.entity.ProductBrand;
+import com.apmanager.service.impl.ProductBrandService;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.menu.Application;
 import com.apmanager.ui.panels.AbstractAdminPanel;
 import com.apmanager.ui.panels.AdminPanel;
-import com.apmanager.ui.utils.UIUtils;
+import com.towel.el.FieldResolver;
+import com.towel.swing.table.ObjectTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  *
  * @author luis
  */
-public class JPanelProductBrand extends AbstractAdminPanel implements AdminPanel {
+public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand> implements AdminPanel {
 
     JDialogProductBrandEdit dialog;
 
@@ -31,6 +31,7 @@ public class JPanelProductBrand extends AbstractAdminPanel implements AdminPanel
      */
     public JPanelProductBrand() {
         super();
+        service = new ProductBrandService();
         initComponents();
         addListeners();
         dialog = new JDialogProductBrandEdit(Application.getInstance(), true);
@@ -48,9 +49,9 @@ public class JPanelProductBrand extends AbstractAdminPanel implements AdminPanel
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jButtonSearch = new Button(this, KeyEvent.VK_F5);
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldSearch = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableResults = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jButtonDelete = new Button(this, KeyEvent.VK_DELETE);
         jButtonEdit = new Button(this, KeyEvent.VK_F7);
@@ -66,7 +67,7 @@ public class JPanelProductBrand extends AbstractAdminPanel implements AdminPanel
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1)
+                .addComponent(jTextFieldSearch)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonSearch)
                 .addContainerGap())
@@ -76,52 +77,11 @@ public class JPanelProductBrand extends AbstractAdminPanel implements AdminPanel
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSearch)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "ID", "Nome"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
-            }
-        });
-        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTable1KeyReleased(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-        jTable1.getColumnModel().getColumn(0).setResizable(false);
-        jTable1.getColumnModel().getColumn(1).setResizable(false);
+        jScrollPane1.setViewportView(jTableResults);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Administrar"));
 
@@ -174,28 +134,12 @@ public class JPanelProductBrand extends AbstractAdminPanel implements AdminPanel
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jTable1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyReleased
-        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
-            this.setEnabled(false);
-            dialog.setVisible(true);
-            this.setEnabled(true);
-        }
-    }//GEN-LAST:event_jTable1KeyReleased
-
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        if(evt.getClickCount() == 2){
-            this.setEnabled(false);
-            dialog.setVisible(true);
-            this.setEnabled(true);
-        }
-    }//GEN-LAST:event_jTable1MouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDelete;
@@ -206,29 +150,41 @@ public class JPanelProductBrand extends AbstractAdminPanel implements AdminPanel
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable jTableResults;
+    private javax.swing.JTextField jTextFieldSearch;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void loadContent() {
-
+        if (results != null) {
+            results.clear();
+        }
+        dialog.clear();
     }
 
     private void addListeners() {
-//        jButtonSearch.addActionListener(new ActionListener(this) {
-//            @Override
-//            public void onActionPerformed(ActionEvent e) throws Exception {
-//                jTabbedPane2.setSelectedIndex(2);
-//            }
-//        });
+
         final JPanel panel = this;
+        jButtonSearch.addActionListener(new ActionListener(this) {
+            @Override
+            public void onActionPerformed(ActionEvent e) throws Exception {
+                search();
+            }
+        });
+
         jButtonEdit.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                panel.setEnabled(false);
-                dialog.setVisible(true);
-                panel.setEnabled(true);
+
+                int selectedRow = jTableResults.getSelectedRow();
+                if (selectedRow != -1) {
+                    panel.setEnabled(false);
+                    ProductBrand brand = model.getValue(selectedRow);
+                    dialog.setInstance(brand);
+                    dialog.setVisible(true);
+                    panel.setEnabled(true);
+                    jButtonSearch.doClick();
+                }
             }
         });
 
@@ -236,47 +192,62 @@ public class JPanelProductBrand extends AbstractAdminPanel implements AdminPanel
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 panel.setEnabled(false);
+                dialog.setInstance(new ProductBrand());
                 dialog.setVisible(true);
                 panel.setEnabled(true);
+                jButtonSearch.doClick();
             }
         });
-        
-        
+
+
 
         jButtonDelete.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 panel.setEnabled(false);
-                List<Entity> entitys =new LinkedList<Entity>();
                 
-                entitys.add(new Entity() {
-
-                    @Override
-                    public Serializable getId() {
-                        throw new UnsupportedOperationException("Not supported yet.");
-                    }
-
-                    @Override
-                    public void setId(Serializable id) {
-                        throw new UnsupportedOperationException("Not supported yet.");
-                    }
-
-                    @Override
-                    public void setStatus(boolean newStatus) {
-                        throw new UnsupportedOperationException("Not supported yet.");
-                    }
-
-                    @Override
-                    public boolean isActive() {
-                        throw new UnsupportedOperationException("Not supported yet.");
-                    }
-                });
+               
+                List<ProductBrand> entitys;
+                try{
+                    final int[] selectedRows  = jTableResults.getSelectedRows();
+                    entitys = model.getList(selectedRows);
+                } catch (NullPointerException ex){
+                    entitys = null; 
+                }
                 
-                UIUtils.remove(entitys);
+                delete(entitys);
                 panel.setEnabled(true);
+                
             }
         });
-        
+
     }
-    
+
+    private void populateResults() {
+
+        FieldResolver idResolver = new FieldResolver(ProductBrand.class, "id", "Código");
+        FieldResolver nameResolver = new FieldResolver(ProductBrand.class, "name", "Nome");
+
+        model = new ObjectTableModel<>(
+                new FieldResolver[]{idResolver, nameResolver});
+
+        model.setData(results);
+
+        jTableResults.setModel(model);
+    }
+
+    @Override
+    protected void search() {
+        final JPanel panel = this;
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                panel.setEnabled(false);
+                results = service.search(jTextFieldSearch.getText());
+                populateResults();
+                panel.setEnabled(true);
+            }
+        };
+        Application.load(run);
+    }
 }

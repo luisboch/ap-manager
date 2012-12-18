@@ -4,7 +4,6 @@
  */
 package com.apmanager.ui.main;
 
-import com.apmanager.domain.dao.GenericDAO;
 import com.apmanager.ui.menu.Application;
 import java.util.HashMap;
 import java.util.Map;

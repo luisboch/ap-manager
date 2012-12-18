@@ -5,9 +5,9 @@
 package com.apmanager.ui.listeners;
 
 import java.awt.Component;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,14 +17,14 @@ public abstract class AbstractEventListener {
 
     protected Component parent;
     private static final Logger log =
-            Logger.getLogger(AbstractEventListener.class.getSimpleName());
+            LoggerFactory.getLogger(AbstractEventListener.class);
 
     public AbstractEventListener(Component parent) {
         this.parent = parent;
     }
 
     public void onError(java.awt.AWTEvent evt, Throwable e) {
-        log.log(Level.SEVERE, e.getMessage(), e);
+        log.error(e.getMessage(), e);
         JOptionPane.showMessageDialog(parent,
                 "Ops, encontramos um erro, por favor, contate o suporte!");
 

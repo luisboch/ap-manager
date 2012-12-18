@@ -275,5 +275,9 @@ public class JPanelVehicle extends AbstractAdminPanel implements AdminPanel {
         });
         
     }
+
+    @Override
+    protected void search() {
     
+    }
 }

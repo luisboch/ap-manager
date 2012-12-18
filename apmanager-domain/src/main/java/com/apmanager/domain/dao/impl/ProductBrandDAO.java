@@ -27,7 +27,8 @@ public class ProductBrandDAO extends GenericDAO<ProductBrand> {
         List<ProductBrand> results = null;
 
         String sql = "select pb from ProductBrand pb "
-                + "where lower(pb.name) like lower(:search) or lower(pb.description) like lower(:search)";
+                + "where pb.status = true and (lower(pb.name) like lower(:search) or lower(pb.description) like lower(:search))"
+                + "order by pb.name";
         Query q = em.createQuery(sql);
 
         q.setParameter("search", "%".concat(search).concat("%"));

@@ -82,6 +82,7 @@ public class EntityProvider {
         v.setName("teste Aborba");
         v.setFuelType(FuelType.PETROL);
         v.setVehicle(vehicle);
+        v.setPotency(1.0f);
         v.setYear("2010/2012");
         em.getTransaction().begin();
         vehicleModelDAO.save(v);

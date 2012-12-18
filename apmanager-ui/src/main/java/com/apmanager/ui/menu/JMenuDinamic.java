@@ -7,17 +7,19 @@ package com.apmanager.ui.menu;
 import com.apmanager.ui.menu.enums.WindowType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author ADMIN
  */
-public class JMenuDinamic extends JMenuItem implements ActionListener{
+public class JMenuDinamic extends JMenuItem implements ActionListener {
 
+    private static final Logger log = LoggerFactory.getLogger(JMenuDinamic.class);
     private WindowType type;
     private JPanel panel;
     private Application app;
@@ -27,15 +29,15 @@ public class JMenuDinamic extends JMenuItem implements ActionListener{
         this.type = type;
         configureListener();
     }
-    
+
     public JPanel getPanel() {
-        if(panel == null){
-            try{
+        if (panel == null) {
+            try {
                 panel = type.getDestined().newInstance();
-            } catch (InstantiationException | IllegalAccessException e){
-                Logger.getLogger(
-                        this.getClass().getSimpleName()).
-                        log(Level.SEVERE, e.getMessage(), e);
+            } catch (InstantiationException | IllegalAccessException e) {
+                log.error(e.getMessage(), e);
+                JOptionPane.showMessageDialog(app,
+                        "Ops, encontramos um erro, por favor, contate o suporte!");
             }
         }
         return panel == null ? panel = new JPanel() : panel;
@@ -46,17 +48,22 @@ public class JMenuDinamic extends JMenuItem implements ActionListener{
     }
 
     private void configureListener() {
-        this.addActionListener(this);   
+        this.addActionListener(this);
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        if(app.getSelected() == null || !app.getSelected().equals(this)){
-            app.setApplicationPanel(getPanel());
-            app.setTitle(type.getTitle());
+        try {
+            if (app.getSelected() == null || !app.getSelected().equals(this)) {
+                app.setApplicationPanel(getPanel());
+                app.setTitle(type.getTitle());
+            }
+
+            app.setSelected(this);
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
+            JOptionPane.showMessageDialog(app,
+                    "Ops, encontramos um erro, por favor, contate o suporte!");
         }
-        
-        app.setSelected(this);
     }
 }

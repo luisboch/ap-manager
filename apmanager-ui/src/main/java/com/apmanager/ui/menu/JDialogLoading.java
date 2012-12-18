@@ -4,15 +4,19 @@
  */
 package com.apmanager.ui.menu;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author ADMIN
  */
 public class JDialogLoading extends javax.swing.JDialog {
+
+    private static final Logger log = LoggerFactory.getLogger(JDialogLoading.class);
     private Runnable run;
+
     /**
      * Creates new form JDialogLoading
      */
@@ -68,24 +72,29 @@ public class JDialogLoading extends javax.swing.JDialog {
 
     @Override
     public void setVisible(boolean b) {
-        if(b){
-            Thread t = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    run.run();
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(JDialogLoading.class.getName()).log(Level.SEVERE, null, ex);
+        if (b) {
+            if (run != null) {
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            run.run();
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                            JOptionPane.showMessageDialog(getParent(),
+                                    "Ops, encontramos um erro, por favor, contate o suporte!");
+                        }
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            log.error(ex.getMessage(), ex);
+                        }
+                        setVisible(false);
                     }
-                    setVisible(false);
-                }
-            });
-            t.start();
+                });
+                t.start();
+            }
         }
         super.setVisible(b);
     }
-    
-    
 }

@@ -275,4 +275,8 @@ public class JPanelShelf extends AbstractAdminPanel implements AdminPanel {
         
     }
 
+    @Override
+    protected void search() {
+    
+    }
 }

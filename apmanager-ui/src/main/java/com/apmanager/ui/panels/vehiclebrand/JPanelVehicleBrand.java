@@ -279,4 +279,8 @@ public class JPanelVehicleBrand extends AbstractAdminPanel implements AdminPanel
         
     }
 
+    @Override
+    protected void search() {
+    
+    }
 }

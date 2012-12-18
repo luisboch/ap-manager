@@ -26,13 +26,11 @@ import javax.swing.KeyStroke;
 public class Application extends javax.swing.JFrame {
 
     private static final Logger log = Logger.getLogger(Application.class.getSimpleName());
-    
     private static Application instance;
 
     private JMenuDinamic selected;
-
     private final JDialogLoading loading = new JDialogLoading(this);
-    
+
     private Application() {
         initComponents();
 
@@ -232,11 +230,11 @@ public class Application extends javax.swing.JFrame {
         Toolkit kit = Toolkit.getDefaultToolkit();
         Image img = kit.createImage(url);
         setIconImage(img);
-        
+
         // Integrate to Unity menubar.
-        try{
+        try {
             //ApplicationMenu.tryInstall(this);
-        }catch(Throwable e){
+        } catch (Throwable e) {
             log.log(Level.INFO, "Error on integrate to Ubuntu Unity: {0}",
                     e.getMessage());
         }
@@ -246,5 +244,14 @@ public class Application extends javax.swing.JFrame {
     public void setTitle(String title) {
         super.setTitle("APManager - " + title);
         jLabelTitle.setText(title);
+    }
+    public static void load(Runnable run){
+        instance.loading.action(run);
+        instance.loading.setVisible(true);
+    }
+    
+    
+    public static void showMessage(String salvo_com_sucesso) {
+        // TODO incorporar mensagems ao aplicativo.
     }
 }

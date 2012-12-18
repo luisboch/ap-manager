@@ -4,29 +4,53 @@
  */
 package com.apmanager.ui.panels.productbrand;
 
+import com.apmanager.domain.entity.ProductBrand;
+import com.apmanager.service.impl.ProductBrandService;
 import com.apmanager.ui.components.Button;
-import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.listeners.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author luis
  */
-public class JDialogProductBrandEdit extends JDialogEscape {
+public class JDialogProductBrandEdit extends JDialogEdit<ProductBrand, ProductBrandService> {
+
+    private static final Logger log = LoggerFactory.getLogger(JDialogProductBrandEdit.class);
+    
 
     /**
      * Creates new form JDialogProductBrandEdit
      */
     public JDialogProductBrandEdit(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        service= new ProductBrandService();
         initComponents();
         setLocationRelativeTo(parent);
         addListeners();
     }
+
     public JDialogProductBrandEdit(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
+        service= new ProductBrandService();
+        initComponents();
+        setLocationRelativeTo(parent);
+        addListeners();
+    }
+    public JDialogProductBrandEdit(java.awt.Frame parent, boolean modal, ProductBrandService service) {
+        super(parent, modal);
+        this.service = service;
+        initComponents();
+        setLocationRelativeTo(parent);
+        addListeners();
+    }
+
+    public JDialogProductBrandEdit(javax.swing.JDialog parent, boolean modal, ProductBrandService service) {
+        super(parent, modal);
+        this.service = service;
         initComponents();
         setLocationRelativeTo(parent);
         addListeners();
@@ -55,10 +79,10 @@ public class JDialogProductBrandEdit extends JDialogEscape {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jTextField3 = new javax.swing.JTextField();
+        jTextFieldName = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jLabel6 = new javax.swing.JLabel();
+        jTextAreaDescription = new javax.swing.JTextArea();
+        jLabelId = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
         jButtonSave = new Button(this, KeyEvent.VK_F8);
@@ -143,16 +167,17 @@ public class JDialogProductBrandEdit extends JDialogEscape {
                 .addComponent(jLabel7)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
-                .addGap(0, 136, Short.MAX_VALUE))
+                .addGap(0, 138, Short.MAX_VALUE))
         );
 
-        jTextField3.setText("General Motors");
+        jTextFieldName.setText("General Motors");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane3.setViewportView(jTextArea2);
+        jTextAreaDescription.setColumns(20);
+        jTextAreaDescription.setRows(5);
+        jScrollPane3.setViewportView(jTextAreaDescription);
 
-        jLabel6.setText("520");
+        jLabelId.setText("520");
+        jLabelId.setMaximumSize(new java.awt.Dimension(24, 108));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -162,19 +187,20 @@ public class JDialogProductBrandEdit extends JDialogEscape {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                    .addComponent(jTextFieldName)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addContainerGap())
-                    .addComponent(jTextField3)))
+                        .addComponent(jLabelId, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel6)
+                .addComponent(jLabelId, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
+                .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -248,7 +274,6 @@ public class JDialogProductBrandEdit extends JDialogEscape {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
@@ -257,9 +282,9 @@ public class JDialogProductBrandEdit extends JDialogEscape {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelId;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -268,25 +293,53 @@ public class JDialogProductBrandEdit extends JDialogEscape {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextAreaDescription;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
 
     private void addListeners() {
         final JDialogProductBrandEdit dialog = this;
-        jButtonSave.addActionListener(new ActionListener(this){
+        jButtonSave.addActionListener(new ActionListener(this) {
+            @Override
+            public void onActionPerformed(ActionEvent e) throws Exception {
+                save();
+            }
+        });
+
+        jButtonCancel.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setVisible(false);
             }
         });
-        
-        jButtonCancel.addActionListener(new ActionListener(this){
-            @Override
-            public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setVisible(false);
-            }
-        });
+    }
+    
+    @Override
+    public void clear() {
+        jLabelId.setText("");
+        jTextFieldName.setText("");
+        jTextAreaDescription.setText("");
+    }
+    
+
+    @Override
+    protected ProductBrand buildObject() {
+        instance.setDescription(jTextAreaDescription.getText());
+        instance.setName(jTextFieldName.getText());
+        return instance;
+    }
+
+    @Override
+    protected void restoreFields(ProductBrand instance) {
+        if (instance.getId() != null) {
+            jLabelId.setText(String.valueOf(instance.getId()));
+        }
+        if (instance.getName() != null) {
+            jTextFieldName.setText(instance.getName());
+        }
+        if (instance.getDescription() != null) {
+            jTextAreaDescription.setText(instance.getDescription());
+        }
     }
 }
