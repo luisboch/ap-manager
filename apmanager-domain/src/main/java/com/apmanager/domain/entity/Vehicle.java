@@ -4,12 +4,15 @@
 package com.apmanager.domain.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -37,6 +40,10 @@ public class Vehicle implements Entity {
     @ManyToOne(fetch = FetchType.LAZY)
     private VehicleBrand brand;
 
+    
+    @OneToMany(mappedBy = "vehicle", fetch= FetchType.LAZY)
+    private List<VehicleModel> vehicleModels = new ArrayList<>();
+    
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date registerDate;
 
@@ -83,6 +90,14 @@ public class Vehicle implements Entity {
         this.registerDate = registerDate;
     }
 
+    public List<VehicleModel> getVehicleModels() {
+        return vehicleModels;
+    }
+
+    public void setVehicleModels(List<VehicleModel> vehicleModels) {
+        this.vehicleModels = vehicleModels;
+    }
+
     @Override
     public void setId(Serializable id) {
         this.id = (Integer) id;
@@ -93,6 +108,7 @@ public class Vehicle implements Entity {
         this.status = newStatus;
     }
 
+    @Override
     public boolean isActive() {
         return status;
     }

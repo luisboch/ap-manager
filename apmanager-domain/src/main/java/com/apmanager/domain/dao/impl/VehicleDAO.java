@@ -22,9 +22,10 @@ public class VehicleDAO extends GenericDAO<Vehicle> {
         search = search == null ? "" : search;
         String sql = "select v "
                 + "from Vehicle v "
-                + "where lower(v.name) like lower(:search) "
+                + "where v.status = true "
+                + "and (lower(v.name) like lower(:search) "
                 + "or lower(v.observation) like lower(:search) "
-                + "or lower(v.brand.name) like lower(:search) ";
+                + "or lower(v.brand.name) like lower(:search)) ";
 
         Query q = em.createQuery(sql);
         q.setParameter("search", "%".concat(search).concat("%"));

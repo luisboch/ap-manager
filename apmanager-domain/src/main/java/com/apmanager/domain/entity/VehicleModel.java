@@ -31,7 +31,7 @@ public class VehicleModel implements Entity {
     @SequenceGenerator(name="vehicle-model-seq", allocationSize=1, sequenceName="veiculos_modelos_id_seq")
     @GeneratedValue(generator="vehicle-model-seq")
     private Integer id;
-
+    
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="veiculo_id")
     private Vehicle vehicle;

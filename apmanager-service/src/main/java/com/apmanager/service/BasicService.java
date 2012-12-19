@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
  * @author luis
  */
 public abstract class BasicService<T extends Entity> {
+    
     private static final Logger log =  LoggerFactory.getLogger(BasicService.class);
     protected EntityManager emanager = Provider.getEntityManager();
     protected GenericDAO<T> dao;

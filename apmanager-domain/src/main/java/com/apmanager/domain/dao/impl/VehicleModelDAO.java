@@ -1,7 +1,6 @@
 package com.apmanager.domain.dao.impl;
 
 import com.apmanager.domain.dao.GenericDAO;
-import com.apmanager.domain.entity.Vehicle;
 import com.apmanager.domain.entity.VehicleModel;
 import java.util.Date;
 import java.util.List;
