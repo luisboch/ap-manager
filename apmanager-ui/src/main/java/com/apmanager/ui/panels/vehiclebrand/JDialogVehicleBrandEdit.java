@@ -4,9 +4,11 @@
  */
 package com.apmanager.ui.panels.vehiclebrand;
 
+import com.apmanager.domain.entity.VehicleBrand;
+import com.apmanager.service.impl.VehicleBrandService;
 import com.apmanager.ui.components.Button;
-import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.panels.productbrand.JDialogEdit;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -15,8 +17,10 @@ import java.awt.event.KeyEvent;
  *
  * @author luis
  */
-public class JDialogVehicleBrandEdit extends JDialogEscape{
+public class JDialogVehicleBrandEdit extends JDialogEdit<VehicleBrand, VehicleBrandService> {
+
     private Component parent;
+
     /**
      * Creates new form JDialogVehicleBrandEdit
      */
@@ -27,6 +31,7 @@ public class JDialogVehicleBrandEdit extends JDialogEscape{
         setLocationRelativeTo(parent);
         addListeners();
     }
+
     public JDialogVehicleBrandEdit(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         this.parent = parent;
@@ -34,7 +39,7 @@ public class JDialogVehicleBrandEdit extends JDialogEscape{
         setLocationRelativeTo(parent);
         addListeners();
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -58,10 +63,10 @@ public class JDialogVehicleBrandEdit extends JDialogEscape{
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jTextField3 = new javax.swing.JTextField();
+        jTextFieldName = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jLabel6 = new javax.swing.JLabel();
+        jTextAreaDescription = new javax.swing.JTextArea();
+        jLabelId = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
         jButtonSave = new Button(this, KeyEvent.VK_F8);
@@ -149,13 +154,14 @@ public class JDialogVehicleBrandEdit extends JDialogEscape{
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        jTextField3.setText("General Motors");
+        jTextFieldName.setText("General Motors");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane3.setViewportView(jTextArea2);
+        jTextAreaDescription.setColumns(20);
+        jTextAreaDescription.setRows(5);
+        jScrollPane3.setViewportView(jTextAreaDescription);
 
-        jLabel6.setText("520");
+        jLabelId.setText("520");
+        jLabelId.setMaximumSize(new java.awt.Dimension(112, 15));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -165,17 +171,17 @@ public class JDialogVehicleBrandEdit extends JDialogEscape{
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                    .addComponent(jTextFieldName)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addContainerGap())
-                    .addComponent(jTextField3)))
+                        .addComponent(jLabelId, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel6)
+                .addComponent(jLabelId, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE))
         );
@@ -251,7 +257,6 @@ public class JDialogVehicleBrandEdit extends JDialogEscape{
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
@@ -260,9 +265,9 @@ public class JDialogVehicleBrandEdit extends JDialogEscape{
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelId;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -271,25 +276,48 @@ public class JDialogVehicleBrandEdit extends JDialogEscape{
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextAreaDescription;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
 
     private void addListeners() {
         final JDialogVehicleBrandEdit dialog = this;
-        jButtonSave.addActionListener(new ActionListener(this){
+        jButtonSave.addActionListener(new ActionListener(this) {
+            @Override
+            public void onActionPerformed(ActionEvent e) throws Exception {
+                save();
+            }
+        });
+
+        jButtonCancel.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setVisible(false);
             }
         });
-        
-        jButtonCancel.addActionListener(new ActionListener(this){
-            @Override
-            public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setVisible(false);
-            }
-        });
+    }
+
+    @Override
+    protected void restoreFields(VehicleBrand instance) {
+        jTextAreaDescription.setText(instance.getDescription());
+        jTextFieldName.setText(instance.getName());
+        if (instance.getId() != null) {
+            jLabelId.setText(String.valueOf(instance.getId()));
+        }
+    }
+
+    @Override
+    protected VehicleBrand buildObject() {
+        this.instance.setName(jTextFieldName.getText());
+        instance.setDescription(jTextAreaDescription.getText());
+        return instance;
+    }
+
+    @Override
+    protected void clear() {
+        jLabelId.setText("");
+        jTextAreaDescription.setText("");
+        jTextFieldName.setText("");
     }
 }

@@ -1,12 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.apmanager.ui.panels.productbrand;
 
 import com.apmanager.domain.entity.ProductBrand;
 import com.apmanager.service.impl.ProductBrandService;
 import com.apmanager.ui.components.Button;
+import com.apmanager.ui.components.Table;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.listeners.KeyListener;
 import com.apmanager.ui.listeners.MouseListener;
@@ -54,7 +52,7 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand> impleme
         jButtonSearch = new Button(this, KeyEvent.VK_F5);
         jTextFieldSearch = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableResults = new javax.swing.JTable();
+        jTableResults = new Table();
         jPanel2 = new javax.swing.JPanel();
         jButtonDelete = new Button(this, KeyEvent.VK_DELETE);
         jButtonEdit = new Button(this, KeyEvent.VK_F7);
@@ -139,7 +137,7 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand> impleme
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

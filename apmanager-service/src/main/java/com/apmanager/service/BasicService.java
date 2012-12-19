@@ -2,6 +2,7 @@ package com.apmanager.service;
 
 import com.apmanager.domain.dao.GenericDAO;
 import com.apmanager.domain.entity.Entity;
+import com.apmanager.service.exceptions.ValidationException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public abstract class BasicService<T extends Entity> {
      * @throws Exception
      */
     public void save(T object) throws Exception {
-
+        validate(object);
         emanager.getTransaction().begin();
         try {
             dao.save(object);
@@ -43,7 +44,7 @@ public abstract class BasicService<T extends Entity> {
      * @throws Exception
      */
     public void update(T object) throws Exception {
-
+        validate(object);
         emanager.getTransaction().begin();
         try {
             dao.update(object);
@@ -86,6 +87,7 @@ public abstract class BasicService<T extends Entity> {
         emanager.getTransaction().begin();
         try {
             for (T obj : objects) {
+                validate(obj);
                 dao.save(obj);
             }
         } catch (Exception e) {
@@ -107,6 +109,7 @@ public abstract class BasicService<T extends Entity> {
         emanager.getTransaction().begin();
         try {
             for (T obj : objects) {
+                validate(obj);
                 dao.update(obj);
             }
         } catch (Exception e) {
@@ -142,4 +145,6 @@ public abstract class BasicService<T extends Entity> {
     public List<T> search(String search){
         return dao.search(search);
     }
+    
+    public abstract void validate(T object) throws ValidationException;
 }

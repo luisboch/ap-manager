@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.apmanager.domain.dao.impl;
 
 import com.apmanager.domain.dao.GenericDAO;
@@ -24,9 +20,9 @@ public class VehicleBrandDAO extends GenericDAO<VehicleBrand> {
     @Override
     public List<VehicleBrand> search(String search) {
 
-        String sql = "select vb from VehicleBrand vb where lower(vb.name) "
+        String sql = "select vb from VehicleBrand vb where vb.status = true and (lower(vb.name) "
                 + "like lower(:search) or lower(vb.description) like "
-                + "lower(:search)";
+                + "lower(:search))";
         Query q = em.createQuery(sql);
         
         q.setParameter("search", "%"+search+"%");
