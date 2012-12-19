@@ -4,9 +4,12 @@
  */
 package com.apmanager.ui.panels.shelf;
 
+import com.apmanager.domain.entity.Shelf;
+import com.apmanager.service.impl.ShelfService;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.panels.productbrand.JDialogEdit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -14,7 +17,7 @@ import java.awt.event.KeyEvent;
  *
  * @author luis
  */
-public class JDialogShelfEdit extends JDialogEscape {
+public class JDialogShelfEdit extends JDialogEdit<Shelf, ShelfService> {
 
     /**
      * Creates new form JDialogShelfEdit
@@ -55,10 +58,10 @@ public class JDialogShelfEdit extends JDialogEscape {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jTextField3 = new javax.swing.JTextField();
+        jTextFieldCode = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jLabel6 = new javax.swing.JLabel();
+        jTextAreaDescription = new javax.swing.JTextArea();
+        jLabelId = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
         jButtonSave = new Button(this, KeyEvent.VK_F8);
@@ -143,16 +146,17 @@ public class JDialogShelfEdit extends JDialogEscape {
                 .addComponent(jLabel7)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
-                .addGap(0, 98, Short.MAX_VALUE))
+                .addGap(0, 101, Short.MAX_VALUE))
         );
 
-        jTextField3.setText("General Motors");
+        jTextFieldCode.setText("General Motors");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane3.setViewportView(jTextArea2);
+        jTextAreaDescription.setColumns(20);
+        jTextAreaDescription.setRows(5);
+        jScrollPane3.setViewportView(jTextAreaDescription);
 
-        jLabel6.setText("520");
+        jLabelId.setText("520");
+        jLabelId.setMaximumSize(new java.awt.Dimension(115, 15));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -161,20 +165,20 @@ public class JDialogShelfEdit extends JDialogEscape {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addContainerGap())
-                    .addComponent(jTextField3)))
+                        .addComponent(jLabelId, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                    .addComponent(jTextFieldCode)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel6)
+                .addComponent(jLabelId, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextFieldCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -257,9 +261,9 @@ public class JDialogShelfEdit extends JDialogEscape {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelId;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -268,16 +272,16 @@ public class JDialogShelfEdit extends JDialogEscape {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextAreaDescription;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextFieldCode;
     // End of variables declaration//GEN-END:variables
     private void addListeners(){
         final JDialogShelfEdit dialog = this;
         jButtonSave.addActionListener(new ActionListener(this){
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setVisible(false);
+                save();
             }
         });
         
@@ -288,4 +292,29 @@ public class JDialogShelfEdit extends JDialogEscape {
             }
         });
     }
+
+    @Override
+    protected void restoreFields(Shelf instance) {
+        jTextFieldCode.setText(instance.getCode());
+        jTextAreaDescription.setText(instance.getDescription());
+        if(instance.getId()!=null){
+            jLabelId.setText(String.valueOf(instance.getId()));
+        }
+    }
+
+    @Override
+    protected Shelf buildObject() {
+        instance.setCode(jTextFieldCode.getText());
+        instance.setDescription(jTextAreaDescription.getText());
+        return instance;
+    }
+
+    @Override
+    protected void clear() {
+        jTextFieldCode.setText("");
+        jTextAreaDescription.setText("");
+    }
+    
+    
+    
 }
