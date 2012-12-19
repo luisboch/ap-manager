@@ -37,7 +37,7 @@ public class VehicleBrand implements Entity {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date registerDate;
     
-    private boolean status;
+    private boolean status = true;
 
     /**
      *
