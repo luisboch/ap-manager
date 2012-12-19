@@ -19,7 +19,7 @@ public class KeyListener extends AbstractEventListener
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public final void keyTyped(KeyEvent e) {
         try{
             onKeyType(e);
         } catch (Throwable ex){
@@ -28,7 +28,7 @@ public class KeyListener extends AbstractEventListener
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public final void keyPressed(KeyEvent e) {
         try{
             onKeyPress(e);
         } catch (Throwable ex){
@@ -37,7 +37,7 @@ public class KeyListener extends AbstractEventListener
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public final void keyReleased(KeyEvent e) {
         try{
             onKeyRelease(e);
         } catch (Throwable ex){

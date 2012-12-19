@@ -27,7 +27,7 @@ public abstract class AbstractAdminPanel<T extends Entity> extends JPanel{
     
     public void delete(List<T> entities) throws Exception {
         if(entities == null || entities.isEmpty()){
-            JOptionPane.showMessageDialog(Application.getInstance(), "Não nenhum item selecionado!");
+            JOptionPane.showMessageDialog(Application.getInstance(), "Não nenhum item selecionado!", "Atenção", JOptionPane.ERROR_MESSAGE);
             return;
         }
         

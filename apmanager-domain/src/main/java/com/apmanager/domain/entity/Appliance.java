@@ -4,6 +4,9 @@
 package com.apmanager.domain.entity;
 
 import java.io.Serializable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -17,9 +20,11 @@ public class Appliance implements Entity {
 
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "modelo_id", nullable = false)
     private VehicleModel model;
-    
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -28,6 +33,7 @@ public class Appliance implements Entity {
         this.id = id;
     }
 
+    @Override
     public void setId(Serializable id) {
         this.id = (Long) id;
     }

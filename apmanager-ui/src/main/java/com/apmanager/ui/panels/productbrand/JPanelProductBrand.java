@@ -8,6 +8,8 @@ import com.apmanager.domain.entity.ProductBrand;
 import com.apmanager.service.impl.ProductBrandService;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.listeners.KeyListener;
+import com.apmanager.ui.listeners.MouseListener;
 import com.apmanager.ui.menu.Application;
 import com.apmanager.ui.panels.AbstractAdminPanel;
 import com.apmanager.ui.panels.AdminPanel;
@@ -15,6 +17,7 @@ import com.towel.el.FieldResolver;
 import com.towel.swing.table.ObjectTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -78,7 +81,7 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand> impleme
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSearch)
                     .addComponent(jTextFieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jTableResults);
@@ -134,13 +137,12 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand> impleme
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonDelete;
     private javax.swing.JButton jButtonEdit;
@@ -205,22 +207,49 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand> impleme
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 panel.setEnabled(false);
-                
-               
+
+
                 List<ProductBrand> entitys;
-                try{
-                    final int[] selectedRows  = jTableResults.getSelectedRows();
+                try {
+                    final int[] selectedRows = jTableResults.getSelectedRows();
                     entitys = model.getList(selectedRows);
-                } catch (NullPointerException ex){
-                    entitys = null; 
+                } catch (NullPointerException ex) {
+                    entitys = null;
                 }
-                
+
                 delete(entitys);
                 panel.setEnabled(true);
-                
+
             }
         });
 
+        jTableResults.addMouseListener(new MouseListener(this) {
+            @Override
+            public void onMouseRelease(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    final int selectedRow = jTableResults.getSelectedRow();
+                    if (selectedRow != -1) {
+                        panel.setEnabled(false);
+                        ProductBrand brand = model.getValue(selectedRow);
+                        dialog.setInstance(brand);
+                        dialog.setVisible(true);
+                        panel.setEnabled(true);
+                        jButtonSearch.doClick();
+                    }
+
+                }
+            }
+        });
+        jTextFieldSearch.addKeyListener(new KeyListener(this){
+
+            @Override
+            public void onKeyRelease(KeyEvent e) {
+                if(KeyEvent.VK_ENTER == e.getKeyCode()){
+                    jButtonSearch.doClick();
+                }
+            }
+            
+        });
     }
 
     private void populateResults() {

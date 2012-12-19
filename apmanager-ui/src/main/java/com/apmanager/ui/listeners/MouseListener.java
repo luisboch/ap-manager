@@ -18,7 +18,7 @@ public class MouseListener extends AbstractEventListener implements java.awt.eve
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public final void mouseClicked(MouseEvent e) {
         try{
             onMouseClick(e);
         } catch (Throwable ex){
@@ -27,7 +27,7 @@ public class MouseListener extends AbstractEventListener implements java.awt.eve
     }
     
     @Override
-    public void mousePressed(MouseEvent e) {
+    public final void mousePressed(MouseEvent e) {
         try{
             onMousePress(e);
         } catch (Throwable ex){
@@ -36,7 +36,7 @@ public class MouseListener extends AbstractEventListener implements java.awt.eve
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public final void mouseReleased(MouseEvent e) {
         try{
             onMouseRelease(e);
         } catch (Throwable ex){
@@ -45,7 +45,7 @@ public class MouseListener extends AbstractEventListener implements java.awt.eve
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
+    public final void mouseEntered(MouseEvent e) {
         try{
             onMouseEnter(e);
         } catch (Throwable ex){
@@ -54,7 +54,7 @@ public class MouseListener extends AbstractEventListener implements java.awt.eve
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public final void mouseExited(MouseEvent e) {
         try{
             onMouseExit(e);
         } catch (Throwable ex){
