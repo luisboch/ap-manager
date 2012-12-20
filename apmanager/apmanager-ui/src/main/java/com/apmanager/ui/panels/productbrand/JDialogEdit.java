@@ -14,9 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class JDialogEdit<T extends Entity, S extends BasicService<T>> extends JDialogEscape {
-    S service;
+
+    protected S service;
     private static final Logger log = LoggerFactory.getLogger(JDialogProductBrandEdit.class);
-    
     protected T instance;
 
     public JDialogEdit(Frame parent, boolean modal) {
@@ -33,12 +33,13 @@ public abstract class JDialogEdit<T extends Entity, S extends BasicService<T>> e
 
     protected abstract void clear();
 
-    protected void save() throws Exception{
+    protected void save() throws Exception {
         instance = buildObject();
         if (instance.getId() == null) {
             log.info("Creating new instance {}", instance.toString());
             getService().save(instance);
-        } else { buildObject();
+        } else {
+            buildObject();
             log.info("Updating {}", instance.toString());
             getService().update(instance);
         }
@@ -57,7 +58,7 @@ public abstract class JDialogEdit<T extends Entity, S extends BasicService<T>> e
     public T getInstance() {
         return instance;
     }
-    
+
     public void setInstance(T instance) {
         this.instance = instance;
         clear();
@@ -66,5 +67,10 @@ public abstract class JDialogEdit<T extends Entity, S extends BasicService<T>> e
         }
     }
 
+    @Override
+    public void setVisible(boolean b) {
+        setLocationRelativeTo(this.getParent());
+        super.setVisible(b);
+    }
     
 }

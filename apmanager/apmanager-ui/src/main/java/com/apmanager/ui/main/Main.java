@@ -5,6 +5,7 @@
 package com.apmanager.ui.main;
 
 import com.apmanager.ui.menu.Application;
+import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -14,6 +15,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 /**
  *
@@ -27,11 +29,16 @@ public class Main {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            String defaultLAF = UIManager.getSystemLookAndFeelClassName();
+            if (defaultLAF.equals(MetalLookAndFeel.class.getName())) {
+                defaultLAF = GTKLookAndFeel.class.getName();
+            }
+            UIManager.setLookAndFeel(defaultLAF);
         } catch (ClassNotFoundException | InstantiationException |
                 IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Application.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+
         //</editor-fold>
 
         /* Create and display the form */
@@ -39,11 +46,11 @@ public class Main {
         Thread r = new Thread(new Runnable() {
             @Override
             public void run() {
-                
+
                 try {
-                    
+
                     JDialogSplash splash;
-                    if((Boolean)map.get("force-background")){
+                    if ((Boolean) map.get("force-background")) {
                         splash = new JDialogSplash(null, true);
                     } else {
                         splash = new JDialogSplash(null, false);
@@ -52,7 +59,7 @@ public class Main {
                     splash.setMessage("Iniciando Banco de Dados...", 15);
                     EntityManagerFactory emf = Persistence.createEntityManagerFactory("apmanager-pu");
                     EntityManager em = emf.createEntityManager();
-                    
+
                     splash.setMessage("Aplicando alterações...", 60);
                     Application app = Application.getInstance();
                     splash.setMessage("Concluindo...", 95);
@@ -76,17 +83,17 @@ public class Main {
     private static Map<String, Object> getOptions(String[] args) {
         Map<String, Object> map = new HashMap<>();
 
-        for(int i = 0; i < args.length;i++){
+        for (int i = 0; i < args.length; i++) {
             String key = args[i];
-            if(key.startsWith("-")){
-                if(args.length > i+1 && !args[i+1].startsWith("-")){
+            if (key.startsWith("-")) {
+                if (args.length > i + 1 && !args[i + 1].startsWith("-")) {
                     Object value;
-                    if(args[i+1].equals("true")){
+                    if (args[i + 1].equals("true")) {
                         value = true;
-                    } else if(args[i+1].equals("false")){
+                    } else if (args[i + 1].equals("false")) {
                         value = false;
                     } else {
-                        value = args[i+1];
+                        value = args[i + 1];
                     }
                     map.put(key.substring(1), value);
                 } else {
@@ -94,7 +101,7 @@ public class Main {
                 }
             }
         }
-        
+
         return map;
     }
 }

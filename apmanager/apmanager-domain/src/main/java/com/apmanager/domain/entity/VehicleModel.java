@@ -53,7 +53,7 @@ public class VehicleModel implements Entity {
     @Column(name="data_de_registro", nullable=false, updatable=false)
     private Date registerDate;
     
-    private boolean status;
+    private boolean status = true;
 
     @Override
     public Integer getId() {
@@ -122,6 +122,10 @@ public class VehicleModel implements Entity {
         this.status = newStatus;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+    
     @Override
     public boolean isActive() {
         return status;
@@ -151,7 +155,7 @@ public class VehicleModel implements Entity {
         if (!Objects.equals(this.vehicle, other.vehicle)) {
             return false;
         }
-        return true;
+        return super.equals(obj);
     }
 
     @Override

@@ -8,12 +8,10 @@ import com.apmanager.domain.entity.Entity;
 import com.apmanager.ui.components.table.CellRender;
 import com.towel.swing.table.ObjectTableModel;
 import java.awt.Dimension;
-import java.util.Enumeration;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 /**
@@ -30,8 +28,7 @@ public class Table<T extends Entity> extends javax.swing.JTable {
         setDefaultRenderer(Float.class, new CellRender());
         setDefaultRenderer(Double.class, new CellRender());
         setDefaultRenderer(Long.class, new CellRender());
-        Enumeration<TableColumn> columns = getColumnModel().getColumns();
-
+        
         setRowHeight(30);
 
         JTableHeader t = getTableHeader();
@@ -39,9 +36,10 @@ public class Table<T extends Entity> extends javax.swing.JTable {
         t.setPreferredSize(new Dimension(100, 35));
         t.setMinimumSize(new Dimension(20, 35));
 
+        t.setEnabled(false);
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) t.getDefaultRenderer();
         renderer.setHorizontalAlignment(JLabel.CENTER);
-
+        
     }
 
     public List<T> getSelecteds() {

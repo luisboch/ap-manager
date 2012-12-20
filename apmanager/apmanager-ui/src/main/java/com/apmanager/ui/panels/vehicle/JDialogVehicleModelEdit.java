@@ -4,11 +4,20 @@
  */
 package com.apmanager.ui.panels.vehicle;
 
+import com.apmanager.domain.entity.FuelType;
+import com.apmanager.domain.entity.VehicleModel;
+import com.apmanager.service.exceptions.ValidationException;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.abstractcomps.JDialogEscape;
+import com.apmanager.ui.formaters.EntityFormatter;
 import com.apmanager.ui.listeners.ActionListener;
+import com.towel.combo.swing.ObjectComboBoxModel;
+import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -16,19 +25,30 @@ import java.awt.event.KeyEvent;
  */
 public class JDialogVehicleModelEdit extends JDialogEscape {
 
+    private VehicleModel instance;
+    ObjectComboBoxModel<FuelType> boxModel;
+    boolean editing = false;
+
     /**
      * Creates new form JDialogVehicleModelEdit
      */
     public JDialogVehicleModelEdit(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
-        setLocationRelativeTo(null);
+        init();
     }
+
     public JDialogVehicleModelEdit(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
+        init();
+    }
+
+    private void init() {
         initComponents();
-        setLocationRelativeTo(null);
         addListeners();
+        setLocationRelativeTo(getParent());
+
+
+        populateFuelTypeCombo();
     }
 
     /**
@@ -44,18 +64,20 @@ public class JDialogVehicleModelEdit extends JDialogEscape {
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        jTextFieldYear = new javax.swing.JTextField();
+        jLabelVehicleName = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        jComboBoxFueltType = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        jTextFieldPotency = new javax.swing.JTextField();
+        jTextFieldName = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
         jButtonAdd = new Button(this, KeyEvent.VK_F8);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Modelo");
-        setMinimumSize(new java.awt.Dimension(364, 224));
+        setMinimumSize(new java.awt.Dimension(332, 253));
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Dados do modelo"));
@@ -66,15 +88,19 @@ public class JDialogVehicleModelEdit extends JDialogEscape {
 
         jLabel4.setText("Nome:");
 
-        jTextField2.setText("Sedan");
+        jTextFieldYear.setText("2009/2010");
 
-        jTextField1.setText("2009/2010");
-
-        jLabel2.setText("Corsa");
+        jLabelVehicleName.setText("Corsa");
 
         jLabel5.setText("Tipo de combustível:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxFueltType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel6.setText("Potencia:");
+
+        jTextFieldPotency.setText("1.0");
+
+        jTextFieldName.setText("Sedan");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -83,43 +109,51 @@ public class JDialogVehicleModelEdit extends JDialogEscape {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(103, 103, 103)
+                        .addGap(94, 94, 94)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabelVehicleName)
+                                    .addComponent(jTextFieldPotency, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldYear, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 38, Short.MAX_VALUE))
+                            .addComponent(jTextFieldName, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBoxFueltType, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabelVehicleName))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldPotency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBoxFueltType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -134,7 +168,7 @@ public class JDialogVehicleModelEdit extends JDialogEscape {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(120, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonCancel)
@@ -158,53 +192,131 @@ public class JDialogVehicleModelEdit extends JDialogEscape {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAdd;
     private javax.swing.JButton jButtonCancel;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBoxFueltType;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabelVehicleName;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextFieldName;
+    private javax.swing.JTextField jTextFieldPotency;
+    private javax.swing.JTextField jTextFieldYear;
     // End of variables declaration//GEN-END:variables
 
     private void addListeners() {
         final JDialogVehicleModelEdit dialog = this;
-        jButtonAdd.addActionListener(new ActionListener(this){
+        jButtonAdd.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
+                makeObject();
                 dialog.setVisible(false);
             }
         });
-        
-        jButtonCancel.addActionListener(new ActionListener(this){
+
+        jButtonCancel.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
+                instance = null;
                 dialog.setVisible(false);
             }
         });
+    }
+
+    public VehicleModel getVehicleModel() {
+        return instance;
+    }
+
+    public void setVehicleModel(VehicleModel vehicleModel) {
+        this.instance = vehicleModel;
+        restoreFields();
+    }
+
+    public void setEditing(boolean editing) {
+        if (editing) {
+            this.jButtonAdd.setText("Alterar");
+        } else {
+            this.jButtonAdd.setText("Adicionar");
+        }
+    }
+
+    private void populateFuelTypeCombo() {
+        boxModel = new ObjectComboBoxModel<>();
+        boxModel.setFormatter(new EntityFormatter<FuelType>());
+        List<FuelType> fuelTypes = new ArrayList<>();
+        fuelTypes.addAll(Arrays.asList(FuelType.values()));
+        boxModel.setData(fuelTypes);
+    }
+
+    private void restoreFields() {
+        boxModel.setSelectedObject(instance.getFuelType());
+        jTextFieldName.setText(instance.getName());
+        jTextFieldYear.setText(instance.getYear());
+        jLabelVehicleName.setText(instance.getVehicle().getName());
+        if (instance.getPotency() != null) {
+            jTextFieldPotency.setText(String.valueOf(instance.getPotency()));
+        } else {
+            jTextFieldPotency.setText("");
+        }
+        jComboBoxFueltType.setModel(boxModel);
+    }
+
+    private void makeObject() throws ValidationException {
+
+        instance.setName(jTextFieldName.getText());
+        instance.setYear(jTextFieldYear.getText());
+        instance.setFuelType(boxModel.getSelectedObject());
+
+        ValidationException v = new ValidationException(VehicleModel.class);
+
+        if (instance.getName().equals("")) {
+            v.addError("Nome Inválido", "name", "invalid.name");
+        }
+
+        if (instance.getYear().equals("")) {
+            v.addError("Ano Inválido", "year", "invalid.year");
+        }
+
+        Float potency = null;
+        try {
+            potency = Float.valueOf(jTextFieldPotency.getText());
+        } catch (Exception ex) {
+            v.addError("Potência Inválida", "potency", "invalid.potency");
+        }
+
+        if (instance.getFuelType() == null) {
+            v.addError("Tipo de Combustível Inválido", "fuelType", "invalid.fuel.type");
+        }
+
+        instance.setPotency(potency);
+
+        if (!v.isEmpty()) {
+            throw v;
+        }
+    }
+
+    @Override
+    protected void onHide(AWTEvent e) {
+        this.instance = null;
     }
 }

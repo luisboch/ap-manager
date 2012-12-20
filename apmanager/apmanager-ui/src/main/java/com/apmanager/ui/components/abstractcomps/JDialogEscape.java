@@ -6,6 +6,7 @@ package com.apmanager.ui.components.abstractcomps;
 import com.apmanager.ui.menu.JDialogSearchProduct;
 import java.awt.AWTEvent;
 import java.awt.Dialog;
+import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.Toolkit;
@@ -116,11 +117,14 @@ public class JDialogEscape extends JDialog {
                         KeyEvent ev = (KeyEvent) event;
                         if (ev.getID() == KeyEvent.KEY_RELEASED
                                 && ev.getKeyCode() == KeyEvent.VK_ESCAPE
-                                && dialog.isVisible()) {
+                                && dialog.isVisible() && dialog.isEnabled()) {
+                            dialog.onHide(ev);
                             dialog.setVisible(false);
                         }
                     }
                 }, AWTEvent.KEY_EVENT_MASK);
 
+    }
+    protected void onHide(AWTEvent e){
     }
 }

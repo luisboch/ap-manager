@@ -246,6 +246,13 @@ public class JPanelVehicle extends AbstractAdminPanel<Vehicle> implements AdminP
 
     @Override
     protected void search() {
-        this.model.setData(service.search(jTextFieldSearch.getText()));
+        Runnable run = new Runnable() {
+
+            @Override
+            public void run() {
+                model.setData(service.search(jTextFieldSearch.getText()));
+            }
+        };
+        Application.load(run);
     }
 }

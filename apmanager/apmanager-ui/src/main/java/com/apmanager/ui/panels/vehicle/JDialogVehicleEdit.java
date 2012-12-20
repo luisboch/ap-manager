@@ -4,7 +4,6 @@
  */
 package com.apmanager.ui.panels.vehicle;
 
-import com.apmanager.domain.entity.FuelType;
 import com.apmanager.domain.entity.Vehicle;
 import com.apmanager.domain.entity.VehicleBrand;
 import com.apmanager.domain.entity.VehicleModel;
@@ -12,17 +11,20 @@ import com.apmanager.service.impl.VehicleBrandService;
 import com.apmanager.service.impl.VehicleService;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.Table;
-import com.apmanager.ui.formaters.EntityFormatter;
+import com.apmanager.ui.formaters.EntityWrapper;
 import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.listeners.MouseListener;
+import com.apmanager.ui.panels.AbstractAdminPanel;
 import com.apmanager.ui.panels.productbrand.JDialogEdit;
 import com.apmanager.ui.panels.vehiclebrand.JDialogVehicleBrandEdit;
-import com.towel.combo.swing.ObjectComboBoxModel;
 import com.towel.el.FieldResolver;
 import com.towel.swing.table.ObjectTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JDialog;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
@@ -33,7 +35,7 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
     private JDialogVehicleBrandEdit brandEdit;
     private JDialogVehicleModelEdit modelEdit;
     private ObjectTableModel<VehicleModel> tableModel;
-    private ObjectComboBoxModel<VehicleBrand> brandModel;
+    private DefaultComboBoxModel<EntityWrapper<VehicleBrand>> brandModel;
     private VehicleBrandService brandService;
 
     /**
@@ -51,35 +53,21 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
     }
 
     private void init() {
-        
+
         initComponents();
         configureListener();
-        
         brandService = new VehicleBrandService();
-        
+
         brandEdit = new JDialogVehicleBrandEdit(this, true);
-        //modelEdit = new JDialogVehicleModelEdit(this, true);
+        modelEdit = new JDialogVehicleModelEdit(this, true);
         brandEdit.setService(brandService);
-        
-        brandModel = new ObjectComboBoxModel<>();
-        brandModel.setFormatter(new EntityFormatter());
-        
-        
-        FieldResolver nameResolver = new FieldResolver(VehicleModel.class, "name", "Nome");
-        FieldResolver yearResolver = new FieldResolver(VehicleModel.class, "year", "Ano");
-        FieldResolver fuelResolver = new FieldResolver(FuelType.class, "name", "Combustível");
-        FieldResolver potencyResolver = new FieldResolver(VehicleModel.class, "potency", "Potencia");
-        potencyResolver.setFormatter(new com.apmanager.ui.formaters.Float(
-                com.apmanager.ui.formaters.Float.SeparatorChar.POINT));
-        
-        
-        tableModel =  new ObjectTableModel<>(new FieldResolver[]{
-            nameResolver, yearResolver, fuelResolver, potencyResolver});
-        
+
+        brandModel = new DefaultComboBoxModel<>();
+
+        createTableModel();
+
         jComboBoxBrand.setModel(brandModel);
-        
-        // cria o serviço de marcas 
-        
+
 
     }
 
@@ -374,16 +362,24 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
     // End of variables declaration//GEN-END:variables
 
     private void configureListener() {
-        final JDialog dialog = this;
+
+        final JDialogVehicleEdit dialog = this;
         jButtonAddBrand.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setEnabled(false);
-                brandEdit.setInstance(new VehicleBrand());
+                VehicleBrand vehicleBrand = new VehicleBrand();
+                brandEdit.setInstance(vehicleBrand);
                 brandEdit.setVisible(true);
+                brandModel.removeAllElements();
                 populateBrands();
-                brandModel.setSelectedObject(instance.getBrand());
-                jComboBoxBrand.setModel(brandModel);
+                // Se a instancia tem marca seleciona ela, se não seleciona a cadastrada.
+                if (instance.getBrand() != null) {
+                    brandModel.setSelectedItem(instance.getBrand());
+                } else {
+                    brandModel.setSelectedItem(new EntityWrapper<>(vehicleBrand));
+                }
+
                 dialog.setEnabled(true);
             }
         });
@@ -392,11 +388,41 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setEnabled(false);
+                VehicleModel newModel = new VehicleModel();
+                buildObject();
+                newModel.setVehicle(instance);
+                modelEdit.setVehicleModel(newModel);
+                modelEdit.setEditing(false);
                 modelEdit.setVisible(true);
+
+                newModel = modelEdit.getVehicleModel();
+                // se não cancelou e cadastrou uma nova marca 
+                if (newModel != null) {
+                    final List<VehicleModel> data = tableModel.getData();
+                    createTableModel();
+                    data.add(modelEdit.getVehicleModel());
+                    tableModel.setData(data);
+                    jTableModels.setModel(tableModel);
+                }
                 dialog.setEnabled(true);
             }
         });
 
+        jButtonEdit.addActionListener(new ActionListener(this) {
+            @Override
+            public void onActionPerformed(ActionEvent e) throws Exception {
+                edit(((Table<VehicleModel>) jTableModels).getSelected());
+            }
+        });
+
+        jTableModels.addMouseListener(new MouseListener(this) {
+            @Override
+            public void onMouseRelease(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    edit(((Table<VehicleModel>) jTableModels).getSelected());
+                }
+            }
+        });
 
         jButtonSave.addActionListener(new ActionListener(this) {
             @Override
@@ -411,22 +437,45 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
                 dialog.setVisible(false);
             }
         });
-        
-
-
+        jButtonDel.addActionListener(new ActionListener(this) {
+            @Override
+            public void onActionPerformed(ActionEvent e) throws Exception {
+                dialog.setEnabled(false);
+                final List<VehicleModel> vehicleModels = ((Table<VehicleModel>) jTableModels).getSelecteds();
+                if (AbstractAdminPanel.falseDelete(vehicleModels)) {
+                    List<VehicleModel> data = tableModel.getData();
+                    data.removeAll(vehicleModels);
+                    createTableModel();
+                    tableModel.setData(data);
+                    jTableModels.setModel(tableModel);
+                }
+                dialog.setEnabled(true);
+            }
+        });
     }
 
     @Override
     protected void restoreFields(Vehicle instance) {
-         tableModel.setData(instance.getVehicleModels());
-         brandModel.setSelectedObject(instance.getBrand());
-         jTextFieldName.setText(instance.getName());
-         jTextAreaDescription.setText(instance.getObservation());
+        createTableModel();
+        List<VehicleModel> vehicleModels = instance.getVehicleModels();
+        List<VehicleModel> activeModels = new ArrayList<>();
+        for (VehicleModel m : vehicleModels) {
+            if (m.isActive()) {
+                activeModels.add(m);
+            }
+        }
+        tableModel.setData(activeModels);
+        jTableModels.setModel(tableModel);
+        if (instance.getBrand() != null) {
+            brandModel.setSelectedItem(new EntityWrapper<>(instance.getBrand()));
+        }
+        jTextFieldName.setText(instance.getName());
+        jTextAreaDescription.setText(instance.getObservation());
     }
 
     @Override
     protected Vehicle buildObject() {
-        instance.setBrand(brandModel.getSelectedObject());
+        instance.setBrand(((EntityWrapper<VehicleBrand>) brandModel.getSelectedItem()).getEntity());
         instance.setName(jTextFieldName.getText());
         instance.setObservation(jTextAreaDescription.getText());
         instance.setVehicleModels(tableModel.getData());
@@ -435,18 +484,55 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
 
     @Override
     protected void clear() {
-        if(tableModel != null){
+        if (tableModel != null) {
             tableModel.clear();
         }
-        
-        if(brandModel != null){
-            brandModel.clear();
+
+        if (brandModel != null) {
+            brandModel.removeAllElements();
         }
+        jTextAreaDescription.setText("");
+        jTextFieldName.setText("");
+        jLabelId.setText("");
         populateBrands();
     }
-    private void populateBrands(){
+
+    private void populateBrands() {
         List<VehicleBrand> brands = brandService.search("");
-        brandModel.setData(brands);
-        jComboBoxBrand.setModel(brandModel);
+
+        for (VehicleBrand brand : brands) {
+            brandModel.addElement(new EntityWrapper<>(brand));
+        }
+
+    }
+
+    private void createTableModel() {
+        FieldResolver nameResolver = new FieldResolver(VehicleModel.class, "name", "Nome");
+        FieldResolver yearResolver = new FieldResolver(VehicleModel.class, "year", "Ano");
+        FieldResolver potencyResolver = new FieldResolver(VehicleModel.class, "potency", "Potencia");
+        potencyResolver.setFormatter(new com.apmanager.ui.formaters.Float(
+                com.apmanager.ui.formaters.Float.SeparatorChar.POINT));
+
+
+        tableModel = new ObjectTableModel<>(new FieldResolver[]{
+                    nameResolver, yearResolver, potencyResolver});
+    }
+
+    private void edit(VehicleModel vehicleModel) {
+        this.setEnabled(false);
+        buildObject();
+        modelEdit.setVehicleModel(vehicleModel);
+        modelEdit.setEditing(true);
+        modelEdit.setVisible(true);
+
+        vehicleModel = modelEdit.getVehicleModel();
+        // se não cancelou e cadastrou uma nova marca 
+        if (vehicleModel != null) {
+            final List<VehicleModel> data = tableModel.getData();
+            createTableModel();
+            tableModel.setData(data);
+            jTableModels.setModel(tableModel);
+        }
+        this.setEnabled(true);
     }
 }

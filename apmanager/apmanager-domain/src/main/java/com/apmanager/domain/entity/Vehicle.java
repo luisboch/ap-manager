@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -44,7 +45,7 @@ public class Vehicle implements Entity {
     private VehicleBrand brand;
 
     
-    @OneToMany(mappedBy = "vehicle", fetch= FetchType.LAZY)
+    @OneToMany(mappedBy = "vehicle", fetch= FetchType.LAZY, cascade= CascadeType.ALL, orphanRemoval=false)
     private List<VehicleModel> vehicleModels = new ArrayList<>();
     
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
