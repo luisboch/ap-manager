@@ -7,10 +7,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -38,6 +40,7 @@ public class Vehicle implements Entity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="marca_id")
     private VehicleBrand brand;
 
     
@@ -45,6 +48,7 @@ public class Vehicle implements Entity {
     private List<VehicleModel> vehicleModels = new ArrayList<>();
     
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name="data_de_registro", nullable=false, updatable=false)
     private Date registerDate;
 
     private boolean status = true;
@@ -112,4 +116,32 @@ public class Vehicle implements Entity {
     public boolean isActive() {
         return status;
     }
+
+    @Override
+    public String getDisplayName() {
+        return this.name;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vehicle other = (Vehicle) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

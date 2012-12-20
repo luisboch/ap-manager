@@ -5,6 +5,7 @@ package com.apmanager.domain.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,8 +34,8 @@ public class VehicleBrand implements Entity {
     @Column (name="descricao")
     private String description;
 
-    @Column (name="data_do_registro", nullable=false, updatable=false)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column (name="data_do_registro", nullable=false, updatable=false)
     private Date registerDate;
     
     private boolean status = true;
@@ -98,4 +99,33 @@ public class VehicleBrand implements Entity {
     public void setStatus(boolean newStatus) {
         this.status = newStatus;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final VehicleBrand other = (VehicleBrand) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return this.name;
+    }
+    
+    
 }

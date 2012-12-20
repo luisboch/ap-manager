@@ -6,6 +6,7 @@ package com.apmanager.domain.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -209,6 +210,38 @@ public class Product implements Entity {
 
     public void setAdditionalCode(String additionalCode) {
         this.additionalCode = additionalCode;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return this.name + " " + this.code + " " + this.additionalCode;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Product other = (Product) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" + "id=" + id + ", name=" + name + ", brand=" + brand + '}';
     }
     
 }

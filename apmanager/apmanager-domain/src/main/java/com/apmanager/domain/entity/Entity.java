@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 public interface Entity extends Serializable{
     Serializable getId();
+    public String getDisplayName();
     void setId(Serializable id);
     void setStatus(boolean newStatus);
     boolean isActive();

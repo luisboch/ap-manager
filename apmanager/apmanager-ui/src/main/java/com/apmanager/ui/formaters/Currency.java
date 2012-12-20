@@ -23,7 +23,7 @@ public class Currency  implements Formatter {
         String o = (String) s;
         o = o.replace("RS ", "");
         o = o.replace(",", ".");
-        return Float.valueOf(o);
+        return java.lang.Float.valueOf(o);
     }
     
 }

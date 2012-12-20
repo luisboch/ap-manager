@@ -71,4 +71,10 @@ public class Appliance implements Entity {
     public void setStatus(boolean newStatus) {
         throw new IllegalStateException("not implemented yet!");
     }
+
+    @Override
+    public String getDisplayName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
 }

@@ -244,7 +244,7 @@ public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 panel.setEnabled(false);
-                List<Entity> entitys =new LinkedList<Entity>();
+                List<Entity> entitys =new LinkedList<>();
                 
                 entitys.add(new Entity() {
 
@@ -265,6 +265,11 @@ public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
 
                     @Override
                     public boolean isActive() {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    @Override
+                    public String getDisplayName() {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
                 });

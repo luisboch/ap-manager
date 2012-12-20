@@ -24,4 +24,5 @@ public enum FuelType {
     public String getName() {
         return name;
     }
+    
 }

@@ -50,6 +50,7 @@ public class VehicleModel implements Entity {
 
     
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="data_de_registro", nullable=false, updatable=false)
     private Date registerDate;
     
     private boolean status;
@@ -159,4 +160,11 @@ public class VehicleModel implements Entity {
                 ", year=" + year + ", potency=" + potency + ", name=" + name + 
                 ", fuelType=" + fuelType + '}';
     }
+
+    @Override
+    public String getDisplayName() {
+        return this.name;
+    }
+    
+    
 }

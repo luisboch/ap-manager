@@ -20,7 +20,7 @@ import javax.swing.table.TableModel;
  *
  * @author ADMIN
  */
-public class Table<T extends Entity>extends javax.swing.JTable {
+public class Table<T extends Entity> extends javax.swing.JTable {
 
     public Table() {
 
@@ -43,15 +43,29 @@ public class Table<T extends Entity>extends javax.swing.JTable {
         renderer.setHorizontalAlignment(JLabel.CENTER);
 
     }
-    
-    public List<T> getSelecteds(){
+
+    public List<T> getSelecteds() {
         int[] selectedsIndex = getSelectedRows();
         TableModel model = getModel();
-        
-        
-        if(model instanceof ObjectTableModel){
+
+        if (model instanceof ObjectTableModel) {
             ObjectTableModel model1 = (ObjectTableModel) model;
             return model1.getList(selectedsIndex);
+        }
+        throw new IllegalStateException("Not implemented to another table model, only to ObjectTableModel.");
+    }
+
+    public T getSelected() {
+        int selectedIndex = getSelectedRow();
+        TableModel model = getModel();
+
+        if (selectedIndex != -1) {
+            if (model instanceof ObjectTableModel) {
+                ObjectTableModel model1 = (ObjectTableModel) model;
+                return (T) model1.getData().get(selectedIndex);
+            }
+        } else {
+            return null;
         }
         throw new IllegalStateException("Not implemented to another table model, only to ObjectTableModel.");
     }
