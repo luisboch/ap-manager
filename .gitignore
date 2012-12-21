@@ -4,3 +4,6 @@
 *.jar
 *.war
 *.ear
+/apmanager-domain/target/
+/apmanager-ui/target/
+/apmanager-service/target/
