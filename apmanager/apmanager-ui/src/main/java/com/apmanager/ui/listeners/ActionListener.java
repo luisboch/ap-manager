@@ -25,7 +25,7 @@ public class ActionListener extends AbstractEventListener
         parent.setEnabled(false);
         try {
             onActionPerformed(e);
-        } catch (Throwable ex) {
+        }catch (Throwable ex) {
             onError(e, ex);
         }
         parent.setEnabled(true);

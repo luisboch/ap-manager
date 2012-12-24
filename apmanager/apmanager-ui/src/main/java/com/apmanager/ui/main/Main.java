@@ -4,6 +4,8 @@
  */
 package com.apmanager.ui.main;
 
+import com.apmanager.service.Config;
+import com.apmanager.service.Provider;
 import com.apmanager.ui.menu.Application;
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 public class Main {
 
     public static void main(String args[]) {
+        
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -41,8 +44,8 @@ public class Main {
 
         //</editor-fold>
 
-        /* Create and display the form */
         final Map<String, Object> map = getOptions(args);
+        configureOptions(map);
         Thread r = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -57,8 +60,8 @@ public class Main {
                     }
                     splash.setVisible(true);
                     splash.setMessage("Iniciando Banco de Dados...", 15);
-                    EntityManagerFactory emf = Persistence.createEntityManagerFactory("apmanager-pu");
-                    EntityManager em = emf.createEntityManager();
+                    
+                    EntityManager em = Provider.getEntityManager();
 
                     splash.setMessage("Aplicando alterações...", 60);
                     Application app = Application.getInstance();
@@ -103,5 +106,40 @@ public class Main {
         }
 
         return map;
+    }
+
+    private static void configureOptions(Map<String, Object> map) {
+        if(map.get("database") != null || map.get("d")!=null){
+            if(map.get("database") != null ){
+                Config.databaseName = (String) map.get("database");
+            } else{
+                Config.databaseName = (String) map.get("d");
+            }
+        }
+        
+        if(map.get("user") != null || map.get("u")!=null){
+            if(map.get("user") != null ){
+                Config.databaseUser = (String) map.get("user");
+            } else{
+                Config.databaseUser = (String) map.get("u");
+            }
+        }
+        
+        if(map.get("password") != null || map.get("p")!=null){
+            if(map.get("password") != null ){
+                Config.databasePassword = (String) map.get("password");
+            } else{
+                Config.databasePassword = (String) map.get("p");
+            }
+        }
+        
+        if(map.get("databasehost") != null || map.get("h")!=null){
+            if(map.get("databasehost") != null ){
+                Config.databaseHost = (String) map.get("databasehost");
+            } else{
+                Config.databaseHost = (String) map.get("h");
+            }
+        }
+        
     }
 }

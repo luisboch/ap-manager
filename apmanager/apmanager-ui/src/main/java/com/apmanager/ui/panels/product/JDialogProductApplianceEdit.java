@@ -1,6 +1,8 @@
 package com.apmanager.ui.panels.product;
 
+import com.apmanager.domain.entity.Entity;
 import com.apmanager.ui.components.Button;
+import com.apmanager.ui.components.ComboBox;
 import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.panels.vehicle.JDialogVehicleEdit;
@@ -8,6 +10,10 @@ import com.apmanager.ui.panels.vehicle.JDialogVehicleModelEdit;
 import com.apmanager.ui.panels.vehiclebrand.JDialogVehicleBrandEdit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import org.jdesktop.swingx.combobox.ListComboBoxModel;
 
 /**
  *
@@ -41,6 +47,87 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
         vehicleEdit = new JDialogVehicleEdit(this, true);
         vehicleBrandEdit= new JDialogVehicleBrandEdit(this, true);
         vehicleModelEdit = new JDialogVehicleModelEdit(this, true);
+        List list = new ArrayList();
+        jComboBoxModels.setModel(new ListComboBoxModel(list));
+        list.add(new Entity() {
+
+            @Override
+            public Serializable getId() {
+                return 1;
+            }
+
+            @Override
+            public String getDisplayName() {
+                return "teste-1";
+            }
+
+            @Override
+            public void setId(Serializable id) {
+                
+            }
+
+            @Override
+            public void setStatus(boolean newStatus) {
+                
+            }
+
+            @Override
+            public boolean isActive() {
+                return true;
+            }
+        });list.add(new Entity() {
+
+            @Override
+            public Serializable getId() {
+                return 2;
+            }
+
+            @Override
+            public String getDisplayName() {
+                return "teste-2";
+            }
+
+            @Override
+            public void setId(Serializable id) {
+                
+            }
+
+            @Override
+            public void setStatus(boolean newStatus) {
+                
+            }
+
+            @Override
+            public boolean isActive() {
+                return true;
+            }
+        });list.add(new Entity() {
+
+            @Override
+            public Serializable getId() {
+                return 3;
+            }
+
+            @Override
+            public String getDisplayName() {
+                return "teste-3";
+            }
+
+            @Override
+            public void setId(Serializable id) {
+                
+            }
+
+            @Override
+            public void setStatus(boolean newStatus) {
+                
+            }
+
+            @Override
+            public boolean isActive() {
+                return true;
+            }
+        });
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -74,7 +161,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
         jButtonAddVehicle = new Button(this);
         jLabel6 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox();
+        jComboBoxModels = new ComboBox(this);
         jButtonAddModel = new Button(this);
         jPanel4 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
@@ -163,8 +250,6 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
 
         jLabel11.setText("Modelo(s):");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jButtonAddModel.setText("+");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -201,7 +286,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jButtonAddVehicle))
                                     .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jComboBoxModels, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jButtonAddModel)))
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -230,14 +315,14 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxModels, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAddModel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -301,7 +386,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
     private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JComboBox jComboBoxModels;
     private javax.swing.JComboBox jComboBoxVehicle;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
