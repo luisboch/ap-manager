@@ -2,7 +2,6 @@ package com.apmanager.ui.panels.product;
 
 import com.apmanager.domain.entity.Entity;
 import com.apmanager.ui.components.Button;
-import com.apmanager.ui.components.ComboBox;
 import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.panels.vehicle.JDialogVehicleEdit;
@@ -161,7 +160,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
         jButtonAddVehicle = new Button(this);
         jLabel6 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jComboBoxModels = new ComboBox(this);
+        jComboBoxModels = new javax.swing.JComboBox();
         jButtonAddModel = new Button(this);
         jPanel4 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
@@ -322,7 +321,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
