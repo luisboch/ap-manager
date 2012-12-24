@@ -4,20 +4,33 @@
 package com.apmanager.domain.entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  *
  * @author luis
  */
+@Table(name="aplicacoes")
+@javax.persistence.Entity
 public class Appliance implements Entity {
 
+    @Id
+    @SequenceGenerator(name="appliance-seq", sequenceName="aplicacoes_id_seq", allocationSize=1)
+    @GeneratedValue(generator="appliance-seq")
     private Long id;
 
+    @ManyToOne(fetch= FetchType.LAZY)
+    @JoinColumn(name="produto_id")
     private Product product;
 
+    @Column(name="descricao")
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

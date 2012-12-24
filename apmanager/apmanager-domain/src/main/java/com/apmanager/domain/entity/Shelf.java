@@ -18,22 +18,25 @@ import javax.persistence.Temporal;
  * @author luis
  */
 @javax.persistence.Entity
-@Table(name="shelf")
+@Table(name = "prateleiras")
 public class Shelf implements Entity {
 
     @Id
-    @SequenceGenerator(name="shelf-seq", sequenceName="shelf_id_seq",
-            allocationSize=1)
-    @GeneratedValue(generator="shelf-seq")
+    @SequenceGenerator(name = "shelf-seq", sequenceName = "prateleiras_id_seq",
+    allocationSize = 1)
+    @GeneratedValue(generator = "shelf-seq")
     private Integer id;
 
+    @Column(name = "codigo")
     private String code;
 
+    @Column(name = "descricao")
     private String description;
 
     private boolean status = true;
+
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @Column(name="data_de_registro", nullable=false, updatable=false)
+    @Column(name = "data_de_registro", nullable = false, updatable = false)
     private Date registerDate;
 
     /**
@@ -85,7 +88,7 @@ public class Shelf implements Entity {
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
-    
+
     @Override
     public boolean isActive() {
         return status;
@@ -122,6 +125,4 @@ public class Shelf implements Entity {
     public String getDisplayName() {
         return this.code;
     }
-    
-    
 }

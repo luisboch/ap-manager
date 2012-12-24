@@ -7,11 +7,18 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
 import javax.persistence.Transient;
 
 /**
@@ -19,6 +26,7 @@ import javax.persistence.Transient;
  * @author luis
  */
 @javax.persistence.Entity
+@Table(name="produtos")
 public class Product implements Entity {
 
     @Id
@@ -27,43 +35,52 @@ public class Product implements Entity {
     @GeneratedValue(generator = "product-seq")
     private Long id;
 
+    @Column(name="nome")
     private String name;
 
-    @Transient
+    @ManyToOne
+    @JoinColumn(name="produto_marca_id")
     private ProductBrand brand;
 
-    @Transient
+        
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Column(name="data_de_registro", nullable=false, updatable=false)
     private Date registerDate;
 
-    @Transient
+    @Column(name="descricao")
     private String description;
 
-    @Transient
+    @OneToMany(mappedBy = "product",fetch= FetchType.LAZY, 
+            cascade= CascadeType.ALL, orphanRemoval=true)
     private List<Appliance> appliances;
+    
 
-    @Transient
+    @Column(name="codigo")
     private String code;
 
-    @Transient
+    @Column(name="codigo_de_barras")
     private String barcode;
     
+    @Column(name="codigo_adicional")
     private String additionalCode;
 
-    @Transient
+    @Column(name="percentual_desc_max")
     private Integer maxDiscountPercent;
 
-    @Transient
+    @Column(name="preco_venda")
     private Float sellPrice;
 
-    @Transient
+    @Column(name="preco_compra")
     private Float purchuasePrice;
 
-    @Transient
+    @Column(name="quantidade")
     private Integer quantity;
 
     @ManyToOne(fetch= FetchType.LAZY)
+    @JoinColumn(name="prateleira_id")
     private Shelf shelf;
 
+    @Column(name="quantidade_min")
     private Integer minQuantity; 
     
     private boolean status = true;
