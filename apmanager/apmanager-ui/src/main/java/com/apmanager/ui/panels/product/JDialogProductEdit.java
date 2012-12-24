@@ -4,9 +4,11 @@
  */
 package com.apmanager.ui.panels.product;
 
+import com.apmanager.domain.entity.Product;
+import com.apmanager.service.impl.ProductService;
 import com.apmanager.ui.components.Button;
-import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.panels.productbrand.JDialogEdit;
 import com.apmanager.ui.panels.productbrand.JDialogProductBrandEdit;
 import com.apmanager.ui.panels.shelf.JDialogShelfEdit;
 import java.awt.event.ActionEvent;
@@ -17,7 +19,7 @@ import javax.swing.JDialog;
  *
  * @author luis
  */
-public class JDialogProductEdit extends JDialogEscape {
+public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     private JDialogProductBrandEdit brandEdit;
     private JDialogShelfEdit shelfEdit;
@@ -90,6 +92,8 @@ public class JDialogProductEdit extends JDialogEscape {
         jButton1 = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         jTextField8 = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox();
         jPanel9 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
         jButtonSave = new Button(this, KeyEvent.VK_F8);
@@ -228,7 +232,7 @@ public class JDialogProductEdit extends JDialogEscape {
                     .addComponent(jButtonEditAppliance)
                     .addComponent(jButtonAddAppliance))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -263,7 +267,7 @@ public class JDialogProductEdit extends JDialogEscape {
 
         jLabel17.setText("Localização:");
 
-        jLabel18.setText("C:ódigo Adicional");
+        jLabel18.setText("Código Adicional:");
 
         jLabel19.setText("0023321");
 
@@ -273,6 +277,10 @@ public class JDialogProductEdit extends JDialogEscape {
         jLabel20.setText("Estoque Mínimo:");
 
         jTextField8.setText("30");
+
+        jLabel21.setText("Percentual de Desconto Máximo");
+
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -295,7 +303,8 @@ public class JDialogProductEdit extends JDialogEscape {
                                         .addComponent(jLabel7)
                                         .addComponent(jLabel9)))
                                 .addComponent(jLabel11))
-                            .addComponent(jLabel12))
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel21))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
@@ -329,7 +338,6 @@ public class JDialogProductEdit extends JDialogEscape {
                                             .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel6Layout.createSequentialGroup()
                                         .addComponent(jLabel14)
                                         .addGap(2, 2, 2)
@@ -338,7 +346,10 @@ public class JDialogProductEdit extends JDialogEscape {
                                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jButtonAddShelf))
-                                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jTextField8, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jTextField7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE))))
+                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -390,7 +401,11 @@ public class JDialogProductEdit extends JDialogEscape {
                     .addComponent(jLabel15)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
-                .addGap(23, 23, 23)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -457,6 +472,7 @@ public class JDialogProductEdit extends JDialogEscape {
     private javax.swing.JButton jButtonSave;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JComboBox jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -470,6 +486,7 @@ public class JDialogProductEdit extends JDialogEscape {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -555,5 +572,20 @@ public class JDialogProductEdit extends JDialogEscape {
                 dialog.setVisible(false);
             }
         });
+    }
+
+    @Override
+    protected void restoreFields(Product instance) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected Product buildObject() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void clear() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
