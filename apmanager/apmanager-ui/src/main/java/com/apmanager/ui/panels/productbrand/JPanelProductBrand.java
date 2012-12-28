@@ -250,7 +250,8 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand> impleme
         });
     }
 
-    private void populateResults() {
+    @Override
+    protected void populateResults() {
 
         FieldResolver idResolver = new FieldResolver(ProductBrand.class, "id", "Código");
         FieldResolver nameResolver = new FieldResolver(ProductBrand.class, "name", "Nome");
@@ -265,16 +266,6 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand> impleme
 
     @Override
     protected void search() {
-        final JPanel panel = this;
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                panel.setEnabled(false);
-                results = service.search(jTextFieldSearch.getText());
-                populateResults();
-                panel.setEnabled(true);
-            }
-        };
-        Application.load(run);
+        search(jTextFieldSearch.getText());
     }
 }

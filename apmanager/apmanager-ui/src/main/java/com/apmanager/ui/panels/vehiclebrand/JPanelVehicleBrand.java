@@ -251,7 +251,8 @@ public class JPanelVehicleBrand extends AbstractAdminPanel<VehicleBrand> impleme
         });
     }
 
-    private void populateResults() {
+    @Override
+    protected void populateResults() {
 
         FieldResolver idResolver = new FieldResolver(VehicleBrand.class, "id", "Código");
         FieldResolver nameResolver = new FieldResolver(VehicleBrand.class, "name", "Nome");
@@ -266,16 +267,6 @@ public class JPanelVehicleBrand extends AbstractAdminPanel<VehicleBrand> impleme
 
     @Override
     protected void search() {
-        final JPanel panel = this;
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                panel.setEnabled(false);
-                results = service.search(jTextFieldSearch.getText());
-                populateResults();
-                panel.setEnabled(true);
-            }
-        };
-        Application.load(run);
+        search(jTextFieldSearch.getText());
     }
 }

@@ -4,16 +4,26 @@
  */
 package com.apmanager.ui.panels.product;
 
+import com.apmanager.domain.entity.Appliance;
 import com.apmanager.domain.entity.Product;
+import com.apmanager.domain.entity.ProductBrand;
+import com.apmanager.domain.entity.Shelf;
+import com.apmanager.service.impl.ProductBrandService;
 import com.apmanager.service.impl.ProductService;
+import com.apmanager.service.impl.ShelfService;
 import com.apmanager.ui.components.Button;
+import com.apmanager.ui.formaters.EntityWrapper;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.panels.productbrand.JDialogEdit;
 import com.apmanager.ui.panels.productbrand.JDialogProductBrandEdit;
 import com.apmanager.ui.panels.shelf.JDialogShelfEdit;
+import com.apmanager.ui.utils.NumberUtils;
+import com.towel.el.FieldResolver;
+import com.towel.swing.table.ObjectTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import javax.swing.JDialog;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
@@ -22,12 +32,24 @@ import javax.swing.JDialog;
 public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     private JDialogProductBrandEdit brandEdit;
+
     private JDialogShelfEdit shelfEdit;
+
     private JDialogProductApplianceEdit applianceEdit;
+
+    private DefaultComboBoxModel<EntityWrapper<ProductBrand>> brandModel;
+
+    private DefaultComboBoxModel<EntityWrapper<Shelf>> shelfModel;
+
+    private ObjectTableModel<Appliance> applianceModel;
+
+    private ProductBrandService productBrandService;
+
+    private ShelfService shelfService;
+
     /**
      * Creates new form JDialogProductEdit
      */
-    
     public JDialogProductEdit(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -36,6 +58,18 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         brandEdit = new JDialogProductBrandEdit(this, true);
         shelfEdit = new JDialogShelfEdit(this, true);
         applianceEdit = new JDialogProductApplianceEdit(this, true);
+
+        //Start services;
+        productBrandService = new ProductBrandService();
+        brandEdit.setService(productBrandService);
+
+        shelfService = new ShelfService();
+        shelfEdit.setService(shelfService);
+
+
+        brandModel = new DefaultComboBoxModel<>();
+        shelfModel = new DefaultComboBoxModel<>();
+
     }
 
     /**
@@ -56,44 +90,45 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel6 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
+        jLabelId = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        jComboBoxProductBrand = new javax.swing.JComboBox();
         jButtonAddBrand = new Button(this);
-        jTextField3 = new javax.swing.JTextField();
+        jTextFieldName = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        jTextAreaDescription = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
         jButtonAddAppliance = new Button(this);
         jButtonEditAppliance = new Button(this);
         jButton2 = new Button(this);
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableApplianceResults = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldCode = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        jTextFieldBarCode = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        jTextFieldSellPrice = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        jTextFieldPurchuasePrice = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        jTextFieldQtd = new javax.swing.JTextField();
         jButtonAddShelf = new Button(this);
-        jComboBox2 = new javax.swing.JComboBox();
+        jComboBoxShelf = new javax.swing.JComboBox();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jLabel1AditionalCode = new javax.swing.JLabel();
+        jButtonGenerateAditionalCode = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        jTextFieldMinQuantity = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox();
+        jComboBoxDiscount = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
         jButtonSave = new Button(this, KeyEvent.VK_F8);
@@ -153,7 +188,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados do Produto"));
 
-        jLabel6.setText("520");
+        jLabelId.setText("520");
 
         jLabel8.setText("Descrição:");
 
@@ -163,16 +198,14 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
         jLabel5.setText("ID:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jButtonAddBrand.setText("+");
         jButtonAddBrand.setToolTipText("Adicionar Nova Marca");
 
-        jTextField3.setText("General Motors");
+        jTextFieldName.setText("General Motors");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane3.setViewportView(jTextArea2);
+        jTextAreaDescription.setColumns(20);
+        jTextAreaDescription.setRows(5);
+        jScrollPane3.setViewportView(jTextAreaDescription);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Aplicações"));
 
@@ -182,7 +215,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
         jButton2.setText("Excluir");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableApplianceResults.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -201,10 +234,10 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        jTable1.getColumnModel().getColumn(0).setResizable(false);
-        jTable1.getColumnModel().getColumn(1).setResizable(false);
-        jTable1.getColumnModel().getColumn(2).setResizable(false);
+        jScrollPane1.setViewportView(jTableApplianceResults);
+        jTableApplianceResults.getColumnModel().getColumn(0).setResizable(false);
+        jTableApplianceResults.getColumnModel().getColumn(1).setResizable(false);
+        jTableApplianceResults.getColumnModel().getColumn(2).setResizable(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -232,25 +265,25 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                     .addComponent(jButtonEditAppliance)
                     .addComponent(jButtonAddAppliance))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jLabel10.setText("Código:");
 
-        jTextField1.setText("FE0051");
+        jTextFieldCode.setText("FE0051");
 
         jLabel11.setText("Código de Barras:");
 
-        jTextField4.setText("58550002020");
+        jTextFieldBarCode.setText("58550002020");
 
         jLabel12.setText("Preço de Venda:");
 
-        jTextField5.setText("8,55");
+        jTextFieldSellPrice.setText("8,55");
 
         jLabel13.setText("R$");
 
-        jTextField6.setText("6,20");
+        jTextFieldPurchuasePrice.setText("6,20");
 
         jLabel14.setText("R$");
 
@@ -258,29 +291,27 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
         jLabel16.setText("Estoque Atual:");
 
-        jTextField7.setText("152");
+        jTextFieldQtd.setText("152");
 
         jButtonAddShelf.setText("+");
         jButtonAddShelf.setToolTipText("Adicionar Nova Prateleira");
-
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel17.setText("Localização:");
 
         jLabel18.setText("Código Adicional:");
 
-        jLabel19.setText("0023321");
+        jLabel1AditionalCode.setText("0023321");
 
-        jButton1.setText("Gerar");
-        jButton1.setEnabled(false);
+        jButtonGenerateAditionalCode.setText("Gerar");
+        jButtonGenerateAditionalCode.setEnabled(false);
 
         jLabel20.setText("Estoque Mínimo:");
 
-        jTextField8.setText("30");
+        jTextFieldMinQuantity.setText("30");
 
-        jLabel21.setText("Percentual de Desconto Máximo");
+        jLabel21.setText("Desconto Máximo");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jLabel6.setText("%");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -308,30 +339,30 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jComboBoxProductBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonAddBrand))
-                            .addComponent(jLabel6)
+                            .addComponent(jLabelId)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel1AditionalCode, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jButton1)
+                                        .addComponent(jButtonGenerateAditionalCode)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel16))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
                                         .addComponent(jLabel13)
                                         .addGap(2, 2, 2)
-                                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextFieldSellPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(194, 194, 194)
                                         .addComponent(jLabel15))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
                                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
-                                            .addComponent(jTextField1))
+                                            .addComponent(jTextFieldBarCode, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                                            .addComponent(jTextFieldCode))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -341,16 +372,19 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                                     .addGroup(jPanel6Layout.createSequentialGroup()
                                         .addComponent(jLabel14)
                                         .addGap(2, 2, 2)
-                                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jTextFieldPurchuasePrice, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jComboBoxShelf, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jButtonAddShelf))
                                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jTextField8, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jTextField7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE))))
-                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                        .addComponent(jTextFieldMinQuantity, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jTextFieldQtd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE))))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jComboBoxDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel6)))
+                        .addGap(0, 100, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -359,15 +393,15 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabelId))
                 .addGap(7, 7, 7)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxProductBrand, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAddBrand))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -375,36 +409,37 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                     .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
                     .addComponent(jLabel17)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxShelf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAddShelf))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldBarCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel20)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldMinQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
-                    .addComponent(jLabel19)
-                    .addComponent(jButton1)
+                    .addComponent(jLabel1AditionalCode)
+                    .addComponent(jButtonGenerateAditionalCode)
                     .addComponent(jLabel16)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldQtd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldSellPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13)
                     .addComponent(jLabel15)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldPurchuasePrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
                 .addGap(17, 17, 17)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -460,19 +495,18 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonAddAppliance;
     private javax.swing.JButton jButtonAddBrand;
     private javax.swing.JButton jButtonAddShelf;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonEditAppliance;
+    private javax.swing.JButton jButtonGenerateAditionalCode;
     private javax.swing.JButton jButtonSave;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
-    private javax.swing.JComboBox jComboBox3;
+    private javax.swing.JComboBox jComboBoxDiscount;
+    private javax.swing.JComboBox jComboBoxProductBrand;
+    private javax.swing.JComboBox jComboBoxShelf;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -483,7 +517,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel1AditionalCode;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
@@ -494,6 +528,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelId;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -501,72 +536,78 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableApplianceResults;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextArea jTextAreaDescription;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
+    private javax.swing.JTextField jTextFieldBarCode;
+    private javax.swing.JTextField jTextFieldCode;
+    private javax.swing.JTextField jTextFieldMinQuantity;
+    private javax.swing.JTextField jTextFieldName;
+    private javax.swing.JTextField jTextFieldPurchuasePrice;
+    private javax.swing.JTextField jTextFieldQtd;
+    private javax.swing.JTextField jTextFieldSellPrice;
     // End of variables declaration//GEN-END:variables
 
     private void configureListener() {
-        final JDialog dialog = this;
-        jButtonAddBrand.addActionListener(new ActionListener(this){
+        final JDialogProductEdit dialog = this;
 
+        jButtonAddBrand.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setEnabled(false);
+                ProductBrand brand = new ProductBrand();
+                brandEdit.setInstance(brand);
                 brandEdit.setVisible(true);
+                brandModel.removeAllElements();
+                populateBrands();
+
+                // Se a instancia tem marca seleciona ela, se não seleciona a cadastrada.
+                if (instance.getBrand() != null) {
+                    brandModel.setSelectedItem(new EntityWrapper<>(instance.getBrand()));
+                } else {
+                    brandModel.setSelectedItem(new EntityWrapper<>(brand));
+                }
+
                 dialog.setEnabled(true);
             }
-            
         });
-        jButtonAddShelf.addActionListener(new ActionListener(this){
 
+        jButtonAddShelf.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setEnabled(false);
                 shelfEdit.setVisible(true);
                 dialog.setEnabled(true);
             }
-            
         });
-        
-        jButtonAddAppliance.addActionListener(new ActionListener(this){
 
+        jButtonAddAppliance.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setEnabled(false);
                 applianceEdit.setVisible(true);
                 dialog.setEnabled(true);
             }
-            
         });
-        
-        jButtonEditAppliance.addActionListener(new ActionListener(this){
 
+        jButtonEditAppliance.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setEnabled(false);
                 applianceEdit.setVisible(true);
                 dialog.setEnabled(true);
             }
-            
         });
-        
-        jButtonSave.addActionListener(new ActionListener(this){
+
+        jButtonSave.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setVisible(false);
+                save();
             }
         });
-        
-        jButtonCancel.addActionListener(new ActionListener(this){
+
+        jButtonCancel.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setVisible(false);
@@ -576,7 +617,46 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     @Override
     protected void restoreFields(Product instance) {
-        throw new UnsupportedOperationException("Not supported yet.");
+
+        if (instance.getId() != null) {
+            this.jLabelId.setText(String.valueOf(instance.getId()));
+        }
+
+        jTextFieldName.setText(instance.getName());
+
+        if (instance.getBrand() != null) {
+            brandModel.setSelectedItem(new EntityWrapper<>(instance.getBrand()));
+        }
+
+        jTextAreaDescription.setText(instance.getDescription());
+        jTextFieldCode.setText(instance.getCode());
+        jTextFieldBarCode.setText(instance.getBarcode());
+
+        if (instance.getAdditionalCode() != null) {
+            jLabel1AditionalCode.setText(instance.getAdditionalCode());
+            jButtonGenerateAditionalCode.setEnabled(false);
+        } else {
+            jButtonGenerateAditionalCode.setEnabled(true);
+        }
+
+        jTextFieldPurchuasePrice.setText(
+                NumberUtils.toString(instance.getPurchuasePrice()));
+        jTextFieldSellPrice.setText(
+                NumberUtils.toString(instance.getSellPrice()));
+
+        if (instance.getShelf() != null) {
+            shelfModel.setSelectedItem(new EntityWrapper<>(instance.getShelf()));
+        }
+
+        if (instance.getMinQuantity() != null) {
+            jTextFieldMinQuantity.setText(String.valueOf(instance.getMinQuantity()));
+        }
+
+        if (instance.getQuantity() != null) {
+            jTextFieldQtd.setText(String.valueOf(instance.getQuantity()));
+        }
+        populateAppliance();
+
     }
 
     @Override
@@ -586,6 +666,71 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     @Override
     protected void clear() {
-        throw new UnsupportedOperationException("Not supported yet.");
+
+        this.brandEdit.clear();
+        this.brandModel.removeAllElements();
+        shelfModel.removeAllElements();
+        this.jLabelId.setText("");
+        jTextFieldName.setText("");
+
+        jTextAreaDescription.setText("");
+        jTextFieldCode.setText("");
+        jTextFieldBarCode.setText("");
+
+        jLabel1AditionalCode.setText("");
+        jButtonGenerateAditionalCode.setEnabled(false);
+        jComboBoxDiscount.getModel().setSelectedItem(String.valueOf(0f));
+
+        jTextFieldMinQuantity.setText("");
+        jTextFieldQtd.setText("");
+
+        populateComboDiscounts();
+        populateBrands();
+        populateShelfs();
+
+    }
+
+    private void populateBrands() {
+        List<ProductBrand> brands = productBrandService.search("");
+        for (ProductBrand b : brands) {
+            brandModel.addElement(new EntityWrapper<>(b));
+        }
+        jComboBoxProductBrand.setModel(brandModel);
+    }
+
+    private void populateComboDiscounts() {
+        float i = 0f;
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        while (i < 100) {
+            model.addElement(String.valueOf(i));
+            i = i + 5;
+        }
+
+        jComboBoxDiscount.setModel(model);
+
+    }
+
+    private void populateShelfs() {
+        List<Shelf> shelfs = shelfService.search("");
+        for (Shelf shelf : shelfs) {
+            shelfModel.addElement(new EntityWrapper<>(shelf));
+        }
+        jComboBoxShelf.setModel(shelfModel);
+    }
+
+    private void populateAppliance() {
+        FieldResolver vehicle =
+                new FieldResolver(Appliance.class, "model.vehicle.name", "Veículo");
+        FieldResolver model =
+                new FieldResolver(Appliance.class, "model.name", "Modelo");
+        FieldResolver year =
+                new FieldResolver(Appliance.class, "model.year", "Ano");
+        applianceModel =
+                new ObjectTableModel<>(new FieldResolver[]{vehicle, model, year});
+
+        if (instance.getAppliances() != null) {
+            applianceModel.setData(instance.getAppliances());
+        }
+
     }
 }

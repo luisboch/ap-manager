@@ -1,43 +1,11 @@
---
--- PostgreSQL database dump
---
 
--- Dumped from database version 9.1.7
--- Dumped by pg_dump version 9.1.7
--- Started on 2012-12-20 11:56:21 BRST
+CREATE TABLE aplicacoes (
+    id serial NOT NULL,
+    descricao character varying(255),
+    modelo_id integer NOT NULL,
+    produto_id bigint
+);
 
-SET statement_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-
---
--- TOC entry 173 (class 3079 OID 11685)
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- TOC entry 1949 (class 0 OID 0)
--- Dependencies: 173
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
-SET search_path = public, pg_catalog;
-
-SET default_with_oids = false;
-
---
--- TOC entry 161 (class 1259 OID 17678)
--- Dependencies: 5
--- Name: marcas_de_produtos; Type: TABLE; Schema: public; Owner: -
---
 
 CREATE TABLE marcas_de_produtos (
     id serial NOT NULL,
@@ -48,12 +16,6 @@ CREATE TABLE marcas_de_produtos (
 );
 
 
---
--- TOC entry 164 (class 1259 OID 17702)
--- Dependencies: 5
--- Name: marcas_de_veiculos; Type: TABLE; Schema: public; Owner: -
---
-
 CREATE TABLE marcas_de_veiculos (
     id serial NOT NULL,
     descricao character varying(255),
@@ -63,42 +25,32 @@ CREATE TABLE marcas_de_veiculos (
 );
 
 
---
--- TOC entry 162 (class 1259 OID 17686)
--- Dependencies: 5
--- Name: product; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE product (
+CREATE TABLE prateleiras (
     id serial NOT NULL,
-    additionalcode character varying(255),
-    minquantity integer,
-    name character varying(255),
-    status boolean,
-    shelf_id integer
-);
-
-
---
--- TOC entry 163 (class 1259 OID 17694)
--- Dependencies: 5
--- Name: shelf; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE shelf (
-    id serial NOT NULL,
-    code character varying(255),
-    description character varying(255),
-    registerdate timestamp without time zone,
+    codigo character varying(255),
+    descricao character varying(255),
+    data_de_registro timestamp without time zone NOT NULL,
     status boolean
 );
 
 
---
--- TOC entry 165 (class 1259 OID 17710)
--- Dependencies: 5
--- Name: veiculos; Type: TABLE; Schema: public; Owner: -
---
+CREATE TABLE produtos (
+    id serial NOT NULL,
+    codigo_adicional character varying(255),
+    codigo_de_barras character varying(255),
+    codigo character varying(255),
+    descricao character varying(255),
+    percentual_desc_max integer,
+    quantidade_min integer,
+    nome character varying(255),
+    preco_compra double precision,
+    quantidade integer,
+    data_de_registro timestamp without time zone NOT NULL,
+    preco_venda double precision,
+    status boolean,
+    produto_marca_id integer,
+    prateleira_id integer
+);
 
 CREATE TABLE veiculos (
     id serial NOT NULL,
@@ -108,13 +60,6 @@ CREATE TABLE veiculos (
     status boolean,
     marca_id integer
 );
-
-
---
--- TOC entry 166 (class 1259 OID 17718)
--- Dependencies: 5
--- Name: veiculos_modelos; Type: TABLE; Schema: public; Owner: -
---
 
 CREATE TABLE veiculos_modelos (
     id serial NOT NULL,
@@ -128,10 +73,14 @@ CREATE TABLE veiculos_modelos (
 );
 
 
+ALTER TABLE ONLY aplicacoes
+    ADD CONSTRAINT aplicacoes_pkey PRIMARY KEY (id);
+
+
 --
--- TOC entry 1929 (class 2606 OID 17685)
--- Dependencies: 161 161 1944
--- Name: marcas_de_produtos_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 1940 (class 2606 OID 17960)
+-- Dependencies: 163 163 1968
+-- Name: marcas_de_produtos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY marcas_de_produtos
@@ -139,9 +88,9 @@ ALTER TABLE ONLY marcas_de_produtos
 
 
 --
--- TOC entry 1935 (class 2606 OID 17709)
--- Dependencies: 164 164 1944
--- Name: marcas_de_veiculos_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 1946 (class 2606 OID 17984)
+-- Dependencies: 166 166 1968
+-- Name: marcas_de_veiculos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY marcas_de_veiculos
@@ -149,29 +98,29 @@ ALTER TABLE ONLY marcas_de_veiculos
 
 
 --
--- TOC entry 1931 (class 2606 OID 17693)
--- Dependencies: 162 162 1944
--- Name: product_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 1944 (class 2606 OID 17976)
+-- Dependencies: 165 165 1968
+-- Name: prateleiras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY product
-    ADD CONSTRAINT product_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 1933 (class 2606 OID 17701)
--- Dependencies: 163 163 1944
--- Name: shelf_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY shelf
-    ADD CONSTRAINT shelf_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY prateleiras
+    ADD CONSTRAINT prateleiras_pkey PRIMARY KEY (id);
 
 
 --
--- TOC entry 1939 (class 2606 OID 17725)
--- Dependencies: 166 166 1944
--- Name: veiculos_modelos_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 1942 (class 2606 OID 17968)
+-- Dependencies: 164 164 1968
+-- Name: produtos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY produtos
+    ADD CONSTRAINT produtos_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1950 (class 2606 OID 18000)
+-- Dependencies: 168 168 1968
+-- Name: veiculos_modelos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY veiculos_modelos
@@ -179,9 +128,9 @@ ALTER TABLE ONLY veiculos_modelos
 
 
 --
--- TOC entry 1937 (class 2606 OID 17717)
--- Dependencies: 165 165 1944
--- Name: veiculos_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 1948 (class 2606 OID 17992)
+-- Dependencies: 167 167 1968
+-- Name: veiculos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY veiculos
@@ -189,19 +138,49 @@ ALTER TABLE ONLY veiculos
 
 
 --
--- TOC entry 1940 (class 2606 OID 17726)
--- Dependencies: 163 162 1932 1944
--- Name: fk_product_shelf_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 1958 (class 2606 OID 18031)
+-- Dependencies: 169 168 1949 1968
+-- Name: fk_aplicacoes_modelo_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY product
-    ADD CONSTRAINT fk_product_shelf_id FOREIGN KEY (shelf_id) REFERENCES shelf(id);
+ALTER TABLE ONLY aplicacoes
+    ADD CONSTRAINT fk_aplicacoes_modelo_id FOREIGN KEY (modelo_id) REFERENCES veiculos_modelos(id);
 
 
 --
--- TOC entry 1941 (class 2606 OID 17731)
--- Dependencies: 165 164 1934 1944
--- Name: fk_veiculos_marca_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 1957 (class 2606 OID 18026)
+-- Dependencies: 169 164 1941 1968
+-- Name: fk_aplicacoes_produto_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY aplicacoes
+    ADD CONSTRAINT fk_aplicacoes_produto_id FOREIGN KEY (produto_id) REFERENCES produtos(id);
+
+
+--
+-- TOC entry 1954 (class 2606 OID 18011)
+-- Dependencies: 164 165 1943 1968
+-- Name: fk_produtos_prateleira_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY produtos
+    ADD CONSTRAINT fk_produtos_prateleira_id FOREIGN KEY (prateleira_id) REFERENCES prateleiras(id);
+
+
+--
+-- TOC entry 1953 (class 2606 OID 18006)
+-- Dependencies: 164 163 1939 1968
+-- Name: fk_produtos_produto_marca_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY produtos
+    ADD CONSTRAINT fk_produtos_produto_marca_id FOREIGN KEY (produto_marca_id) REFERENCES marcas_de_produtos(id);
+
+
+--
+-- TOC entry 1955 (class 2606 OID 18016)
+-- Dependencies: 167 166 1945 1968
+-- Name: fk_veiculos_marca_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY veiculos
@@ -209,18 +188,11 @@ ALTER TABLE ONLY veiculos
 
 
 --
--- TOC entry 1942 (class 2606 OID 17736)
--- Dependencies: 166 1936 165 1944
--- Name: fk_veiculos_modelos_veiculo_id; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 1956 (class 2606 OID 18021)
+-- Dependencies: 1947 167 168 1968
+-- Name: fk_veiculos_modelos_veiculo_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY veiculos_modelos
     ADD CONSTRAINT fk_veiculos_modelos_veiculo_id FOREIGN KEY (veiculo_id) REFERENCES veiculos(id);
-
-
--- Completed on 2012-12-20 11:56:21 BRST
-
---
--- PostgreSQL database dump complete
---
 

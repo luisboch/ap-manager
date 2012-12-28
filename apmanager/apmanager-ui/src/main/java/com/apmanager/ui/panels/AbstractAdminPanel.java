@@ -75,4 +75,20 @@ public abstract class AbstractAdminPanel<T extends Entity> extends JPanel {
 
 
     protected abstract void search();
+    protected abstract void populateResults();
+    
+    
+    protected void search(final String search){
+        final JPanel panel = this;
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                panel.setEnabled(false);
+                results = service.search(search);
+                populateResults();
+                panel.setEnabled(true);
+            }
+        };
+        Application.load(run);
+    }
 }

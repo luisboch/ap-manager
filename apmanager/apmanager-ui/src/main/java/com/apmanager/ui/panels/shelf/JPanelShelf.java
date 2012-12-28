@@ -252,7 +252,8 @@ public class JPanelShelf extends AbstractAdminPanel<Shelf> implements AdminPanel
         });
     }
 
-    private void populateResults() {
+    @Override
+    protected void populateResults() {
 
         FieldResolver idResolver = new FieldResolver(Shelf.class, "id", "Id");
         FieldResolver nameResolver = new FieldResolver(Shelf.class, "code", "Código");
@@ -267,16 +268,6 @@ public class JPanelShelf extends AbstractAdminPanel<Shelf> implements AdminPanel
 
     @Override
     protected void search() {
-        final JPanel panel = this;
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                panel.setEnabled(false);
-                results = service.search(jTextFieldSearch.getText());
-                populateResults();
-                panel.setEnabled(true);
-            }
-        };
-        Application.load(run);
+        search(jTextFieldSearch.getText());
     }
 }

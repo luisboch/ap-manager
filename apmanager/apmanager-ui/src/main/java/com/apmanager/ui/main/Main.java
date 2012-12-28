@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -71,7 +69,7 @@ public class Main {
                     splash.setMessage("...Pronto", 100);
                     splash.setVisible(false);
                     app.setVisible(true);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     Logger.getLogger("Main").log(Level.SEVERE, e.getMessage(), e);
                     JOptionPane.showMessageDialog(null,
                             "Error while loading application, see logs for more informations.");

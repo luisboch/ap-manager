@@ -12,6 +12,7 @@ import java.util.Objects;
  * @author luis
  */
 public class EntityWrapper<T extends Entity>{
+
     private T entity;
 
     public EntityWrapper(T entity) {

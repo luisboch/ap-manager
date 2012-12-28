@@ -1,7 +1,6 @@
 package com.apmanager.ui.panels.product;
 
 import com.apmanager.domain.entity.Product;
-import com.apmanager.domain.entity.ProductBrand;
 import com.apmanager.service.impl.ProductService;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.Table;
@@ -158,6 +157,7 @@ public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
 
     @Override
     public void loadContent() {
+        this.dialog.clear();
     }
 
     private void addListeners() {
@@ -174,10 +174,10 @@ public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
 
-                Product selectedRow = ((Table<Product>) jTableResults).getSelected();
-                if (selectedRow != null) {
+                Product selectedProduct = ((Table<Product>) jTableResults).getSelected();
+                if (selectedProduct != null) {
                     panel.setEnabled(false);
-                    dialog.setInstance(selectedRow);
+                    dialog.setInstance(selectedProduct);
                     dialog.setVisible(true);
                     panel.setEnabled(true);
                     jButtonSearch.doClick();
@@ -219,10 +219,10 @@ public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
             @Override
             public void onMouseRelease(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    Product selectedRow = ((Table<Product>) jTableResults).getSelected();
-                    if (selectedRow != null) {
+                    Product selectedProduct = ((Table<Product>) jTableResults).getSelected();
+                    if (selectedProduct != null) {
                         panel.setEnabled(false);
-                        dialog.setInstance(selectedRow);
+                        dialog.setInstance(selectedProduct);
                         dialog.setVisible(true);
                         panel.setEnabled(true);
                         jButtonSearch.doClick();
@@ -231,20 +231,23 @@ public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
                 }
             }
         });
+        
         jTextFieldSearch.addKeyListener(new KeyListener(this) {
             @Override
             public void onKeyRelease(KeyEvent e) {
                 if (KeyEvent.VK_ENTER == e.getKeyCode()) {
                     jButtonSearch.doClick();
+                } else if (KeyEvent.VK_SPACE == e.getKeyCode()){
+                    search();
                 }
             }
         });
     }
 
-    private void populateResults() {
-
-        FieldResolver idResolver = new FieldResolver(ProductBrand.class, "id", "Código");
-        FieldResolver nameResolver = new FieldResolver(ProductBrand.class, "name", "Nome");
+    @Override
+    protected void populateResults() {
+        FieldResolver idResolver = new FieldResolver(Product.class, "id", "Código");
+        FieldResolver nameResolver = new FieldResolver(Product.class, "name", "Nome");
 
         model = new ObjectTableModel<>(
                 new FieldResolver[]{idResolver, nameResolver});
@@ -256,16 +259,6 @@ public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
 
     @Override
     protected void search() {
-        final JPanel panel = this;
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                panel.setEnabled(false);
-                results = service.search(jTextFieldSearch.getText());
-                populateResults();
-                panel.setEnabled(true);
-            }
-        };
-        Application.load(run);
+        search(jTextFieldSearch.getText());
     }
 }
