@@ -28,7 +28,7 @@ import javax.persistence.Temporal;
 public class Product implements Entity {
 
     @Id
-    @SequenceGenerator(name = "product-seq", sequenceName = "product_id_seq",
+    @SequenceGenerator(name = "product-seq", sequenceName = "produtos_id_seq",
     allocationSize = 1)
     @GeneratedValue(generator = "product-seq")
     private Long id;

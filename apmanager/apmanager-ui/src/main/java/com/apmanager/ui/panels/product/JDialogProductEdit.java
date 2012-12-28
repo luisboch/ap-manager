@@ -576,9 +576,19 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         jButtonAddShelf.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setEnabled(false);
+
+                Shelf shelf = new Shelf();
+                shelfEdit.setInstance(shelf);
                 shelfEdit.setVisible(true);
-                dialog.setEnabled(true);
+                populateShelfs();
+                
+                // Se a instancia tem marca seleciona ela, se não seleciona a cadastrada.
+                if (instance.getShelf() != null) {
+                    shelfModel.setSelectedItem(new EntityWrapper<>(instance.getShelf()));
+                } else if (shelf.getId() != null) {
+                    shelfModel.setSelectedItem(new EntityWrapper<>(shelf));
+                }
+
             }
         });
 
@@ -655,13 +665,46 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         if (instance.getQuantity() != null) {
             jTextFieldQtd.setText(String.valueOf(instance.getQuantity()));
         }
+        if(instance.getMaxDiscountPercent()!=null){
+            jComboBoxDiscount.setSelectedItem(
+                    String.valueOf(instance.getMaxDiscountPercent()));
+        }
         populateAppliance();
 
     }
 
     @Override
     protected Product buildObject() {
-        throw new UnsupportedOperationException("Not supported yet.");
+
+        instance.setName(jTextFieldName.getText());
+        
+        instance.setBrand(((EntityWrapper<ProductBrand>)brandModel.getSelectedItem()).
+                getEntity());
+        
+        instance.setDescription(jTextAreaDescription.getText());
+        instance.setCode(jTextFieldCode.getText());
+        instance.setBarcode(jTextFieldBarCode.getText());
+        
+        instance.setAdditionalCode(jLabel1AditionalCode.getText());
+        
+        instance.setPurchuasePrice(
+                NumberUtils.toFloat(jTextFieldPurchuasePrice.getText()));
+        instance.setSellPrice(
+                NumberUtils.toFloat(jTextFieldSellPrice.getText()));
+
+        instance.setShelf(
+                ((EntityWrapper<Shelf>)shelfModel.getSelectedItem()).getEntity());
+        
+        instance.setMinQuantity(NumberUtils.toInteger(jTextFieldMinQuantity.getText()));
+
+        instance.setQuantity(NumberUtils.toInteger(jTextFieldQtd.getText()));
+        
+        instance.setMaxDiscountPercent(Integer.valueOf((String)jComboBoxDiscount.getSelectedItem()));
+        // TODO 
+        //restoreAppliance();
+
+        
+        return instance;
     }
 
     @Override
@@ -699,7 +742,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     }
 
     private void populateComboDiscounts() {
-        float i = 0f;
+        int i = 0;
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         while (i < 100) {
             model.addElement(String.valueOf(i));
@@ -711,6 +754,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     }
 
     private void populateShelfs() {
+        shelfModel.removeAllElements();
         List<Shelf> shelfs = shelfService.search("");
         for (Shelf shelf : shelfs) {
             shelfModel.addElement(new EntityWrapper<>(shelf));
@@ -732,5 +776,9 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
             applianceModel.setData(instance.getAppliances());
         }
 
+    }
+
+    private void restoreAppliance() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

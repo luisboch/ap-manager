@@ -311,6 +311,7 @@ public class JDialogShelfEdit extends JDialogEdit<Shelf, ShelfService> {
 
     @Override
     protected void clear() {
+        jLabelId.setText("");
         jTextFieldCode.setText("");
         jTextAreaDescription.setText("");
     }
