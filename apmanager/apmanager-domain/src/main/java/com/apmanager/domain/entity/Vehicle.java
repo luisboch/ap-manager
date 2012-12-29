@@ -33,25 +33,18 @@ public class Vehicle implements Entity {
     sequenceName = "veiculos_id_seq")
     @GeneratedValue(generator = "vehicle-seq")
     private Integer id;
-
     @Column(name = "observacao")
     private String observation;
-
     @Column(name = "nome")
     private String name;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="marca_id")
+    @JoinColumn(name = "marca_id")
     private VehicleBrand brand;
-
-    
-    @OneToMany(mappedBy = "vehicle", fetch= FetchType.LAZY, cascade= CascadeType.ALL, orphanRemoval=false)
+    @OneToMany(mappedBy = "vehicle", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
     private List<VehicleModel> vehicleModels = new ArrayList<>();
-    
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @Column(name="data_de_registro", nullable=false, updatable=false)
+    @Column(name = "data_de_registro", nullable = false, updatable = false)
     private Date registerDate;
-
     private boolean status = true;
 
     @Override
@@ -96,7 +89,7 @@ public class Vehicle implements Entity {
     }
 
     public List<VehicleModel> getVehicleModels() {
-        return vehicleModels;
+        return vehicleModels == null ? vehicleModels = new ArrayList<>() : vehicleModels;
     }
 
     public void setVehicleModels(List<VehicleModel> vehicleModels) {
@@ -144,5 +137,4 @@ public class Vehicle implements Entity {
         }
         return true;
     }
-    
 }

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author luis
  */
-public class ProductBrandService extends BasicService<ProductBrand> {
+public class ProductBrandService extends BasicService<ProductBrand, ProductBrandDAO> {
 
     private static final Logger log = LoggerFactory.getLogger(ProductBrandService.class);
 

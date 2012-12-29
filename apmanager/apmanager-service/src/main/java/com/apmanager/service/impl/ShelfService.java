@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author luis
  */
-public class ShelfService extends BasicService<Shelf> {
+public class ShelfService extends BasicService<Shelf, ShelfDAO> {
 
     private static final Logger log = LoggerFactory.getLogger(ShelfService.class);
 

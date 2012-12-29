@@ -1,29 +1,48 @@
 package com.apmanager.ui.panels.product;
 
-import com.apmanager.domain.entity.Entity;
+import com.apmanager.domain.entity.Appliance;
+import com.apmanager.domain.entity.ProductBrand;
+import com.apmanager.domain.entity.Vehicle;
+import com.apmanager.domain.entity.VehicleBrand;
+import com.apmanager.domain.entity.VehicleModel;
+import com.apmanager.service.impl.VehicleBrandService;
+import com.apmanager.service.impl.VehicleService;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.abstractcomps.JDialogEscape;
+import com.apmanager.ui.formaters.EntityWrapper;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.panels.vehicle.JDialogVehicleEdit;
 import com.apmanager.ui.panels.vehicle.JDialogVehicleModelEdit;
 import com.apmanager.ui.panels.vehiclebrand.JDialogVehicleBrandEdit;
+import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author luis
  */
 public class JDialogProductApplianceEdit extends JDialogEscape {
-    
+
+    private static final Logger log =
+            LoggerFactory.getLogger(JDialogProductApplianceEdit.class);
+    private Appliance instance;
     private JDialogVehicleEdit vehicleEdit;
     private JDialogVehicleBrandEdit vehicleBrandEdit;
-    private JDialogVehicleModelEdit vehicleModelEdit;
-    
+    private DefaultComboBoxModel<EntityWrapper<VehicleModel>> modelModel;
+    private DefaultComboBoxModel<EntityWrapper<Vehicle>> vehicleModel;
+    private DefaultComboBoxModel<EntityWrapper<VehicleBrand>> brandModel;
+    private VehicleBrandService brandService;
+    private VehicleService vehicleService;
+
     /**
      * Creates new form JDialogProductBrandEdit
      */
@@ -34,6 +53,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
         addListener();
         init();
     }
+
     public JDialogProductApplianceEdit(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -43,91 +63,28 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
     }
 
     private void init() {
+        log.info("Starting services");
+        vehicleService = new VehicleService();
+        brandService = new VehicleBrandService();
+
+        log.info("Creating helper Dialogs");
         vehicleEdit = new JDialogVehicleEdit(this, true);
-        vehicleBrandEdit= new JDialogVehicleBrandEdit(this, true);
-        vehicleModelEdit = new JDialogVehicleModelEdit(this, true);
-        List list = new ArrayList();
-        jComboBoxModels.setModel(new ListComboBoxModel(list));
-        list.add(new Entity() {
+        vehicleEdit.setService(vehicleService);
+        vehicleBrandEdit = new JDialogVehicleBrandEdit(this, true);
+        vehicleBrandEdit.setService(brandService);
 
-            @Override
-            public Serializable getId() {
-                return 1;
-            }
+        log.info("Creating internal models");
+        modelModel = new DefaultComboBoxModel<>();
+        jComboBoxModels.setModel(modelModel);
 
-            @Override
-            public String getDisplayName() {
-                return "teste-1";
-            }
+        vehicleModel = new DefaultComboBoxModel<>();
+        jComboBoxVehicle.setModel(vehicleModel);
 
-            @Override
-            public void setId(Serializable id) {
-                
-            }
+        brandModel = new DefaultComboBoxModel<>();
+        jComboBoxVehicleBrand.setModel(brandModel);
 
-            @Override
-            public void setStatus(boolean newStatus) {
-                
-            }
-
-            @Override
-            public boolean isActive() {
-                return true;
-            }
-        });list.add(new Entity() {
-
-            @Override
-            public Serializable getId() {
-                return 2;
-            }
-
-            @Override
-            public String getDisplayName() {
-                return "teste-2";
-            }
-
-            @Override
-            public void setId(Serializable id) {
-                
-            }
-
-            @Override
-            public void setStatus(boolean newStatus) {
-                
-            }
-
-            @Override
-            public boolean isActive() {
-                return true;
-            }
-        });list.add(new Entity() {
-
-            @Override
-            public Serializable getId() {
-                return 3;
-            }
-
-            @Override
-            public String getDisplayName() {
-                return "teste-3";
-            }
-
-            @Override
-            public void setId(Serializable id) {
-                
-            }
-
-            @Override
-            public void setStatus(boolean newStatus) {
-                
-            }
-
-            @Override
-            public boolean isActive() {
-                return true;
-            }
-        });
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -146,22 +103,19 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel6 = new javax.swing.JPanel();
-        jTextField3 = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jComboBox1 = new javax.swing.JComboBox();
+        jTextAreaDescription = new javax.swing.JTextArea();
+        jComboBoxVehicleBrand = new javax.swing.JComboBox();
         jButtonAddVehiculeBrand = new Button(this);
-        jLabel5 = new javax.swing.JLabel();
+        jLabelProductName = new javax.swing.JLabel();
         jComboBoxVehicle = new javax.swing.JComboBox();
         jButtonAddVehicle = new Button(this);
         jLabel6 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jComboBoxModels = new javax.swing.JComboBox();
-        jButtonAddModel = new Button(this);
         jPanel4 = new javax.swing.JPanel();
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
         jButtonSave = new Button(this, KeyEvent.VK_F8);
@@ -219,29 +173,21 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
         setTitle("Aplicação");
         setMinimumSize(new java.awt.Dimension(523, 383));
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Aplicação"));
-
-        jTextField3.setText("General Motors");
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Aplicação"));
 
         jLabel8.setText("Descrição:");
-
-        jLabel7.setText("Nome:");
 
         jLabel9.setText("Produto:");
 
         jLabel10.setText("Marca do Veículo:");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane3.setViewportView(jTextArea2);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jTextAreaDescription.setColumns(20);
+        jTextAreaDescription.setRows(5);
+        jScrollPane3.setViewportView(jTextAreaDescription);
 
         jButtonAddVehiculeBrand.setText("+");
 
-        jLabel5.setText("General Motors");
-
-        jComboBoxVehicle.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jLabelProductName.setText("General Motors");
 
         jButtonAddVehicle.setText("+");
 
@@ -249,61 +195,52 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
 
         jLabel11.setText("Modelo(s):");
 
-        jButtonAddModel.setText("+");
-
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(61, 61, 61)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel11)
                     .addComponent(jLabel8)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel9))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
+                        .addComponent(jLabelProductName)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3)
-                            .addComponent(jTextField3)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButtonAddVehiculeBrand))
-                                    .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addComponent(jComboBoxVehicle, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButtonAddVehicle))
-                                    .addGroup(jPanel6Layout.createSequentialGroup()
-                                        .addComponent(jComboBoxModels, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButtonAddModel)))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane3)
                         .addContainerGap())))
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel11))
+                .addGap(4, 4, 4)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBoxModels, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jComboBoxVehicle, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAddVehicle))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jComboBoxVehicleBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAddVehiculeBrand)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(jLabel5))
-                .addGap(5, 5, 5)
+                    .addComponent(jLabelProductName))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(4, 4, 4)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxVehicleBrand, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAddVehiculeBrand)
                     .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -311,17 +248,16 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                     .addComponent(jComboBoxVehicle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAddVehicle)
                     .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
                     .addComponent(jComboBoxModels, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonAddModel))
+                    .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel8)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -329,7 +265,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
 
         jButtonCancel.setText("Cancelar");
 
-        jButtonSave.setText("Salvar");
+        jButtonSave.setText("Adicionar");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -362,7 +298,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 12, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -377,78 +313,259 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAddModel;
     private javax.swing.JButton jButtonAddVehicle;
     private javax.swing.JButton jButtonAddVehiculeBrand;
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBoxModels;
     private javax.swing.JComboBox jComboBoxVehicle;
+    private javax.swing.JComboBox jComboBoxVehicleBrand;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelProductName;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextAreaDescription;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 
     private void addListener() {
         final JDialogProductApplianceEdit dialog = this;
-        jButtonAddModel.addActionListener(new ActionListener(this){
+
+        jButtonAddVehiculeBrand.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setEnabled(false);
-                vehicleModelEdit.setVisible(true);
-                dialog.setEnabled(true);
-            }
-        });
-        jButtonAddVehicle.addActionListener(new ActionListener(this){
-            @Override
-            public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setEnabled(false);
-                vehicleEdit.setVisible(true);
-                dialog.setEnabled(true);
-            }
-        });
-        jButtonAddVehiculeBrand.addActionListener(new ActionListener(this){
-            @Override
-            public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setEnabled(false);
+
+                VehicleBrand brand = new VehicleBrand();
+                vehicleBrandEdit.setInstance(brand);
                 vehicleBrandEdit.setVisible(true);
-                dialog.setEnabled(true);
+                brandModel.removeAllElements();
+                populateVehicleBrand();
+
+                // Se a instancia tem marca seleciona ela, se não seleciona a cadastrada.
+                if (instance.getModel() != null
+                        && instance.getModel().getVehicle() != null
+                        && instance.getModel().getVehicle().getBrand() != null) {
+                    brandModel.setSelectedItem(new EntityWrapper<>(instance.getModel().getVehicle().getBrand()));
+                } else {
+                    brandModel.setSelectedItem(new EntityWrapper<>(brand));
+                }
+
             }
         });
-        
-        jButtonCancel.addActionListener(new ActionListener(this){
+
+
+        jButtonAddVehicle.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
+
+                // Valida a marca selecionada.
+                VehicleBrand vehicleBrand = getSelectedBrand();
+                if (vehicleBrand == null) {
+                    JOptionPane.showMessageDialog(dialog, "Selecione uma Marca válida", "Atenção", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                Vehicle vehicle = new Vehicle();
+                vehicle.setBrand(vehicleBrand);
+
+                vehicleEdit.setInstance(vehicle);
+                vehicleEdit.setVisible(true);
+                vehicleModel.removeAllElements();
+                populateVehicleBrand();
+
+                // Se a instancia tem marca seleciona ela, se não seleciona a cadastrada.
+                if (instance.getModel() != null
+                        && instance.getModel().getVehicle() != null
+                        && instance.getModel().getVehicle().getBrand() != null) {
+                    vehicleModel.setSelectedItem(
+                            new EntityWrapper<>(instance.getModel().getVehicle()));
+                } else {
+                    vehicleModel.setSelectedItem(new EntityWrapper<>(vehicle));
+                }
+
+            }
+        });
+
+        jButtonCancel.addActionListener(new ActionListener(this) {
+            @Override
+            public void onActionPerformed(ActionEvent e) throws Exception {
+                instance = null;
                 dialog.setVisible(false);
             }
         });
-        
-        jButtonSave.addActionListener(new ActionListener(this){
+
+        jButtonSave.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
+                buildObject();
                 dialog.setVisible(false);
             }
         });
+
+        //listeners to reload selections
+
+        jComboBoxVehicleBrand.addActionListener(new ActionListener(this) {
+            @Override
+            protected void onActionPerformed(ActionEvent e) throws Exception {
+                VehicleBrand brand = getSelectedBrand();
+
+                populateVehicles(brand);
+            }
+        });
+
+
+        jComboBoxVehicleBrand.addActionListener(new ActionListener(this) {
+            @Override
+            protected void onActionPerformed(ActionEvent e) throws Exception {
+                Vehicle vehicle = getSelectedVehicle();
+                populateModels(vehicle);
+            }
+        });
+
     }
 
+    private VehicleBrand getSelectedBrand() {
+
+        EntityWrapper<VehicleBrand> wrapper =
+                (EntityWrapper<VehicleBrand>) jComboBoxVehicleBrand.getSelectedItem();
+
+        if (wrapper == null) {
+            return null;
+        }
+
+        VehicleBrand vehicleBrand = wrapper.getEntity();
+        return vehicleBrand;
+    }
+
+    public void setInstance(Appliance instance) {
+        this.instance = instance;
+        clear();
+        if (instance != null) {
+            restoreFields();
+        }
+    }
+
+    public Appliance getInstance() {
+        return instance;
+    }
+
+    @Override
+    protected void onHide(AWTEvent e) {
+        instance = null;
+    }
+
+    private void clear() {
+        this.jLabelProductName.setText("");
+        jTextAreaDescription.setName("");
+
+        modelModel.removeAllElements();
+        populateVehicleBrand();
+
+        jComboBoxVehicleBrand.setSelectedIndex(-1);
+        jComboBoxVehicle.setSelectedIndex(-1);
+        jComboBoxModels.setSelectedIndex(-1);
+    }
+
+    private void restoreFields() {
+        this.jLabelProductName.setText(instance.getProduct().getName());
+        jTextAreaDescription.setName(instance.getDescription());
+
+        if (instance.getModel() != null) {
+            jComboBoxVehicleBrand.setSelectedItem(
+                    new EntityWrapper<>(instance.getModel().getVehicle().getBrand()));
+            populateVehicles(instance.getModel().getVehicle().getBrand());
+            jComboBoxVehicle.setSelectedItem(
+                    new EntityWrapper<>(instance.getModel().getVehicle()));
+            populateModels(instance.getModel().getVehicle());
+            jComboBoxModels.setSelectedItem(
+                    new EntityWrapper<>(instance.getModel()));
+        }
+
+    }
+
+    private void buildObject() {
+        instance.setDescription(jTextAreaDescription.getText());
+        EntityWrapper<VehicleModel> wrapper = (EntityWrapper<VehicleModel>) modelModel.getSelectedItem();
+        if (wrapper != null) {
+            VehicleModel vehicleModel = wrapper.getEntity();
+            if (vehicleModel.getId() != null) {
+                instance.setModel(vehicleModel);
+            }
+        }
+
+
+    }
+
+    private void populateVehicleBrand() {
+        brandModel.removeAllElements();
+        List<VehicleBrand> brands = brandService.search("");
+
+        try {
+            brandModel.addElement(EntityWrapper.createEmpty(VehicleBrand.class));
+        } catch (InstantiationException | IllegalAccessException ex) {
+            log.error(ex.getMessage(), ex);
+        }
+
+        for (VehicleBrand b : brands) {
+            brandModel.addElement(new EntityWrapper<>(b));
+        }
+
+    }
+
+    private void populateVehicles(VehicleBrand brand) {
+        vehicleModel.removeAllElements();
+        if (brand != null) {
+            List<Vehicle> vehicles = vehicleService.getVehiclesByBrand(brand);
+
+            try {
+                vehicleModel.addElement(EntityWrapper.createEmpty(Vehicle.class));
+            } catch (InstantiationException | IllegalAccessException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+
+            for (Vehicle v : vehicles) {
+                vehicleModel.addElement(new EntityWrapper<>(v));
+            }
+        }
+    }
+
+    private void populateModels(Vehicle vehicle) {
+        vehicleModel.removeAllElements();
+        if (vehicle != null) {
+            try {
+                modelModel.addElement(EntityWrapper.createEmpty(VehicleModel.class));
+            } catch (InstantiationException | IllegalAccessException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+
+            for (VehicleModel v : vehicle.getVehicleModels()) {
+                modelModel.addElement(new EntityWrapper<>(v));
+            }
+        }
+
+    }
+
+    private Vehicle getSelectedVehicle() {
+        EntityWrapper<Vehicle> wrapper = (EntityWrapper<Vehicle>) vehicleModel.getSelectedItem();
+        if (wrapper == null) {
+            return null;
+        }
+        if (wrapper.getEntity().getId() == null) {
+            return null;
+        }
+        return wrapper.getEntity();
+    }
 }

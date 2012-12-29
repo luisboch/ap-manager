@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.apmanager.ui.panels.productbrand;
 
 import com.apmanager.domain.entity.Entity;
@@ -13,7 +9,7 @@ import javax.swing.JDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class JDialogEdit<T extends Entity, S extends BasicService<T>> extends JDialogEscape {
+public abstract class JDialogEdit<T extends Entity, S extends BasicService> extends JDialogEscape {
 
     protected S service;
     private static final Logger log = LoggerFactory.getLogger(JDialogProductBrandEdit.class);
@@ -65,12 +61,6 @@ public abstract class JDialogEdit<T extends Entity, S extends BasicService<T>> e
         if (instance != null) {
             restoreFields(instance);
         }
-    }
-
-    @Override
-    public void setVisible(boolean b) {
-        setLocationRelativeTo(this.getParent());
-        super.setVisible(b);
     }
     
 }

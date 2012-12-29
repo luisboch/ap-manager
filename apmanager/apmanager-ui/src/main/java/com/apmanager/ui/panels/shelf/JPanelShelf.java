@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  *
  * @author luis
  */
-public class JPanelShelf extends AbstractAdminPanel<Shelf> implements AdminPanel {
+public class JPanelShelf extends AbstractAdminPanel<Shelf,ShelfService> implements AdminPanel {
 
     private JDialogShelfEdit dialog;
 

@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
  * @author luis
  */
 public abstract class GenericDAO<E extends Entity> implements EntityDAO<E> {
+    
     protected EntityManager em;
     public GenericDAO(EntityManager em) {
         this.em = em;
@@ -26,8 +27,7 @@ public abstract class GenericDAO<E extends Entity> implements EntityDAO<E> {
     public void update(E object){
         em.merge(object);
     }
-
-
+    
     @Override
     public void delete(E object) {
         em.remove(object);

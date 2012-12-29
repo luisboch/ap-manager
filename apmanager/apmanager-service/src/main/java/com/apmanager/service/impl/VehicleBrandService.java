@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author luis
  */
-public class VehicleBrandService extends BasicService<VehicleBrand> {
+public class VehicleBrandService extends BasicService<VehicleBrand, VehicleBrandDAO> {
 
     private static final Logger log = LoggerFactory.getLogger(VehicleBrandService.class);
 

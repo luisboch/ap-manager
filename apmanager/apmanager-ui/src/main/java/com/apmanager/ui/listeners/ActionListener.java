@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  * @author luis.boch
  * @since Nov 7, 2012
  */
-public class ActionListener extends AbstractEventListener
+public abstract class ActionListener extends AbstractEventListener
         implements java.awt.event.ActionListener {
 
     public ActionListener(Component parent) {
@@ -31,6 +31,5 @@ public class ActionListener extends AbstractEventListener
         parent.setEnabled(true);
     }
 
-    public void onActionPerformed(ActionEvent e) throws Exception {
-    }
+    protected abstract void onActionPerformed(ActionEvent e) throws Exception;
 }

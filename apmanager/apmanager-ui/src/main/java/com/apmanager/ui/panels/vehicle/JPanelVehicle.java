@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  *
  * @author luis
  */
-public class JPanelVehicle extends AbstractAdminPanel<Vehicle> implements AdminPanel {
+public class JPanelVehicle extends AbstractAdminPanel<Vehicle,VehicleService> implements AdminPanel {
 
     private JDialogVehicleEdit dialog;
 

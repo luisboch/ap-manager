@@ -3,6 +3,7 @@
  */
 package com.apmanager.ui.panels;
 
+import com.apmanager.domain.dao.GenericDAO;
 import com.apmanager.domain.entity.Entity;
 import com.apmanager.service.BasicService;
 import com.apmanager.ui.components.ConfirmDialog;
@@ -18,12 +19,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author luis
  */
-public abstract class AbstractAdminPanel<T extends Entity> extends JPanel {
+public abstract class AbstractAdminPanel<T extends Entity,
+        S extends BasicService> extends JPanel {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractAdminPanel.class);
     protected ObjectTableModel<T> model;
     protected List<T> results;
-    protected BasicService<T> service;
+    protected S service;
 
     public void delete(List<T> entities) throws Exception {
         delete(entities, service);

@@ -126,6 +126,13 @@ public class VehicleBrand implements Entity {
     public String getDisplayName() {
         return this.name;
     }
+
+    @Override
+    public String toString() {
+        return "VehicleBrand{" + "id=" + id + ", name=" + name + ", registerDate=" + registerDate + '}';
+    }
+    
+    
     
     
 }

@@ -3,25 +3,15 @@
  */
 package com.apmanager.ui.components.abstractcomps;
 
-import com.apmanager.ui.menu.JDialogSearchProduct;
 import java.awt.AWTEvent;
 import java.awt.Dialog;
-import java.awt.Event;
 import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.InputMap;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JRootPane;
-import javax.swing.KeyStroke;
 
 /**
  *
@@ -125,6 +115,13 @@ public class JDialogEscape extends JDialog {
                 }, AWTEvent.KEY_EVENT_MASK);
 
     }
-    protected void onHide(AWTEvent e){
+
+    protected void onHide(AWTEvent e) {
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        setLocationRelativeTo(this.getParent());
+        super.setVisible(b);
     }
 }

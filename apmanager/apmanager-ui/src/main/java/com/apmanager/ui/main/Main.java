@@ -51,7 +51,8 @@ public class Main {
                 try {
 
                     JDialogSplash splash;
-                    if ((Boolean) map.get("force-background")) {
+                    Boolean forceBg = (Boolean) map.get("force-background");
+                    if (forceBg!= null && forceBg) {
                         splash = new JDialogSplash(null, true);
                     } else {
                         splash = new JDialogSplash(null, false);

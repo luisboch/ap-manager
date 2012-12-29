@@ -1,7 +1,6 @@
 
 package com.apmanager.ui.panels.vehiclebrand;
 
-import com.apmanager.domain.entity.ProductBrand;
 import com.apmanager.domain.entity.VehicleBrand;
 import com.apmanager.service.impl.VehicleBrandService;
 import com.apmanager.ui.components.Button;
@@ -24,7 +23,7 @@ import javax.swing.JPanel;
  *
  * @author luis
  */
-public class JPanelVehicleBrand extends AbstractAdminPanel<VehicleBrand> implements AdminPanel {
+public class JPanelVehicleBrand extends AbstractAdminPanel<VehicleBrand, VehicleBrandService> implements AdminPanel {
 
     JDialogVehicleBrandEdit dialog;
 

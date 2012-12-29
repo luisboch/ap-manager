@@ -12,6 +12,7 @@ import com.apmanager.service.impl.ProductBrandService;
 import com.apmanager.service.impl.ProductService;
 import com.apmanager.service.impl.ShelfService;
 import com.apmanager.ui.components.Button;
+import com.apmanager.ui.components.Table;
 import com.apmanager.ui.formaters.EntityWrapper;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.panels.productbrand.JDialogEdit;
@@ -32,19 +33,12 @@ import javax.swing.DefaultComboBoxModel;
 public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     private JDialogProductBrandEdit brandEdit;
-
     private JDialogShelfEdit shelfEdit;
-
     private JDialogProductApplianceEdit applianceEdit;
-
     private DefaultComboBoxModel<EntityWrapper<ProductBrand>> brandModel;
-
     private DefaultComboBoxModel<EntityWrapper<Shelf>> shelfModel;
-
     private ObjectTableModel<Appliance> applianceModel;
-
     private ProductBrandService productBrandService;
-
     private ShelfService shelfService;
 
     /**
@@ -105,7 +99,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         jButtonEditAppliance = new Button(this);
         jButton2 = new Button(this);
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableApplianceResults = new javax.swing.JTable();
+        jTableApplianceResults = new Table();
         jLabel10 = new javax.swing.JLabel();
         jTextFieldCode = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
@@ -215,29 +209,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
         jButton2.setText("Excluir");
 
-        jTableApplianceResults.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Modelo", "Ano", "Combustível"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
         jScrollPane1.setViewportView(jTableApplianceResults);
-        jTableApplianceResults.getColumnModel().getColumn(0).setResizable(false);
-        jTableApplianceResults.getColumnModel().getColumn(1).setResizable(false);
-        jTableApplianceResults.getColumnModel().getColumn(2).setResizable(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -265,7 +237,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                     .addComponent(jButtonEditAppliance)
                     .addComponent(jButtonAddAppliance))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -581,7 +553,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                 shelfEdit.setInstance(shelf);
                 shelfEdit.setVisible(true);
                 populateShelfs();
-                
+
                 // Se a instancia tem marca seleciona ela, se não seleciona a cadastrada.
                 if (instance.getShelf() != null) {
                     shelfModel.setSelectedItem(new EntityWrapper<>(instance.getShelf()));
@@ -596,7 +568,15 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setEnabled(false);
+                Appliance a = new Appliance();
+                a.setProduct(instance);
+                applianceEdit.setInstance(a);
                 applianceEdit.setVisible(true);
+                a = applianceEdit.getInstance();
+                if(a!= null){
+                    instance.getAppliances().add(a);
+                    populateAppliance();
+                }
                 dialog.setEnabled(true);
             }
         });
@@ -665,7 +645,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         if (instance.getQuantity() != null) {
             jTextFieldQtd.setText(String.valueOf(instance.getQuantity()));
         }
-        if(instance.getMaxDiscountPercent()!=null){
+        if (instance.getMaxDiscountPercent() != null) {
             jComboBoxDiscount.setSelectedItem(
                     String.valueOf(instance.getMaxDiscountPercent()));
         }
@@ -677,33 +657,31 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     protected Product buildObject() {
 
         instance.setName(jTextFieldName.getText());
-        
-        instance.setBrand(((EntityWrapper<ProductBrand>)brandModel.getSelectedItem()).
-                getEntity());
-        
+
+        instance.setBrand(getSelectedBrand());
+
         instance.setDescription(jTextAreaDescription.getText());
         instance.setCode(jTextFieldCode.getText());
         instance.setBarcode(jTextFieldBarCode.getText());
-        
+
         instance.setAdditionalCode(jLabel1AditionalCode.getText());
-        
+
         instance.setPurchuasePrice(
                 NumberUtils.toFloat(jTextFieldPurchuasePrice.getText()));
         instance.setSellPrice(
                 NumberUtils.toFloat(jTextFieldSellPrice.getText()));
 
         instance.setShelf(
-                ((EntityWrapper<Shelf>)shelfModel.getSelectedItem()).getEntity());
-        
+                ((EntityWrapper<Shelf>) shelfModel.getSelectedItem()).getEntity());
+
         instance.setMinQuantity(NumberUtils.toInteger(jTextFieldMinQuantity.getText()));
 
         instance.setQuantity(NumberUtils.toInteger(jTextFieldQtd.getText()));
-        
-        instance.setMaxDiscountPercent(Integer.valueOf((String)jComboBoxDiscount.getSelectedItem()));
-        // TODO 
-        //restoreAppliance();
 
-        
+        instance.setMaxDiscountPercent(Integer.valueOf((String) jComboBoxDiscount.getSelectedItem()));
+
+        restoreAppliance();
+
         return instance;
     }
 
@@ -763,22 +741,35 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     }
 
     private void populateAppliance() {
+        
         FieldResolver vehicle =
                 new FieldResolver(Appliance.class, "model.vehicle.name", "Veículo");
         FieldResolver model =
                 new FieldResolver(Appliance.class, "model.name", "Modelo");
         FieldResolver year =
                 new FieldResolver(Appliance.class, "model.year", "Ano");
+
         applianceModel =
                 new ObjectTableModel<>(new FieldResolver[]{vehicle, model, year});
 
-        if (instance.getAppliances() != null) {
-            applianceModel.setData(instance.getAppliances());
-        }
+        applianceModel.setData(instance.getAppliances());
+        jTableApplianceResults.setModel(applianceModel);
 
     }
 
     private void restoreAppliance() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        instance.setAppliances(applianceModel.getData());
+    }
+
+    private ProductBrand getSelectedBrand() {
+        EntityWrapper<ProductBrand> wrapper = 
+                (EntityWrapper<ProductBrand>) brandModel.getSelectedItem();
+        if(wrapper == null){
+            return null;
+        }
+        if(wrapper.getEntity() == null || wrapper.getEntity().getId() == null){
+            return null;
+        }
+        return wrapper.getEntity();
     }
 }

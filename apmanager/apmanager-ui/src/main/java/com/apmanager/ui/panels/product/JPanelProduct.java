@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  *
  * @author luis
  */
-public class JPanelProduct extends AbstractAdminPanel implements AdminPanel {
+public class JPanelProduct extends AbstractAdminPanel<Product, ProductService> implements AdminPanel {
 
     private JDialogProductEdit dialog;
 

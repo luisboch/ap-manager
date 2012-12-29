@@ -12,11 +12,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author luis
  */
-public abstract class BasicService<T extends Entity> {
+public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
     
     private static final Logger log =  LoggerFactory.getLogger(BasicService.class);
     protected EntityManager emanager = Provider.getEntityManager();
-    protected GenericDAO<T> dao;
+    protected D dao;
 
     /**
      * Save an instance of com.apmanager.domain.entity.Entity

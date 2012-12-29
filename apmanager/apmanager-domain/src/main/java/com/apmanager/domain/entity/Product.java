@@ -4,6 +4,7 @@
 package com.apmanager.domain.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +25,7 @@ import javax.persistence.Temporal;
  * @author luis
  */
 @javax.persistence.Entity
-@Table(name="produtos")
+@Table(name = "produtos")
 public class Product implements Entity {
 
     @Id
@@ -32,57 +33,40 @@ public class Product implements Entity {
     allocationSize = 1)
     @GeneratedValue(generator = "product-seq")
     private Long id;
-
-    @Column(name="nome")
+    @Column(name = "nome")
     private String name;
-
     @ManyToOne
-    @JoinColumn(name="produto_marca_id")
+    @JoinColumn(name = "produto_marca_id")
     private ProductBrand brand;
-
-        
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @Column(name="data_de_registro", nullable=false, updatable=false)
+    @Column(name = "data_de_registro", nullable = false, updatable = false)
     private Date registerDate;
-
-    @Column(name="descricao")
+    @Column(name = "descricao")
     private String description;
-
-    @OneToMany(mappedBy = "product",fetch= FetchType.LAZY, 
-            cascade= CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Appliance> appliances;
-    
-
-    @Column(name="codigo")
+    @Column(name = "codigo")
     private String code;
-
-    @Column(name="codigo_de_barras")
+    @Column(name = "codigo_de_barras")
     private String barcode;
-    
-    @Column(name="codigo_adicional")
+    @Column(name = "codigo_adicional")
     private String additionalCode;
-
-    @Column(name="percentual_desc_max")
+    @Column(name = "percentual_desc_max")
     private Integer maxDiscountPercent;
-
-    @Column(name="preco_venda")
+    @Column(name = "preco_venda")
     private Float sellPrice;
-
-    @Column(name="preco_compra")
+    @Column(name = "preco_compra")
     private Float purchuasePrice;
-
-    @Column(name="quantidade")
+    @Column(name = "quantidade")
     private Integer quantity;
-
-    @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name="prateleira_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prateleira_id")
     private Shelf shelf;
-
-    @Column(name="quantidade_min")
-    private Integer minQuantity; 
-    
+    @Column(name = "quantidade_min")
+    private Integer minQuantity;
     private boolean status = true;
-    
+
     @Override
     public Long getId() {
         return id;
@@ -130,7 +114,7 @@ public class Product implements Entity {
     }
 
     public List<Appliance> getAppliances() {
-        return appliances;
+        return appliances == null ? appliances = new ArrayList<>() : appliances;
     }
 
     public void setAppliances(List<Appliance> appliances) {
@@ -205,12 +189,12 @@ public class Product implements Entity {
     public void setStatus(boolean status) {
         this.status = status;
     }
-    
+
     @Override
     public boolean isActive() {
         return status;
     }
-    
+
     public Integer getMinQuantity() {
         return minQuantity;
     }
@@ -258,5 +242,4 @@ public class Product implements Entity {
     public String toString() {
         return "Product{" + "id=" + id + ", name=" + name + ", brand=" + brand + '}';
     }
-    
 }

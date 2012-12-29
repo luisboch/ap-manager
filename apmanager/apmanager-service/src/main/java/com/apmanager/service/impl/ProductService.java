@@ -13,7 +13,7 @@ import com.apmanager.service.exceptions.ValidationException;
  *
  * @author luis
  */
-public class ProductService extends BasicService<Product> {
+public class ProductService extends BasicService<Product, ProductDAO> {
 
     public ProductService() {
         this.dao = new ProductDAO(emanager);

@@ -375,7 +375,7 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
                 populateBrands();
                 // Se a instancia tem marca seleciona ela, se não seleciona a cadastrada.
                 if (instance.getBrand() != null) {
-                    brandModel.setSelectedItem(instance.getBrand());
+                    brandModel.setSelectedItem(new EntityWrapper<>(instance.getBrand()));
                 } else {
                     brandModel.setSelectedItem(new EntityWrapper<>(vehicleBrand));
                 }

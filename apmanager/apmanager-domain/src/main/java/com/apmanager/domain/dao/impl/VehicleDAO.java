@@ -2,6 +2,7 @@ package com.apmanager.domain.dao.impl;
 
 import com.apmanager.domain.dao.GenericDAO;
 import com.apmanager.domain.entity.Vehicle;
+import com.apmanager.domain.entity.VehicleBrand;
 import com.apmanager.domain.entity.VehicleModel;
 import com.apmanager.domain.utils.DAOUtils;
 import java.util.Date;
@@ -58,23 +59,30 @@ public class VehicleDAO extends GenericDAO<Vehicle> {
                 }
             }
         }
-        
+
         // seta para false os inativos;
         String sql = "update VehicleModel v set v.status = false where v.vehicle = :vehicle ";
         if (object.getVehicleModels() != null && !object.getVehicleModels().isEmpty()) {
             sql += "and id not in :models";
         }
-        
+
         Query q = em.createQuery(sql);
-        
+
         q.setParameter("vehicle", object);
-        
+
         if (object.getVehicleModels() != null && !object.getVehicleModels().isEmpty()) {
             q.setParameter("models", DAOUtils.toList(object.getVehicleModels()));
         }
-        
+
         q.executeUpdate();
-        
+
         super.update(object);
+    }
+
+    public List<Vehicle> getVehiclesByBrand(VehicleBrand brand) {
+        String sql = "select v from Vehicle v where v.brand = :brand";
+        Query q = em.createQuery(sql);
+        q.setParameter("brand", brand);
+        return q.getResultList();
     }
 }

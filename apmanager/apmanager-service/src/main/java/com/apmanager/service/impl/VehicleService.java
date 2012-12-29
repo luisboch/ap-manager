@@ -6,15 +6,17 @@ package com.apmanager.service.impl;
 
 import com.apmanager.domain.dao.impl.VehicleDAO;
 import com.apmanager.domain.entity.Vehicle;
+import com.apmanager.domain.entity.VehicleBrand;
 import com.apmanager.domain.entity.VehicleModel;
 import com.apmanager.service.BasicService;
 import com.apmanager.service.exceptions.ValidationException;
+import java.util.List;
 
 /**
  *
  * @author luis
  */
-public class VehicleService extends BasicService<Vehicle> {
+public class VehicleService extends BasicService<Vehicle, VehicleDAO> {
 
     public VehicleService() {
         this.dao = new VehicleDAO(emanager);
@@ -56,5 +58,9 @@ public class VehicleService extends BasicService<Vehicle> {
         if (!v.isEmpty()) {
             throw v;
         }
+    }
+
+    public List<Vehicle> getVehiclesByBrand(VehicleBrand brand) {
+        return dao.getVehiclesByBrand(brand);
     }
 }

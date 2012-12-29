@@ -14,7 +14,8 @@ import java.util.Objects;
 public class EntityWrapper<T extends Entity>{
 
     private T entity;
-
+    
+    
     public EntityWrapper(T entity) {
         if (entity ==  null){
             throw new IllegalArgumentException("Entity can't be null");
@@ -53,5 +54,9 @@ public class EntityWrapper<T extends Entity>{
         return true;
     }
     
-    
+    public static <T extends Entity> EntityWrapper<T> createEmpty(Class<T> clazz) 
+            throws InstantiationException, IllegalAccessException{
+        T instance = clazz.newInstance();
+        return new EntityWrapper<>(instance);
+    }
 }
