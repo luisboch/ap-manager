@@ -9,4 +9,5 @@ public class Config {
     public static String databasePassword;
     public static String databaseUser;
     public static String databaseHost;
+    public static Integer apmanagerListenerPort;
 }
