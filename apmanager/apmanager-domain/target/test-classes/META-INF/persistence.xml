@@ -18,6 +18,7 @@
       <property name="eclipselink.cache.size.default" value="0"/>
       <property name="eclipselink.cache.type.default" value="None"/>
       <property name="javax.persistence.cache.storeMode" value="false"/>
+      <property name="eclipselink.jpa.uppercase-column-names" value="true"/>
       <!-- Weaving -->
       <property name="eclipselink.weaving" value="static"/>
     </properties>

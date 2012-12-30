@@ -121,7 +121,9 @@ public class JDialogEscape extends JDialog {
 
     @Override
     public void setVisible(boolean b) {
-        setLocationRelativeTo(this.getParent());
+        if (b) {
+            setLocationRelativeTo(this.getParent());
+        }
         super.setVisible(b);
     }
 }

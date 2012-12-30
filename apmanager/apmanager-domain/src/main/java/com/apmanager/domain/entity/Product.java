@@ -81,7 +81,11 @@ public class Product implements Entity {
     private Integer minQuantity;
 
     private boolean status = true;
-
+    
+    public Product() {
+        appliances = new ArrayList<>() ;
+    }
+    
     @Override
     public Long getId() {
         return id;
@@ -129,7 +133,7 @@ public class Product implements Entity {
     }
 
     public List<Appliance> getAppliances() {
-        return appliances == null ? appliances = new ArrayList<>() : appliances;
+        return appliances;
     }
 
     public void setAppliances(List<Appliance> appliances) {

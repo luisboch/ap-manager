@@ -16,6 +16,8 @@
       <property name="javax.persistence.cache.storeMode" value="false"/>
       <!-- Weaving -->
       <property name="eclipselink.weaving" value="static"/>
+      <property name="eclipselink.ddl-generation" value="none"/>
+      <property name="eclipselink.jpa.uppercase-column-names" value="true"/>
     </properties>
     <class>com.apmanager.domain.entity.ProductBrand</class>
     <class>com.apmanager.domain.entity.Product</class>

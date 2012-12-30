@@ -8,7 +8,6 @@ import com.apmanager.domain.entity.Appliance;
 import com.apmanager.domain.entity.Product;
 import com.apmanager.domain.entity.ProductBrand;
 import com.apmanager.domain.entity.Shelf;
-import com.apmanager.domain.entity.VehicleModel;
 import com.apmanager.service.impl.ProductBrandService;
 import com.apmanager.service.impl.ProductService;
 import com.apmanager.service.impl.ShelfService;
@@ -650,7 +649,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                 dialog.setVisible(false);
             }
         });
-        
+
         // listener para geração de código adicional
         jButtonGenerateAditionalCode.addActionListener(new ActionListener(this) {
             @Override
@@ -820,7 +819,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
         applianceModel =
                 new ObjectTableModel<>(new FieldResolver[]{vehicle, model, year});
-
+        
         applianceModel.setData(instance.getAppliances());
         jTableApplianceResults.setModel(applianceModel);
 
@@ -833,11 +832,11 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     private ProductBrand getSelectedBrand() {
         EntityWrapper<ProductBrand> wrapper =
                 (EntityWrapper<ProductBrand>) brandModel.getSelectedItem();
-        
-        if (wrapper == null|| wrapper.isFake()) {
+
+        if (wrapper == null || wrapper.isFake()) {
             return null;
         }
-        
+
         return wrapper.getEntity();
     }
 
@@ -848,11 +847,11 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     private Shelf getSelectedShelf() {
         EntityWrapper<Shelf> wrapper = (EntityWrapper<Shelf>) shelfModel.getSelectedItem();
-        
+
         if (wrapper == null || wrapper.isFake()) {
             return null;
         }
-        
+
         return wrapper.getEntity();
     }
 }
