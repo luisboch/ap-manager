@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import org.eclipse.persistence.config.HintValues;
+import org.eclipse.persistence.config.QueryHints;
 
 /**
  *
@@ -85,15 +87,13 @@ public class ProductDAO extends GenericDAO<Product> {
         sql += ")";
 
         Query q = em.createNativeQuery(sql, Product.class);
+
         int param;
         for (int i = 0; i < pieces.length; i++) {
             param = i + 1;
             q.setParameter(param, "%" + pieces[i] + "%");
         }
         List<Product> products = q.getResultList();
-        for(Product p:products){
-            // Only to refresh produtcts values;
-        }
         return products;
     }
 

@@ -23,6 +23,9 @@ public class DateFormatter implements Formatter {
     @Override
     public String format(Object obj) {
         Date cal = (Date) obj;
+        if(obj==null){
+            return "";
+        }
         return formatter.format(cal);
     }
 

@@ -6,114 +6,143 @@ import java.util.List;
 
 import com.towel.bean.Formatter;
 import com.towel.el.NotResolvableFieldException;
-
-
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An implementation of FieldAccessHandler who use the direct access to the
  * field.
- * 
- *@see mark.utisl.el.handler.FieldAccessHandler
- * 
- *@author Marcos Vasconcelos
+ *
+ * @see mark.utisl.el.handler.FieldAccessHandler
+ *
+ * @author Marcos Vasconcelos
  */
 public class FieldHandler implements FieldAccessHandler {
-	private List<Class<?>> classesTrace;// A trace to the field
-	private List<Field> fields;// The fields trace.
 
-	public FieldHandler() {
-		classesTrace = new ArrayList<Class<?>>();
-		fields = new ArrayList<Field>();
-	}
+    private List<Class<?>> classesTrace;// A trace to the field
 
-	@Override
-	public void resolveField(Class<?> clazz, String expression) {
-		if (clazz == null || expression == null)
-			throw new IllegalArgumentException("Arguments can't be null!");
-		classesTrace.add(clazz);
-		String[] trace = expression.split("[.]");
+    private List<Field> fields;// The fields trace.
 
-		for (int i = 0; i < trace.length; i++)
-			addField(trace[i]);
-	}
+    private List<Method> methods;// The methods trace.
 
-	@Override
-	public Object getValue(Object t, Formatter formatter) {
-		if (t == null)
-			return null;
-		Object obj = null;
-		try {
-			obj = t;
-			for (int i = 0; i < fields.size(); i++)
-				obj = fields.get(i).get(obj);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+    public FieldHandler() {
+        classesTrace = new ArrayList<>();
+        fields = new ArrayList<>();
+        methods = new ArrayList<>();
+    }
 
-		return formatter.format(obj);
-	}
+    @Override
+    public void resolveField(Class<?> clazz, String expression) {
+        if (clazz == null || expression == null) {
+            throw new IllegalArgumentException("Arguments can't be null!");
+        }
+        classesTrace.add(clazz);
+        String[] trace = expression.split("[.]");
 
-	@Override
-	public void setValue(Object t, Object value, Formatter formatter) {
-		if (t == null)
-			return;
-		Object obj = null;
-		Field field = null;
-		try {
-			obj = t;
-			int size = fields.size() - 1;
-			if (size > -1) {
-				for (int i = 0; i < size; i++)
-					obj = fields.get(i).get(obj);
-				field = fields.get(fields.size() - 1);
-			} else
-				field = fields.get(0);
-			field.set(obj, formatter.parse(value));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+        for (int i = 0; i < trace.length; i++) {
+            addField(trace[i]);
+        }
+    }
 
-	private void addField(String fieldName) {
-		Class<?> clazz = classesTrace.get(classesTrace.size() - 1);
-		Field f = getAcessibleField(clazz, fieldName);
-		classesTrace.add(f.getType());
-		fields.add(f);
-	}
+    @Override
+    public Object getValue(Object t, Formatter formatter) {
+        if (t == null) {
+            return null;
+        }
+        Object obj = null;
+        try {
+            obj = t;
+            for (int i = 0; i < methods.size(); i++) {
+                if(obj != null){
+                    obj = methods.get(i).invoke(obj);
+                }
+            }
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
 
-	private Field getAcessibleField(Class<?> clazz, String fieldName) {
-		Field f = null;
-		try {
-			f = clazz.getDeclaredField(fieldName);
-		} catch (NoSuchFieldException e) {
-			NotResolvableFieldException ex = new NotResolvableFieldException(
-					fieldName, clazz);
-			ex.setStackTrace(e.getStackTrace());
-			throw ex;
-		}
-		f.setAccessible(true);
-		return f;
-	}
+        return formatter.format(obj);
+    }
 
-	@Override
-	public Class<?> getFieldType() {
-		return fields.get(fields.size() - 1).getType();
-	}
+    @Override
+    public void setValue(Object t, Object value, Formatter formatter) {
+        if (t == null) {
+            return;
+        }
+        Object obj = null;
+        Field field = null;
+        try {
+            obj = t;
+            int size = fields.size() - 1;
+            if (size > -1) {
+                for (int i = 0; i < size; i++) {
+                    obj = fields.get(i).get(obj);
+                }
+                field = fields.get(fields.size() - 1);
+            } else {
+                field = fields.get(0);
+            }
+            field.set(obj, formatter.parse(value));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	public Class<?> getTraceClassAt(int idx) {
-		return classesTrace.get(idx);
-	}
+    private void addField(String fieldName) {
+        Class<?> clazz = classesTrace.get(classesTrace.size() - 1);
+        Field f = getAcessibleField(clazz, fieldName);
+        Method m = getAcessibleMethod(clazz, fieldName);
+        classesTrace.add(f.getType());
+        fields.add(f);
+        methods.add(m);
+    }
 
-	public Field getField() {
-		return fields.get(fields.size() - 1);
-	}
+    private Field getAcessibleField(Class<?> clazz, String fieldName) {
+        Field f = null;
+        try {
+            f = clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            NotResolvableFieldException ex = new NotResolvableFieldException(
+                    fieldName, clazz);
+            ex.setStackTrace(e.getStackTrace());
+            throw ex;
+        }
+        f.setAccessible(true);
+        return f;
+    }
 
-	public Field getField(int idx) {
-		return fields.get(idx);
-	}
+    private Method getAcessibleMethod(Class<?> clazz, String fieldName) {
+        try {
+            String firstLetter = fieldName.substring(0, 1);
+            String methodMame = "get" + firstLetter.toUpperCase() + fieldName.substring(1);
+            Method method = clazz.getDeclaredMethod(methodMame);
+            return method;
+        } catch (NoSuchMethodException | SecurityException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	public int getFieldTraceSize() {
-		return fields.size();
-	}
+    @Override
+    public Class<?> getFieldType() {
+        return fields.get(fields.size() - 1).getType();
+    }
+
+    @Override
+    public Class<?> getTraceClassAt(int idx) {
+        return classesTrace.get(idx);
+    }
+
+    public Field getField() {
+        return fields.get(fields.size() - 1);
+    }
+
+    public Field getField(int idx) {
+        return fields.get(idx);
+    }
+
+    public int getFieldTraceSize() {
+        return fields.size();
+    }
 }

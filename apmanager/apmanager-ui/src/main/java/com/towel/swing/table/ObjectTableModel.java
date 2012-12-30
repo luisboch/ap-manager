@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A TableModel based on reflection.
@@ -13,7 +15,7 @@ import javax.swing.table.AbstractTableModel;
  * @author Marcos Vasconcelos
  */
 public class ObjectTableModel<T> extends AbstractTableModel {
-
+    private static final Logger log = LoggerFactory.getLogger(ObjectTableModel.class);
     private List<T> data;
 
     private FieldResolver fields[];
@@ -33,6 +35,7 @@ public class ObjectTableModel<T> extends AbstractTableModel {
         data = new ArrayList<>();
         this.fields = (FieldResolver[]) fields.clone();
         editDefault = false;
+        editableCol = new Boolean[this.fields.length];
     }
 
     public void setEditableDefault(boolean editable) {
@@ -62,12 +65,13 @@ public class ObjectTableModel<T> extends AbstractTableModel {
     }
 
     @Override
-    public Object getValueAt(int arg0, int arg1) {
+    public Object getValueAt(int rowIndex, int columnIndex) {
         try {
-            Object obj = data.get(arg0);
-            Object obj2 = fields[arg1].getValue(obj);
+            Object obj = data.get(rowIndex);
+            Object obj2 = fields[columnIndex].getValue(obj);
             return obj2;
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return null;
         }
     }
