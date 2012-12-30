@@ -650,6 +650,17 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                 dialog.setVisible(false);
             }
         });
+        
+        // listener para geração de código adicional
+        jButtonGenerateAditionalCode.addActionListener(new ActionListener(this) {
+            @Override
+            protected void onActionPerformed(ActionEvent e) throws Exception {
+                buildObject();
+                service.generateNewCode(instance);
+                jLabel1AditionalCode.setText(instance.getAdditionalCode());
+                jButtonGenerateAditionalCode.setEnabled(false);
+            }
+        });
     }
 
     @Override
@@ -669,7 +680,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         jTextFieldCode.setText(instance.getCode());
         jTextFieldBarCode.setText(instance.getBarcode());
 
-        if (instance.getAdditionalCode() != null) {
+        if (instance.getAdditionalCode() != null && !instance.getAdditionalCode().equals("")) {
             jLabel1AditionalCode.setText(instance.getAdditionalCode());
             jButtonGenerateAditionalCode.setEnabled(false);
         } else {
@@ -710,8 +721,6 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         instance.setDescription(jTextAreaDescription.getText());
         instance.setCode(jTextFieldCode.getText());
         instance.setBarcode(jTextFieldBarCode.getText());
-
-        instance.setAdditionalCode(jLabel1AditionalCode.getText());
 
         instance.setPurchuasePrice(
                 NumberUtils.toFloat(jTextFieldPurchuasePrice.getText()));

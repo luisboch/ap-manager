@@ -35,11 +35,6 @@ public class ProductService extends BasicService<Product, ProductDAO> {
                     "invalid.product.brand");
         }
         
-        if(object.getCode() == null || object.getCode().equals("")){
-            v.addError("Código do produto inválido", "code", 
-                    "invalid.product.code");
-        }
-        
         if(object.getShelf() == null){
             v.addError("Prateleira do produto inválida", "shelf", 
                     "invalid.product.shelf");
@@ -75,4 +70,9 @@ public class ProductService extends BasicService<Product, ProductDAO> {
         }
     }
     
+    public synchronized void generateNewCode(Product product) throws Exception{
+        String code = this.dao.getNextValidCode();
+        product.setAdditionalCode(code);
+        this.save(product);
+    }
 }

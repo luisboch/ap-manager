@@ -29,6 +29,20 @@ public class ProductDAO extends GenericDAO<Product> {
         object.setRegisterDate(new Date());
         super.save(object);
     }
+
+    public String getNextValidCode() {
+        String jpql = "select max(p.additionalCode) from Product p";
+        Query q = em.createQuery(jpql);
+        String code = (String) q.getSingleResult();
+        if(code != null && !code.equals("")){
+            Long oldCode = Long.valueOf(code);
+            oldCode++;
+            code = String.format("%06d", oldCode);
+        } else{
+            code = String.format("%06d", 1);
+        }
+        return code;
+    }
     
     
     
