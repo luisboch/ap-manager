@@ -33,38 +33,53 @@ public class Product implements Entity {
     allocationSize = 1)
     @GeneratedValue(generator = "product-seq")
     private Long id;
+
     @Column(name = "nome")
     private String name;
+
     @ManyToOne
     @JoinColumn(name = "produto_marca_id")
     private ProductBrand brand;
+
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "data_de_registro", nullable = false, updatable = false)
     private Date registerDate;
+
     @Column(name = "descricao")
     private String description;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY,
     cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Appliance> appliances;
+
     @Column(name = "codigo")
     private String code;
+
     @Column(name = "codigo_de_barras")
     private String barcode;
+
     @Column(name = "codigo_adicional")
     private String additionalCode;
+
     @Column(name = "percentual_desc_max")
     private Integer maxDiscountPercent;
+
     @Column(name = "preco_venda")
     private Float sellPrice;
+
     @Column(name = "preco_compra")
     private Float purchuasePrice;
+
     @Column(name = "quantidade")
     private Integer quantity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prateleira_id")
     private Shelf shelf;
+
     @Column(name = "quantidade_min")
     private Integer minQuantity;
+
     private boolean status = true;
 
     @Override

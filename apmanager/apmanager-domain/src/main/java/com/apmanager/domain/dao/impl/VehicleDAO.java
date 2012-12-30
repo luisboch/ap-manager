@@ -5,6 +5,7 @@ import com.apmanager.domain.entity.Vehicle;
 import com.apmanager.domain.entity.VehicleBrand;
 import com.apmanager.domain.entity.VehicleModel;
 import com.apmanager.domain.utils.DAOUtils;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -59,10 +60,11 @@ public class VehicleDAO extends GenericDAO<Vehicle> {
                 }
             }
         }
-
+        List<Serializable> ids = DAOUtils.toList(object.getVehicleModels());
+       
         // seta para false os inativos;
         String sql = "update VehicleModel v set v.status = false where v.vehicle = :vehicle ";
-        if (object.getVehicleModels() != null && !object.getVehicleModels().isEmpty()) {
+        if (!ids.isEmpty()) {
             sql += "and id not in :models";
         }
 
@@ -71,7 +73,7 @@ public class VehicleDAO extends GenericDAO<Vehicle> {
         q.setParameter("vehicle", object);
 
         if (object.getVehicleModels() != null && !object.getVehicleModels().isEmpty()) {
-            q.setParameter("models", DAOUtils.toList(object.getVehicleModels()));
+            q.setParameter("models", ids);
         }
 
         q.executeUpdate();

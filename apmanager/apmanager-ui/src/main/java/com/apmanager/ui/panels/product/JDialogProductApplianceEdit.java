@@ -1,28 +1,29 @@
 package com.apmanager.ui.panels.product;
 
 import com.apmanager.domain.entity.Appliance;
-import com.apmanager.domain.entity.ProductBrand;
 import com.apmanager.domain.entity.Vehicle;
 import com.apmanager.domain.entity.VehicleBrand;
 import com.apmanager.domain.entity.VehicleModel;
+import com.apmanager.service.exceptions.ValidationException;
 import com.apmanager.service.impl.VehicleBrandService;
 import com.apmanager.service.impl.VehicleService;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.formaters.EntityWrapper;
 import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.listeners.ItemListener;
+import com.apmanager.ui.listeners.KeyListener;
+import com.apmanager.ui.listeners.MouseListener;
 import com.apmanager.ui.panels.vehicle.JDialogVehicleEdit;
-import com.apmanager.ui.panels.vehicle.JDialogVehicleModelEdit;
 import com.apmanager.ui.panels.vehiclebrand.JDialogVehicleBrandEdit;
 import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.logging.Level;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -221,7 +222,6 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                     .addComponent(jLabel11))
                 .addGap(4, 4, 4)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBoxModels, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jComboBoxVehicle, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -229,8 +229,9 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jComboBoxVehicleBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAddVehiculeBrand)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jButtonAddVehiculeBrand))
+                    .addComponent(jComboBoxModels, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -254,7 +255,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                     .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -343,7 +344,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
 
     private void addListener() {
         final JDialogProductApplianceEdit dialog = this;
-
+        //<editor-fold defaultstate="collapsed" desc=" Listeners to button actions ">
         jButtonAddVehiculeBrand.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
@@ -384,7 +385,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                 vehicleEdit.setInstance(vehicle);
                 vehicleEdit.setVisible(true);
                 vehicleModel.removeAllElements();
-                populateVehicleBrand();
+                populateVehicles(vehicleBrand);
 
                 // Se a instancia tem marca seleciona ela, se não seleciona a cadastrada.
                 if (instance.getModel() != null
@@ -414,27 +415,27 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                 dialog.setVisible(false);
             }
         });
-
-        //listeners to reload selections
-
-        jComboBoxVehicleBrand.addActionListener(new ActionListener(this) {
+        //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc=" Listeners to reload selections ">
+        jComboBoxVehicleBrand.addItemListener(new ItemListener(this) {
             @Override
-            protected void onActionPerformed(ActionEvent e) throws Exception {
+            protected void onItemStateChanged(ItemEvent e) {
+                log.info("onItemStateChanged called {}", e);
                 VehicleBrand brand = getSelectedBrand();
-
                 populateVehicles(brand);
+
             }
         });
 
-
-        jComboBoxVehicleBrand.addActionListener(new ActionListener(this) {
+        jComboBoxVehicle.addItemListener(new ItemListener(this) {
             @Override
-            protected void onActionPerformed(ActionEvent e) throws Exception {
+            public void onItemStateChanged(ItemEvent e) {
                 Vehicle vehicle = getSelectedVehicle();
                 populateModels(vehicle);
             }
         });
 
+        //</editor-fold>
     }
 
     private VehicleBrand getSelectedBrand() {
@@ -442,20 +443,26 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
         EntityWrapper<VehicleBrand> wrapper =
                 (EntityWrapper<VehicleBrand>) jComboBoxVehicleBrand.getSelectedItem();
 
-        if (wrapper == null) {
+        if (wrapper == null || wrapper.isFake()) {
             return null;
         }
 
-        VehicleBrand vehicleBrand = wrapper.getEntity();
-        return vehicleBrand;
+        return  wrapper.getEntity();
     }
 
     public void setInstance(Appliance instance) {
+        setInstance(instance, false);
+    }
+
+    public void setInstance(Appliance instance, boolean edit) {
         this.instance = instance;
         clear();
         if (instance != null) {
             restoreFields();
         }
+        
+        this.jButtonSave.setText(edit ? "Alterar" : "Adicionar");
+
     }
 
     public Appliance getInstance() {
@@ -469,7 +476,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
 
     private void clear() {
         this.jLabelProductName.setText("");
-        jTextAreaDescription.setName("");
+        jTextAreaDescription.setText("");
 
         modelModel.removeAllElements();
         populateVehicleBrand();
@@ -481,7 +488,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
 
     private void restoreFields() {
         this.jLabelProductName.setText(instance.getProduct().getName());
-        jTextAreaDescription.setName(instance.getDescription());
+        jTextAreaDescription.setText(instance.getDescription());
 
         if (instance.getModel() != null) {
             jComboBoxVehicleBrand.setSelectedItem(
@@ -496,14 +503,22 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
 
     }
 
-    private void buildObject() {
+    private void buildObject() throws ValidationException {
         instance.setDescription(jTextAreaDescription.getText());
         EntityWrapper<VehicleModel> wrapper = (EntityWrapper<VehicleModel>) modelModel.getSelectedItem();
         if (wrapper != null) {
             VehicleModel vehicleModel = wrapper.getEntity();
             if (vehicleModel.getId() != null) {
                 instance.setModel(vehicleModel);
+            } else {
+                ValidationException ex = new ValidationException();
+                ex.addError("Selecione o modelo da aplicação");
+                throw ex;
             }
+        } else {
+            ValidationException ex = new ValidationException();
+            ex.addError("Selecione o modelo da aplicação");
+            throw ex;
         }
 
 
@@ -522,6 +537,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
         for (VehicleBrand b : brands) {
             brandModel.addElement(new EntityWrapper<>(b));
         }
+        jComboBoxVehicleBrand.setModel(brandModel);
 
     }
 
@@ -540,10 +556,11 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                 vehicleModel.addElement(new EntityWrapper<>(v));
             }
         }
+        jComboBoxVehicle.setModel(vehicleModel);
     }
 
     private void populateModels(Vehicle vehicle) {
-        vehicleModel.removeAllElements();
+        modelModel.removeAllElements();
         if (vehicle != null) {
             try {
                 modelModel.addElement(EntityWrapper.createEmpty(VehicleModel.class));
@@ -555,7 +572,7 @@ public class JDialogProductApplianceEdit extends JDialogEscape {
                 modelModel.addElement(new EntityWrapper<>(v));
             }
         }
-
+        jComboBoxModels.setModel(modelModel);
     }
 
     private Vehicle getSelectedVehicle() {

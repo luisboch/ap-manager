@@ -17,10 +17,17 @@ public class DAOUtils {
 
     public static <P extends Entity> List<Serializable> toList(
             List<P> entities) {
+        return toList(entities, false);
+    }
+
+    public static <P extends Entity> List<Serializable> toList(
+            List<P> entities, boolean ignoreNull) {
 
         List<Serializable> ids = new ArrayList<>();
         for (P e : entities) {
-            ids.add(e.getId());
+            if (e.getId() != null || ignoreNull) {
+                ids.add(e.getId());
+            }
         }
 
         return ids;

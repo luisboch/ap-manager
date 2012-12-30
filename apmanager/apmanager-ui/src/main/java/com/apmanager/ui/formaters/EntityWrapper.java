@@ -14,6 +14,7 @@ import java.util.Objects;
 public class EntityWrapper<T extends Entity>{
 
     private T entity;
+    private boolean fakeWrapper = false;
     
     
     public EntityWrapper(T entity) {
@@ -29,7 +30,11 @@ public class EntityWrapper<T extends Entity>{
     
     @Override
     public String toString() {
-        return entity.getDisplayName();
+        if(!fakeWrapper){
+            return entity.getDisplayName();
+        } else {
+            return "-- Selecione --";
+        }
     }
 
     @Override
@@ -57,6 +62,12 @@ public class EntityWrapper<T extends Entity>{
     public static <T extends Entity> EntityWrapper<T> createEmpty(Class<T> clazz) 
             throws InstantiationException, IllegalAccessException{
         T instance = clazz.newInstance();
-        return new EntityWrapper<>(instance);
+        EntityWrapper<T> wrapper = new EntityWrapper<>(instance);
+        wrapper.fakeWrapper = true;
+        return wrapper;
+    }
+    
+    public boolean isFake(){
+        return fakeWrapper;
     }
 }

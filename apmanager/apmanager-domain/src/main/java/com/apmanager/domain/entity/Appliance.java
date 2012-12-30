@@ -82,7 +82,7 @@ public class Appliance implements Entity {
 
     @Override
     public void setStatus(boolean newStatus) {
-        throw new IllegalStateException("not implemented yet!");
+        // Do nothing
     }
 
     @Override

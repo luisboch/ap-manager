@@ -24,6 +24,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -33,9 +35,13 @@ import javax.swing.DefaultComboBoxModel;
 public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
 
     private JDialogVehicleBrandEdit brandEdit;
+
     private JDialogVehicleModelEdit modelEdit;
+
     private ObjectTableModel<VehicleModel> tableModel;
+
     private DefaultComboBoxModel<EntityWrapper<VehicleBrand>> brandModel;
+
     private VehicleBrandService brandService;
 
     /**
@@ -471,11 +477,14 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
         }
         jTextFieldName.setText(instance.getName());
         jTextAreaDescription.setText(instance.getObservation());
+        if(instance.getId() != null) {
+            jLabelId.setText(String.valueOf(instance.getId()));
+        }
     }
 
     @Override
     protected Vehicle buildObject() {
-        instance.setBrand(((EntityWrapper<VehicleBrand>) brandModel.getSelectedItem()).getEntity());
+        instance.setBrand(getSelectedBrand());
         instance.setName(jTextFieldName.getText());
         instance.setObservation(jTextAreaDescription.getText());
         instance.setVehicleModels(tableModel.getData());
@@ -500,6 +509,12 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
     private void populateBrands() {
         List<VehicleBrand> brands = brandService.search("");
 
+        try {
+            brandModel.addElement(EntityWrapper.createEmpty(VehicleBrand.class));
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(JDialogVehicleEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         for (VehicleBrand brand : brands) {
             brandModel.addElement(new EntityWrapper<>(brand));
         }
@@ -510,12 +525,13 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
         FieldResolver nameResolver = new FieldResolver(VehicleModel.class, "name", "Nome");
         FieldResolver yearResolver = new FieldResolver(VehicleModel.class, "year", "Ano");
         FieldResolver potencyResolver = new FieldResolver(VehicleModel.class, "potency", "Potencia");
+        FieldResolver fuelTypeResolver = new FieldResolver(VehicleModel.class, "fuelType.name", "Combustivel");
         potencyResolver.setFormatter(new com.apmanager.ui.formaters.Float(
                 com.apmanager.ui.formaters.Float.SeparatorChar.POINT));
 
 
         tableModel = new ObjectTableModel<>(new FieldResolver[]{
-                    nameResolver, yearResolver, potencyResolver});
+                    nameResolver, yearResolver, potencyResolver, fuelTypeResolver});
     }
 
     private void edit(VehicleModel vehicleModel) {
@@ -534,5 +550,14 @@ public class JDialogVehicleEdit extends JDialogEdit<Vehicle, VehicleService> {
             jTableModels.setModel(tableModel);
         }
         this.setEnabled(true);
+    }
+
+    private VehicleBrand getSelectedBrand() {
+        EntityWrapper<VehicleBrand> wrapper = 
+                (EntityWrapper<VehicleBrand>) brandModel.getSelectedItem();
+        if (wrapper == null || wrapper.isFake()) {
+            return null;
+        }
+        return wrapper.getEntity();
     }
 }

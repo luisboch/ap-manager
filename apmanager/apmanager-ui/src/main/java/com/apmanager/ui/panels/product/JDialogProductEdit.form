@@ -395,7 +395,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButtonEditAppliance" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonDelAppliance" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -407,12 +407,12 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonDelAppliance" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonEditAppliance" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonAddAppliance" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="95" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="91" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -435,7 +435,7 @@
                 <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new Button(this)"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton2">
+            <Component class="javax.swing.JButton" name="jButtonDelAppliance">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Excluir"/>
               </Properties>

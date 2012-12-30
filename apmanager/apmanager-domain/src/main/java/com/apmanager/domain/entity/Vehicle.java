@@ -137,4 +137,10 @@ public class Vehicle implements Entity {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" + "id=" + id + ", name=" + name + ", brand=" + brand + '}';
+    }
+    
 }

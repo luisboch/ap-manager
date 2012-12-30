@@ -196,8 +196,6 @@ public class Main {
                             Socket accept = server.accept();
                             Logger.getLogger(Main.class.getName()).log(Level.INFO, "Restoring view");
                             Application application = Application.getInstance();
-                            application.setState ( Frame.ICONIFIED );
-                            int state = application.getState();
                             application.setState ( Frame.NORMAL );
                             application.setExtendedState(JFrame.MAXIMIZED_BOTH);
                             application.setVisible(true);

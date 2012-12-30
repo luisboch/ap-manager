@@ -24,35 +24,34 @@ import javax.persistence.TemporalType;
  * @author luis
  */
 @javax.persistence.Entity
-@Table(name="veiculos_modelos")
+@Table(name = "veiculos_modelos")
 public class VehicleModel implements Entity {
 
     @Id
-    @SequenceGenerator(name="vehicle-model-seq", allocationSize=1, sequenceName="veiculos_modelos_id_seq")
-    @GeneratedValue(generator="vehicle-model-seq")
+    @SequenceGenerator(name = "vehicle-model-seq", allocationSize = 1, sequenceName = "veiculos_modelos_id_seq")
+    @GeneratedValue(generator = "vehicle-model-seq")
     private Integer id;
-    
-    @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name="veiculo_id")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "veiculo_id")
     private Vehicle vehicle;
 
-    @Column(name="ano")
+    @Column(name = "ano")
     private String year;
-    
-    @Column(name="potencia", nullable=false)
+
+    @Column(name = "potencia", nullable = false)
     private Float potency;
 
-    @Column(name="nome")
+    @Column(name = "nome")
     private String name;
-    
+
     @Enumerated(EnumType.STRING)
     private FuelType fuelType;
 
-    
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="data_de_registro", nullable=false, updatable=false)
+    @Column(name = "data_de_registro", nullable = false, updatable = false)
     private Date registerDate;
-    
+
     private boolean status = true;
 
     @Override
@@ -125,7 +124,7 @@ public class VehicleModel implements Entity {
     public boolean isStatus() {
         return status;
     }
-    
+
     @Override
     public boolean isActive() {
         return status;
@@ -139,7 +138,6 @@ public class VehicleModel implements Entity {
         return hash;
     }
 
-    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -160,15 +158,14 @@ public class VehicleModel implements Entity {
 
     @Override
     public String toString() {
-        return "VehicleModel{" + "id=" + id + ", vehicle=" + vehicle +
-                ", year=" + year + ", potency=" + potency + ", name=" + name + 
-                ", fuelType=" + fuelType + '}';
+        return "VehicleModel{" + "id=" + id + ", vehicle=" + vehicle
+                + ", year=" + year + ", potency=" + potency + ", name=" + name
+                + ", fuelType=" + fuelType + '}';
     }
 
     @Override
     public String getDisplayName() {
-        return this.name;
+        return this.name + " - " + this.year + " - "
+                + this.potency + " - " + this.getFuelType().getDisplayName();
     }
-    
-    
 }

@@ -8,6 +8,7 @@ import com.apmanager.domain.entity.Appliance;
 import com.apmanager.domain.entity.Product;
 import com.apmanager.domain.entity.ProductBrand;
 import com.apmanager.domain.entity.Shelf;
+import com.apmanager.domain.entity.VehicleModel;
 import com.apmanager.service.impl.ProductBrandService;
 import com.apmanager.service.impl.ProductService;
 import com.apmanager.service.impl.ShelfService;
@@ -15,6 +16,8 @@ import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.Table;
 import com.apmanager.ui.formaters.EntityWrapper;
 import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.listeners.MouseListener;
+import com.apmanager.ui.panels.AbstractAdminPanel;
 import com.apmanager.ui.panels.productbrand.JDialogEdit;
 import com.apmanager.ui.panels.productbrand.JDialogProductBrandEdit;
 import com.apmanager.ui.panels.shelf.JDialogShelfEdit;
@@ -23,8 +26,12 @@ import com.towel.el.FieldResolver;
 import com.towel.swing.table.ObjectTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,12 +40,19 @@ import javax.swing.DefaultComboBoxModel;
 public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     private JDialogProductBrandEdit brandEdit;
+
     private JDialogShelfEdit shelfEdit;
+
     private JDialogProductApplianceEdit applianceEdit;
+
     private DefaultComboBoxModel<EntityWrapper<ProductBrand>> brandModel;
+
     private DefaultComboBoxModel<EntityWrapper<Shelf>> shelfModel;
+
     private ObjectTableModel<Appliance> applianceModel;
+
     private ProductBrandService productBrandService;
+
     private ShelfService shelfService;
 
     /**
@@ -97,7 +111,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         jPanel1 = new javax.swing.JPanel();
         jButtonAddAppliance = new Button(this);
         jButtonEditAppliance = new Button(this);
-        jButton2 = new Button(this);
+        jButtonDelAppliance = new Button(this);
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableApplianceResults = new Table();
         jLabel10 = new javax.swing.JLabel();
@@ -207,7 +221,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
         jButtonEditAppliance.setText("Editar");
 
-        jButton2.setText("Excluir");
+        jButtonDelAppliance.setText("Excluir");
 
         jScrollPane1.setViewportView(jTableApplianceResults);
 
@@ -225,7 +239,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonEditAppliance)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(jButtonDelAppliance)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -233,11 +247,11 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(jButtonDelAppliance)
                     .addComponent(jButtonEditAppliance)
                     .addComponent(jButtonAddAppliance))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -468,11 +482,11 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonAddAppliance;
     private javax.swing.JButton jButtonAddBrand;
     private javax.swing.JButton jButtonAddShelf;
     private javax.swing.JButton jButtonCancel;
+    private javax.swing.JButton jButtonDelAppliance;
     private javax.swing.JButton jButtonEditAppliance;
     private javax.swing.JButton jButtonGenerateAditionalCode;
     private javax.swing.JButton jButtonSave;
@@ -573,7 +587,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                 applianceEdit.setInstance(a);
                 applianceEdit.setVisible(true);
                 a = applianceEdit.getInstance();
-                if(a!= null){
+                if (a != null) {
                     instance.getAppliances().add(a);
                     populateAppliance();
                 }
@@ -584,9 +598,42 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         jButtonEditAppliance.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setEnabled(false);
+                Appliance ap = getSelectedAppliance();
+                if (ap == null) {
+                    JOptionPane.showMessageDialog(
+                            dialog, "Por favor selecione uma aplicação.",
+                            "Atenção", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                applianceEdit.setInstance(ap, true);
                 applianceEdit.setVisible(true);
-                dialog.setEnabled(true);
+            }
+        });
+
+        jTableApplianceResults.addMouseListener(new MouseListener(this) {
+            @Override
+            public void onMouseRelease(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    Appliance selectedAppliance = ((Table<Appliance>) jTableApplianceResults).getSelected();
+                    if (selectedAppliance != null) {
+                        applianceEdit.setInstance(selectedAppliance, true);
+                        applianceEdit.setVisible(true);
+                    }
+
+                }
+            }
+        });
+
+        jButtonDelAppliance.addActionListener(new ActionListener(this) {
+            @Override
+            protected void onActionPerformed(ActionEvent e) throws Exception {
+                final List<Appliance> vehicleModels = ((Table<Appliance>) jTableApplianceResults).getSelecteds();
+                if (AbstractAdminPanel.falseDelete(vehicleModels)) {
+                    List<Appliance> data = applianceModel.getData();
+                    data.removeAll(vehicleModels);
+                    instance.setAppliances(data);
+                    populateAppliance();
+                }
             }
         });
 
@@ -671,8 +718,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
         instance.setSellPrice(
                 NumberUtils.toFloat(jTextFieldSellPrice.getText()));
 
-        instance.setShelf(
-                ((EntityWrapper<Shelf>) shelfModel.getSelectedItem()).getEntity());
+        instance.setShelf(getSelectedShelf());
 
         instance.setMinQuantity(NumberUtils.toInteger(jTextFieldMinQuantity.getText()));
 
@@ -713,6 +759,14 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     private void populateBrands() {
         List<ProductBrand> brands = productBrandService.search("");
+
+        try {
+            EntityWrapper<ProductBrand> wrapper = EntityWrapper.createEmpty(ProductBrand.class);
+            brandModel.addElement(wrapper);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(JDialogProductEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         for (ProductBrand b : brands) {
             brandModel.addElement(new EntityWrapper<>(b));
         }
@@ -733,6 +787,12 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
 
     private void populateShelfs() {
         shelfModel.removeAllElements();
+        try {
+            EntityWrapper<Shelf> wrapper = EntityWrapper.createEmpty(Shelf.class);
+            shelfModel.addElement(wrapper);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(JDialogProductEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
         List<Shelf> shelfs = shelfService.search("");
         for (Shelf shelf : shelfs) {
             shelfModel.addElement(new EntityWrapper<>(shelf));
@@ -741,7 +801,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     }
 
     private void populateAppliance() {
-        
+
         FieldResolver vehicle =
                 new FieldResolver(Appliance.class, "model.vehicle.name", "Veículo");
         FieldResolver model =
@@ -762,14 +822,28 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
     }
 
     private ProductBrand getSelectedBrand() {
-        EntityWrapper<ProductBrand> wrapper = 
+        EntityWrapper<ProductBrand> wrapper =
                 (EntityWrapper<ProductBrand>) brandModel.getSelectedItem();
-        if(wrapper == null){
+        
+        if (wrapper == null|| wrapper.isFake()) {
             return null;
         }
-        if(wrapper.getEntity() == null || wrapper.getEntity().getId() == null){
+        
+        return wrapper.getEntity();
+    }
+
+    private Appliance getSelectedAppliance() {
+        Appliance a = ((Table<Appliance>) jTableApplianceResults).getSelected();
+        return a;
+    }
+
+    private Shelf getSelectedShelf() {
+        EntityWrapper<Shelf> wrapper = (EntityWrapper<Shelf>) shelfModel.getSelectedItem();
+        
+        if (wrapper == null || wrapper.isFake()) {
             return null;
         }
+        
         return wrapper.getEntity();
     }
 }
