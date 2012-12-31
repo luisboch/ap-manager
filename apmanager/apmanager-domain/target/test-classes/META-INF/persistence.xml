@@ -29,6 +29,7 @@
     <class>com.apmanager.domain.entity.Vehicle</class>
     <class>com.apmanager.domain.entity.VehicleModel</class>
     <class>com.apmanager.domain.entity.Appliance</class>
+    <class>com.apmanager.domain.entity.ProductKeyWord</class>
     <shared-cache-mode>NONE</shared-cache-mode>
   </persistence-unit>
 </persistence>

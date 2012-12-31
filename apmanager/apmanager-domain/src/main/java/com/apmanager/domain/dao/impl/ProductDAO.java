@@ -1,17 +1,24 @@
 package com.apmanager.domain.dao.impl;
 
 import com.apmanager.domain.dao.GenericDAO;
+import com.apmanager.domain.entity.Appliance;
 import com.apmanager.domain.entity.Product;
+import com.apmanager.domain.utils.StringUtils;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author luis
  */
 public class ProductDAO extends GenericDAO<Product> {
+
+    private static final Logger log = LoggerFactory.getLogger(ProductDAO.class);
 
     public ProductDAO(EntityManager em) {
         super(em);
@@ -29,7 +36,9 @@ public class ProductDAO extends GenericDAO<Product> {
     public List<Product> search(String search, Integer maxResults, Integer firstResult) {
 
         if (search == null || search.equals("")) {
+            // Avoid to return all table
             search = "%";
+            maxResults = 30;
         }
 
         String[] pieces = search.split(" ");
@@ -53,45 +62,12 @@ public class ProductDAO extends GenericDAO<Product> {
                 + "p.QUANTIDADE_MIN, "
                 + "p.STATUS "
                 + "FROM "
-                + "public.produtos p, "
-                + "public.aplicacoes ap, "
-                + "public.marcas_de_produtos mp, "
-                + "public.veiculos_modelos vm, "
-                + "public.veiculos v, "
-                + "public.prateleiras s, "
-                + "public.marcas_de_veiculos mv "
-                + "WHERE "
-                + "p.produto_marca_id = mp.id AND "
-                + "p.prateleira_id = s.id AND "
-                + "ap.produto_id = p.id AND "
-                + "ap.modelo_id = vm.id AND "
-                + "vm.veiculo_id = v.id AND "
-                + "v.marca_id = mv.id AND "
-                + "p.status = true "
-                + "AND "
-                + "( ";
+                + "public.produtos p ";
         for (int i = 0; i < pieces.length; i++) {
             int param = i + 1;
-            if (i != 0) {
-                sql += "or ";
-            }
-            sql += "( "
-                    + "p.descricao ilike ?" + param + " "
-                    + "or p.codigo ilike ?" + param + " "
-                    + "or p.codigo_de_barras ilike ?" + param + " "
-                    + "or p.codigo_adicional ilike ?" + param + " "
-                    + "or p.nome ilike ?" + param + " "
-                    + "or ap.descricao ilike ?" + param + " "
-                    + "or mp.nome ilike ?" + param + " "
-                    + "or mv.nome ilike ?" + param + " "
-                    + "or s.codigo ilike ?" + param + " "
-                    + "or v.nome ilike ?" + param + " "
-                    + "or cast(vm.potencia as character varying) ilike ?" + param + " "
-                    + "or vm.ano ilike ?" + param + " "
-                    + ") ";
+            sql += "JOIN produto_palavras_chave p" + param + " on (p.id = p" + param + ".produto_id and p" + param + ".palavra ilike ?" + param + " ) ";
         }
 
-        sql += ")";
 
         Query q = em.createNativeQuery(sql, Product.class);
 
@@ -118,6 +94,14 @@ public class ProductDAO extends GenericDAO<Product> {
     public void save(Product object) {
         object.setRegisterDate(new Date());
         super.save(object);
+        saveKeyWords(object);
+    }
+
+    @Override
+    public void update(Product object) {
+        save(object);
+        super.update(object);
+        saveKeyWords(object);
     }
 
     public String getNextValidCode() {
@@ -138,5 +122,65 @@ public class ProductDAO extends GenericDAO<Product> {
         String jpql = "select p from Product p where p.status = true and p.quantity <= p.minQuantity ";
         Query q = em.createQuery(jpql);
         return q.getResultList();
+    }
+
+    private void saveKeyWords(Product object) {
+
+        List<String> keyWords = new ArrayList<>();
+        String jpql = "delete from ProductKeyWord k where k.product = ?1";
+        Query query = em.createQuery(jpql);
+        query.setParameter(1, object);
+        int affected = query.executeUpdate();
+        log.info("Deleted {} keywords to produtct {}", affected, object.getId());
+
+        addKeyWord(keyWords, object.getDescription());
+        addKeyWord(keyWords, object.getCode());
+        addKeyWord(keyWords, object.getBarcode());
+        addKeyWord(keyWords, object.getAdditionalCode());
+        addKeyWord(keyWords, object.getName());
+
+        if (object.getAppliances() != null) {
+            for (Appliance a : object.getAppliances()) {
+                addKeyWord(keyWords, a.getDescription());
+                addKeyWord(keyWords, a.getModel().getVehicle().getBrand().getName());
+                addKeyWord(keyWords, a.getModel().getVehicle().getName());
+                addKeyWord(keyWords, a.getModel().getName());
+                addKeyWord(keyWords, a.getModel().getYear());
+
+            }
+        }
+
+        addKeyWord(keyWords, object.getBrand().getName());
+        addKeyWord(keyWords, object.getShelf().getCode());
+        String sql = "INSERT INTO produto_palavras_chave( "
+                + "id, palavra, produto_id) "
+                + "VALUES (nextval('produto_palavras_chave_id_seq'), ?, ?) ";
+        Query q = em.createNativeQuery(sql);
+        for (String k : keyWords) {
+            q.setParameter(1, k);
+            q.setParameter(2, object.getId());
+            q.executeUpdate();
+        }
+    }
+
+    private void addKeyWord(List<String> keys, String keyWord) {
+        String aux;
+        if (keyWord != null && !keyWord.equals("")) {
+            String[] keyWords = keyWord.split(" ");
+
+            for (String string : keyWords) {
+                if (!keys.contains(string)) {
+                    keys.add(string);
+                }
+                // Remove Especial Caracters
+                aux = StringUtils.normalize(string);
+                // If has difference add to
+                if (!aux.equals(string)) {
+                    if (!keys.contains(aux)) {
+                        keys.add(aux);
+                    }
+                }
+            }
+        }
     }
 }

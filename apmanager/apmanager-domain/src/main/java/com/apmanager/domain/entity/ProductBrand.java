@@ -128,5 +128,10 @@ public class ProductBrand implements Entity {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ProductBrand{" + "id=" + id + ", name=" + name + ", description=" + description + '}';
+    }
     
 }
