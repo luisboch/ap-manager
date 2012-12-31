@@ -98,7 +98,6 @@ public class Main {
                     Application app = Application.getInstance();
                     splash.setMessage("Concluindo...", 95);
 
-                    Thread.sleep(2000);
                     splash.setMessage("...Pronto", 100);
                     splash.setVisible(false);
                     app.setVisible(true);
