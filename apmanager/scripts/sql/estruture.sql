@@ -72,17 +72,6 @@ CREATE TABLE veiculos_modelos (
     veiculo_id integer
 );
 
-CREATE TABLE produto_palavras_chave
-(
-  id serial NOT NULL,
-  palavra character varying(255),
-  produto_id bigint,
-  CONSTRAINT produto_palavras_chave_pkey PRIMARY KEY (id ),
-  CONSTRAINT fk_produto_palavras_chave_produto_id FOREIGN KEY (produto_id)
-      REFERENCES produtos (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-
 ALTER TABLE ONLY aplicacoes
     ADD CONSTRAINT aplicacoes_pkey PRIMARY KEY (id);
 
@@ -206,3 +195,15 @@ ALTER TABLE ONLY veiculos
 ALTER TABLE ONLY veiculos_modelos
     ADD CONSTRAINT fk_veiculos_modelos_veiculo_id FOREIGN KEY (veiculo_id) REFERENCES veiculos(id);
 
+
+
+CREATE TABLE produto_palavras_chave
+(
+  id serial NOT NULL,
+  palavra character varying(255),
+  produto_id bigint,
+  CONSTRAINT produto_palavras_chave_pkey PRIMARY KEY (id ),
+  CONSTRAINT fk_produto_palavras_chave_produto_id FOREIGN KEY (produto_id)
+      REFERENCES produtos (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
