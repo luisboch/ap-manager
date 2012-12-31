@@ -3,7 +3,6 @@
  */
 package com.apmanager.ui.panels;
 
-import com.apmanager.domain.dao.GenericDAO;
 import com.apmanager.domain.entity.Entity;
 import com.apmanager.service.BasicService;
 import com.apmanager.ui.components.ConfirmDialog;

@@ -15,6 +15,8 @@ import javax.swing.table.TableCellRenderer;
  */
 public class CellRender extends javax.swing.JPanel implements TableCellRenderer {
 
+    private CellRenderListener listener;
+
     /**
      * Creates new form CellRender
      */
@@ -46,19 +48,33 @@ public class CellRender extends javax.swing.JPanel implements TableCellRenderer 
     @Override
     public Component getTableCellRendererComponent(
             JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        
+        Color bg = null;
+        if (listener != null) {
+            bg = listener.getBackgroundColor(table, value, isSelected, hasFocus, row, column);
+        }
+
         if (hasFocus) {
-            this.setBackground(new Color(230, 210, 120));
+            this.setBackground(bg == null ? new Color(230, 210, 120) : bg);
         } else if (isSelected) {
-            this.setBackground(new Color(240, 230, 140));
+            this.setBackground(bg == null ? new Color(240, 230, 140) : bg);
         } else {
-            this.setBackground(Color.WHITE);
+            this.setBackground(bg == null ? Color.WHITE : bg);
         }
         if (value != null) {
             this.jLabel1.setText(value.toString());
         } else {
             this.jLabel1.setText("");
         }
-        
+
         return this;
+    }
+
+    public CellRenderListener getListener() {
+        return listener;
+    }
+
+    public void setListener(CellRenderListener listener) {
+        this.listener = listener;
     }
 }

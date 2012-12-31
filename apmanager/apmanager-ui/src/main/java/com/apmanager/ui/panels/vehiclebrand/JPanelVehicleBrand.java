@@ -16,6 +16,7 @@ import com.towel.swing.table.ObjectTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -161,6 +162,14 @@ public class JPanelVehicleBrand extends AbstractAdminPanel<VehicleBrand, Vehicle
     @Override
     public void loadContent() {
 
+        if (results != null) {
+            results.clear();
+        } else {
+            results = new ArrayList<>();
+        }
+        
+        populateResults();
+        dialog.clear();
     }
 
     private void addListeners() {
@@ -198,8 +207,6 @@ public class JPanelVehicleBrand extends AbstractAdminPanel<VehicleBrand, Vehicle
                 jButtonSearch.doClick();
             }
         });
-
-
 
         jButtonDelete.addActionListener(new ActionListener(this) {
             @Override

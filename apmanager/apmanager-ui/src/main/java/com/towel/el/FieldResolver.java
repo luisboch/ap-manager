@@ -1,13 +1,12 @@
 package com.towel.el;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.towel.bean.DefaultFormatter;
 import com.towel.bean.Formatter;
 import com.towel.el.handler.FieldAccessHandler;
 import com.towel.el.handler.FieldHandler;
 import com.towel.reflec.ClassIntrospector;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The class to access the field value.

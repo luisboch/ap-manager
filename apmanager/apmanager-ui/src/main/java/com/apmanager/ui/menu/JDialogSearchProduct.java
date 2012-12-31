@@ -4,16 +4,33 @@
  */
 package com.apmanager.ui.menu;
 
+import com.apmanager.domain.entity.Product;
+import com.apmanager.service.impl.ProductService;
+import com.apmanager.ui.components.Table;
+import com.apmanager.ui.components.abstractcomps.JDialogEscape;
+import com.apmanager.ui.components.table.CellRender;
+import com.apmanager.ui.components.table.CellRenderListener;
+import com.apmanager.ui.listeners.KeyListener;
+import com.towel.el.FieldResolver;
+import com.towel.swing.table.ObjectTableModel;
 import java.awt.AWTEvent;
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JTable;
 
 /**
  *
  * @author ADMIN
  */
-public class JDialogSearchProduct extends javax.swing.JDialog {
+public class JDialogSearchProduct extends JDialogEscape {
+
+    private ProductService service;
+
+    private List<Product> results;
 
     /**
      * Creates new form JDialogSearchProduct
@@ -23,6 +40,8 @@ public class JDialogSearchProduct extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(null);
         configureListener();
+        service = new ProductService();
+        results = new ArrayList<>();
     }
 
     /**
@@ -37,7 +56,7 @@ public class JDialogSearchProduct extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jTextFieldSearch = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableResults = new Table();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(435, 485));
@@ -47,42 +66,7 @@ public class JDialogSearchProduct extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "ID", "Nome", "Estoque"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jTable1.setColumnSelectionAllowed(true);
-        jTable1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                jTable1PropertyChange(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-        jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jTable1.getColumnModel().getColumn(0).setResizable(false);
-        jTable1.getColumnModel().getColumn(0).setPreferredWidth(0);
+        jScrollPane1.setViewportView(jTableResults);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -91,7 +75,7 @@ public class JDialogSearchProduct extends javax.swing.JDialog {
             .addComponent(jTextFieldSearch, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 895, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -117,14 +101,10 @@ public class JDialogSearchProduct extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTable1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTable1PropertyChange
-        if (evt == null) {
-        };
-    }//GEN-LAST:event_jTable1PropertyChange
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableResults;
     private javax.swing.JTextField jTextFieldSearch;
     // End of variables declaration//GEN-END:variables
 
@@ -138,19 +118,58 @@ public class JDialogSearchProduct extends javax.swing.JDialog {
         jTextFieldSearch.requestFocus();
     }
 
+    public void clear() {
+        results.clear();
+        populateResults();
+    }
+
+    private void populateResults() {
+
+        
+        FieldResolver nameResolver = new FieldResolver(Product.class, "name", "Nome");
+        FieldResolver codeResolver = new FieldResolver(Product.class, "code", "Código");
+        FieldResolver brandResolver = new FieldResolver(Product.class, "brand.name", "Marca");
+        FieldResolver qtdResolver = new FieldResolver(Product.class, "quantity", "Estoque");
+        FieldResolver minQtdResolver = new FieldResolver(Product.class, "minQuantity", "Estoque Minimo");
+        final ObjectTableModel<Product> model = new ObjectTableModel<>(
+                new FieldResolver[]{codeResolver, nameResolver, brandResolver,
+                    qtdResolver, minQtdResolver});
+        model.setData(results);
+        
+        CellRender cellRender = (CellRender) jTableResults.getDefaultRenderer(String.class);
+        cellRender.setListener(new CellRenderListener() {
+            @Override
+            public Color getBackgroundColor(JTable table,
+            Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Product p = model.getData().get(row);
+                if(p.getQuantity() <= 0){
+                    return Color.red;
+                } else if (p.getQuantity() <= p.getMinQuantity()){
+                    return Color.YELLOW;
+                } else {
+                    return Color.white;
+                }
+            }
+        });
+        
+        jTableResults.setModel(model);
+
+
+
+    }
+
     private void configureListener() {
-        final JDialogSearchProduct dialog = this;
-        Toolkit.getDefaultToolkit().addAWTEventListener(
-                new AWTEventListener() {
-                    @Override
-                    public void eventDispatched(AWTEvent event) {
-                        KeyEvent ev = (KeyEvent) event;
-                        if (ev.getID() == KeyEvent.KEY_RELEASED
-                                && ev.getKeyCode() == KeyEvent.VK_ESCAPE
-                                && dialog.isVisible()) {
-                            dialog.setVisible(false);
-                        }
-                    }
-                }, AWTEvent.KEY_EVENT_MASK);
+        jTextFieldSearch.addKeyListener(new KeyListener(this){
+
+            @Override
+            public void onKeyRelease(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER || 
+                        e.getKeyCode() == KeyEvent.VK_SPACE){
+                    results = service.search(jTextFieldSearch.getText(), 15);
+                    populateResults();
+                }
+            }
+            
+        });
     }
 }

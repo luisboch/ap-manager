@@ -4,21 +4,35 @@
  */
 package com.apmanager.ui.panels.stock;
 
+import com.apmanager.domain.entity.Product;
+import com.apmanager.service.impl.ProductService;
 import com.apmanager.ui.components.Button;
+import com.apmanager.ui.components.Table;
+import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.menu.Application;
 import com.apmanager.ui.panels.AdminPanel;
+import com.towel.el.FieldResolver;
+import com.towel.swing.table.ObjectTableModel;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author luis
  */
 public class JPanelStock extends javax.swing.JPanel implements AdminPanel{
-
+    List<Product> results;
+    private ProductService service;
     /**
      * Creates new form JPanelStock
      */
     public JPanelStock() {
         initComponents();
+        results = new ArrayList<>();
+        service = new ProductService();
+        addListeners();
     }
 
     /**
@@ -31,41 +45,12 @@ public class JPanelStock extends javax.swing.JPanel implements AdminPanel{
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableResults = new Table();
         jPanel1 = new javax.swing.JPanel();
         jButtonSearch = new Button(this, KeyEvent.VK_F5);
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldSearch = new javax.swing.JTextField();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "ID", "Marca", "Nome"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTableResults);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Pesquisar"));
 
@@ -77,7 +62,7 @@ public class JPanelStock extends javax.swing.JPanel implements AdminPanel{
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
+                .addComponent(jTextFieldSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonSearch)
                 .addContainerGap())
@@ -87,7 +72,7 @@ public class JPanelStock extends javax.swing.JPanel implements AdminPanel{
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSearch)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -109,13 +94,13 @@ public class JPanelStock extends javax.swing.JPanel implements AdminPanel{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(80, 80, 80)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(393, Short.MAX_VALUE)))
+                    .addContainerGap(391, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -123,12 +108,45 @@ public class JPanelStock extends javax.swing.JPanel implements AdminPanel{
     private javax.swing.JButton jButtonSearch;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable jTableResults;
+    private javax.swing.JTextField jTextFieldSearch;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void loadContent() {
-        
+        results.clear();
+        populateResults();
+    }
+
+    private void populateResults() {
+        ObjectTableModel<Product> model;
+        FieldResolver nameResolver = new FieldResolver(Product.class, "name", "Nome");
+        FieldResolver idResolver = new FieldResolver(Product.class, "id", "ID");
+        FieldResolver brandResolver = new FieldResolver(Product.class, "brand.name", "Marca");
+        FieldResolver qtdResolver = new FieldResolver(Product.class, "quantity", "Estoque");
+        FieldResolver minQtdResolver = new FieldResolver(Product.class, "minQuantity", "Estoque Minimo");
+        model = new ObjectTableModel<>(
+                new FieldResolver[]{idResolver, nameResolver, brandResolver, 
+                    qtdResolver, minQtdResolver});
+        model.setData(results);
+        jTableResults.setModel(model);
+    }
+
+    private void addListeners() {
+        jButtonSearch.addActionListener(new ActionListener(this) {
+
+            @Override
+            protected void onActionPerformed(ActionEvent e) throws Exception {
+                Runnable r = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        results = service.getProductsLessQuantity();
+                        populateResults();
+                    }
+                };
+                Application.load(r);
+            }
+        });
     }
 }

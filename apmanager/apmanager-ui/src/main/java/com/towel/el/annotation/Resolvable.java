@@ -1,12 +1,11 @@
 package com.towel.el.annotation;
 
+import com.towel.bean.DefaultFormatter;
+import com.towel.el.handler.MethodHandler;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.towel.bean.DefaultFormatter;
-import com.towel.el.handler.FieldHandler;
 
 
 
@@ -17,5 +16,5 @@ public @interface Resolvable {
 
 	public Class<?> formatter() default DefaultFormatter.class;
 
-	public Class<?> accessMethod() default FieldHandler.class;
+	public Class<?> accessMethod() default MethodHandler.class;
 }

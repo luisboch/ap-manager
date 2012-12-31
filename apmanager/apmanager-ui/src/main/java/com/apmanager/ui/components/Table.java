@@ -21,13 +21,14 @@ import javax.swing.table.TableModel;
 public class Table<T extends Entity> extends javax.swing.JTable {
 
     public Table() {
-
+        
         super();
-        setDefaultRenderer(String.class, new CellRender());
-        setDefaultRenderer(Integer.class, new CellRender());
-        setDefaultRenderer(Float.class, new CellRender());
-        setDefaultRenderer(Double.class, new CellRender());
-        setDefaultRenderer(Long.class, new CellRender());
+        final CellRender render = new CellRender();
+        setDefaultRenderer(String.class, render);
+        setDefaultRenderer(Integer.class, render);
+        setDefaultRenderer(Float.class, render);
+        setDefaultRenderer(Double.class, render);
+        setDefaultRenderer(Long.class, render);
         
         setRowHeight(30);
 

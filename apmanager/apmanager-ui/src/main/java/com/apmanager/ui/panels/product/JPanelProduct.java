@@ -15,6 +15,7 @@ import com.towel.swing.table.ObjectTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -157,6 +158,15 @@ public class JPanelProduct extends AbstractAdminPanel<Product, ProductService> i
 
     @Override
     public void loadContent() {
+        
+        if (results != null) {
+            results.clear();
+        } else {
+            results = new ArrayList<>();
+        }
+        
+        populateResults();
+        
         this.dialog.clear();
     }
 
@@ -231,13 +241,13 @@ public class JPanelProduct extends AbstractAdminPanel<Product, ProductService> i
                 }
             }
         });
-        
+
         jTextFieldSearch.addKeyListener(new KeyListener(this) {
             @Override
             public void onKeyRelease(KeyEvent e) {
                 if (KeyEvent.VK_ENTER == e.getKeyCode()) {
                     jButtonSearch.doClick();
-                } else if (KeyEvent.VK_SPACE == e.getKeyCode()){
+                } else if (KeyEvent.VK_SPACE == e.getKeyCode()) {
                     search();
                 }
             }

@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import org.eclipse.persistence.config.HintValues;
-import org.eclipse.persistence.config.QueryHints;
 
 /**
  *
@@ -21,6 +19,14 @@ public class ProductDAO extends GenericDAO<Product> {
 
     @Override
     public List<Product> search(String search) {
+        return search(search, null, null);
+    }
+
+    public List<Product> search(String search, Integer maxResults) {
+        return search(search, maxResults, null);
+    }
+
+    public List<Product> search(String search, Integer maxResults, Integer firstResult) {
 
         if (search == null || search.equals("")) {
             search = "%";
@@ -60,7 +66,8 @@ public class ProductDAO extends GenericDAO<Product> {
                 + "ap.produto_id = p.id AND "
                 + "ap.modelo_id = vm.id AND "
                 + "vm.veiculo_id = v.id AND "
-                + "v.marca_id = mv.id "
+                + "v.marca_id = mv.id AND "
+                + "p.status = true "
                 + "AND "
                 + "( ";
         for (int i = 0; i < pieces.length; i++) {
@@ -79,7 +86,7 @@ public class ProductDAO extends GenericDAO<Product> {
                     + "or mv.nome ilike ?" + param + " "
                     + "or s.codigo ilike ?" + param + " "
                     + "or v.nome ilike ?" + param + " "
-                    + "or cast(vm.potencia as character varying) ilike ?1 "
+                    + "or cast(vm.potencia as character varying) ilike ?" + param + " "
                     + "or vm.ano ilike ?" + param + " "
                     + ") ";
         }
@@ -93,7 +100,17 @@ public class ProductDAO extends GenericDAO<Product> {
             param = i + 1;
             q.setParameter(param, "%" + pieces[i] + "%");
         }
+
+        if (maxResults != null) {
+            q.setMaxResults(maxResults.intValue());
+        }
+
+        if (firstResult != null) {
+            q.setFirstResult(firstResult.intValue());
+        }
+
         List<Product> products = q.getResultList();
+
         return products;
     }
 
@@ -115,5 +132,11 @@ public class ProductDAO extends GenericDAO<Product> {
             code = String.format("%06d", 1);
         }
         return code;
+    }
+
+    public List<Product> getProductsLessQuantity() {
+        String jpql = "select p from Product p where p.status = true and p.quantity <= p.minQuantity ";
+        Query q = em.createQuery(jpql);
+        return q.getResultList();
     }
 }

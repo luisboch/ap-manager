@@ -4,6 +4,7 @@ import com.apmanager.domain.dao.impl.ProductDAO;
 import com.apmanager.domain.entity.Product;
 import com.apmanager.service.BasicService;
 import com.apmanager.service.exceptions.ValidationException;
+import java.util.List;
 
 /**
  *
@@ -76,5 +77,18 @@ public class ProductService extends BasicService<Product, ProductDAO> {
         String code = this.dao.getNextValidCode();
         product.setAdditionalCode(code);
         this.save(product);
+    }
+    
+    public List<Product> search(String search, Integer maxResults, 
+            Integer firstResult){
+        return dao.search(search, maxResults, firstResult);
+    }
+    
+    public List<Product> search(String search, Integer maxResults){
+        
+        return dao.search(search, maxResults);
+    }
+    public List<Product> getProductsLessQuantity(){
+        return dao.getProductsLessQuantity();
     }
 }

@@ -1,15 +1,12 @@
 package com.towel.el.handler;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.towel.bean.Formatter;
 import com.towel.el.NotResolvableFieldException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An implementation of FieldAccessHandler who use the direct access to the
