@@ -5,7 +5,7 @@
 package com.apmanager.ui.menu.enums;
 
 import com.apmanager.ui.menu.NewJPanel;
-import com.apmanager.ui.panels.JPanelVenda;
+import com.apmanager.ui.panels.JPanelSale;
 import com.apmanager.ui.panels.admin.JPanelVendas;
 import com.apmanager.ui.panels.product.JPanelProduct;
 import com.apmanager.ui.panels.productbrand.JPanelProductBrand;
@@ -21,7 +21,7 @@ import javax.swing.JPanel;
  */
 public enum WindowType {
 
-    SALE(JPanelVenda.class,"Vendas"),
+    SALE(JPanelSale.class,"Vendas"),
     SALES_SEARCH(JPanelVendas.class, "Pesquisa de Vendas"),
     PRODUCT_CRUD(JPanelProduct.class, "Produtos"),
     VEHICLE_BRAND_CRUD(JPanelVehicleBrand.class, "Marcas de Veículos"),

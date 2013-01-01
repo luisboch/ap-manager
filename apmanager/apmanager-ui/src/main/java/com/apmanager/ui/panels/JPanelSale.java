@@ -23,16 +23,16 @@ import javax.swing.JOptionPane;
  *
  * @author ADMIN
  */
-public class JPanelVenda extends javax.swing.JPanel implements AdminPanel {
+public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
-    private static final Logger log = Logger.getLogger(JPanelVenda.class.getSimpleName());
+    private static final Logger log = Logger.getLogger(JPanelSale.class.getSimpleName());
     private final JDialogSearchProduct dialog = new JDialogSearchProduct(Application.getInstance(), true);
     private final JDialogAlterQuantity dialogQuantity = new JDialogAlterQuantity(Application.getInstance(), true);
 
     /**
      * Creates new form JPanelVenda
      */
-    public JPanelVenda() {
+    public JPanelSale() {
         initComponents();
         configureJTableProducts();
         configureListener();
@@ -159,7 +159,7 @@ public class JPanelVenda extends javax.swing.JPanel implements AdminPanel {
     }
 
     private void configureListener() {
-        final JPanelVenda jPanel = this;
+        final JPanelSale jPanel = this;
         Toolkit.getDefaultToolkit().addAWTEventListener(
                 new AWTEventListener() {
                     @Override
@@ -243,7 +243,7 @@ public class JPanelVenda extends javax.swing.JPanel implements AdminPanel {
     }
 
     private void addButtonListeners() {
-        final JPanelVenda panel = this;
+        final JPanelSale panel = this;
         jButtonCloseSale.addActionListener(new ActionListener(jPanel1) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {

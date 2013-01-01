@@ -30,7 +30,7 @@ public class Table<T extends Entity> extends javax.swing.JTable {
         setDefaultRenderer(Double.class, render);
         setDefaultRenderer(Long.class, render);
         
-        setRowHeight(30);
+        setRowHeight(25);
 
         JTableHeader t = getTableHeader();
         t.setFont(new java.awt.Font("Arial", 1, 14));

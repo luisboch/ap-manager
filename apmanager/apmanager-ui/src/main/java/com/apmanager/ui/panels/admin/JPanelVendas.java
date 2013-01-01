@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
 
-    private static final Logger log = Logger.getLogger(JPanelVenda.class.getSimpleName());
+    private static final Logger log = Logger.getLogger(JPanelSale.class.getSimpleName());
 
     /**
      * Creates new form JPanelVenda

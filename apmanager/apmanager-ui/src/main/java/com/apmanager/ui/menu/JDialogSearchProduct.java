@@ -13,10 +13,7 @@ import com.apmanager.ui.components.table.CellRenderListener;
 import com.apmanager.ui.listeners.KeyListener;
 import com.towel.el.FieldResolver;
 import com.towel.swing.table.ObjectTableModel;
-import java.awt.AWTEvent;
 import java.awt.Color;
-import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +113,12 @@ public class JDialogSearchProduct extends JDialogEscape {
     public void setVisible(boolean b) {
         super.setVisible(b);
         jTextFieldSearch.requestFocus();
+        
+        clear();
+        
+        if(jTextFieldSearch.getText().equals(" ")){
+            search();
+        }
     }
 
     public void clear() {
@@ -125,7 +128,7 @@ public class JDialogSearchProduct extends JDialogEscape {
 
     private void populateResults() {
 
-        
+
         FieldResolver nameResolver = new FieldResolver(Product.class, "name", "Nome");
         FieldResolver codeResolver = new FieldResolver(Product.class, "code", "Código");
         FieldResolver brandResolver = new FieldResolver(Product.class, "brand.name", "Marca");
@@ -135,23 +138,31 @@ public class JDialogSearchProduct extends JDialogEscape {
                 new FieldResolver[]{codeResolver, nameResolver, brandResolver,
                     qtdResolver, minQtdResolver});
         model.setData(results);
-        
+
         CellRender cellRender = (CellRender) jTableResults.getDefaultRenderer(String.class);
         cellRender.setListener(new CellRenderListener() {
             @Override
             public Color getBackgroundColor(JTable table,
-            Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Product p = model.getData().get(row);
-                if(p.getQuantity() <= 0){
-                    return Color.red;
-                } else if (p.getQuantity() <= p.getMinQuantity()){
-                    return Color.YELLOW;
+                if (p.getQuantity() <= 0) {
+                    if (hasFocus) {
+                        return new Color(255, 99, 30);
+                    } else {
+                        return new Color(255, 69, 0);
+                    }
+                } else if (p.getQuantity() <= p.getMinQuantity()) {
+                    if (hasFocus) {
+                        return new Color(255, 223, 67);
+                    } else {
+                        return new Color(255, 193, 37);
+                    }
                 } else {
-                    return Color.white;
+                    return null;
                 }
             }
         });
-        
+
         jTableResults.setModel(model);
 
 
@@ -159,17 +170,19 @@ public class JDialogSearchProduct extends JDialogEscape {
     }
 
     private void configureListener() {
-        jTextFieldSearch.addKeyListener(new KeyListener(this){
-
+        jTextFieldSearch.addKeyListener(new KeyListener(this) {
             @Override
             public void onKeyRelease(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER || 
-                        e.getKeyCode() == KeyEvent.VK_SPACE){
-                    results = service.search(jTextFieldSearch.getText(), 15);
-                    populateResults();
+                if (e.getKeyCode() == KeyEvent.VK_ENTER
+                        || e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    search();
                 }
             }
-            
         });
+    }
+
+    private void search() {
+        results = service.search(jTextFieldSearch.getText(), 15);
+        populateResults();
     }
 }

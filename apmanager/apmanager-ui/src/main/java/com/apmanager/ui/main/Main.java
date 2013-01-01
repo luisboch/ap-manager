@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 /**
@@ -64,6 +65,7 @@ public class Main {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
+            LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
             String defaultLAF = UIManager.getSystemLookAndFeelClassName();
             if (defaultLAF.equals(MetalLookAndFeel.class.getName())) {
                 defaultLAF = GTKLookAndFeel.class.getName();

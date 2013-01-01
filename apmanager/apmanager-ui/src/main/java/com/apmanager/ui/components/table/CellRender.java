@@ -15,6 +15,14 @@ import javax.swing.table.TableCellRenderer;
  */
 public class CellRender extends javax.swing.JPanel implements TableCellRenderer {
 
+    public static final Color blueSelected = new Color(30, 30, 255);
+
+    public static final Color blue = new Color(0, 0, 238);
+
+    public static final Color white = Color.white;
+
+    public static final Color black = Color.BLACK;
+
     private CellRenderListener listener;
 
     /**
@@ -22,6 +30,10 @@ public class CellRender extends javax.swing.JPanel implements TableCellRenderer 
      */
     public CellRender() {
         initComponents();
+    }
+
+    public CellRender(CellRenderListener listener) {
+        this.listener = listener;
     }
 
     /**
@@ -35,11 +47,21 @@ public class CellRender extends javax.swing.JPanel implements TableCellRenderer 
 
         jLabel1 = new javax.swing.JLabel();
 
-        setMinimumSize(new java.awt.Dimension(46, 40));
-
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("jLabel1");
-        add(jLabel1);
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -47,20 +69,45 @@ public class CellRender extends javax.swing.JPanel implements TableCellRenderer 
 
     @Override
     public Component getTableCellRendererComponent(
-            JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        
+            JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
+
         Color bg = null;
         if (listener != null) {
-            bg = listener.getBackgroundColor(table, value, isSelected, hasFocus, row, column);
+            bg = listener.getBackgroundColor(table, value, isSelected, hasFocus,
+                    row, column);
+        }
+        if (bg == null) {
+            if (hasFocus) {
+                this.setBackground(blueSelected);
+                this.jLabel1.setForeground(white);
+
+            } else if (isSelected) {
+                this.setBackground(blue);
+                this.jLabel1.setForeground(white);
+                jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(blue));
+            } else {
+                this.setBackground(white);
+                jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(white));
+                this.jLabel1.setForeground(black);
+            }
+        } else {
+            this.setBackground(bg);
+            this.jLabel1.setForeground(black);
         }
 
-        if (hasFocus) {
-            this.setBackground(bg == null ? new Color(230, 210, 120) : bg);
-        } else if (isSelected) {
-            this.setBackground(bg == null ? new Color(240, 230, 140) : bg);
-        } else {
-            this.setBackground(bg == null ? Color.WHITE : bg);
+        if (isSelected) {
+            if (column == 0) {
+                jLabel1.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 0, blue));
+            } else if (column == table.getColumnCount() - 1) {
+                jLabel1.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 0, 2, 2, blue));
+            } else {
+                jLabel1.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 0, 2, 0, blue));
+            }
+        } else if (bg != null) {
+            jLabel1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 0, bg));
         }
+
         if (value != null) {
             this.jLabel1.setText(value.toString());
         } else {
