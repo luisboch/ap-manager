@@ -3,6 +3,7 @@
  */
 package com.apmanager.ui.components.abstractcomps;
 
+import com.apmanager.ui.listeners.WindowStateListener;
 import java.awt.AWTEvent;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -11,7 +12,9 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 /**
  *
@@ -113,6 +116,14 @@ public class JDialogEscape extends JDialog {
                         }
                     }
                 }, AWTEvent.KEY_EVENT_MASK);
+        this.addWindowStateListener(new WindowStateListener(this) {
+            @Override
+            protected void onWindowStateChanged(WindowEvent e) {
+                if(e.getNewState() == JFrame.ICONIFIED){
+                    dialog.setVisible(true);
+                }
+            }
+        });
 
     }
 
