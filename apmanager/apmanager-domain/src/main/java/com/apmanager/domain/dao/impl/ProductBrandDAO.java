@@ -14,7 +14,7 @@ import javax.persistence.Query;
 public class ProductBrandDAO extends GenericDAO<ProductBrand> {
 
     public ProductBrandDAO(EntityManager em) {
-        super(em);
+        super(em, ProductBrand.class);
     }
 
     @Override

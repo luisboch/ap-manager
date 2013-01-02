@@ -4,6 +4,7 @@
  */
 package com.apmanager.ui.menu;
 
+import com.apmanager.domain.entity.Computer;
 import com.apmanager.ui.menu.enums.WindowType;
 import com.apmanager.ui.panels.AdminPanel;
 import java.awt.Image;
@@ -24,7 +25,8 @@ import javax.swing.KeyStroke;
  * @author ADMIN
  */
 public class Application extends javax.swing.JFrame {
-
+    
+    public static Computer computer;
     private static final Logger log = Logger.getLogger(Application.class.getSimpleName());
     private static Application instance;
 

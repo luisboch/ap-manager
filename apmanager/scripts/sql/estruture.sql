@@ -207,3 +207,53 @@ CREATE TABLE produto_palavras_chave
       REFERENCES produtos (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
+
+-- Table: computadores
+
+-- DROP TABLE computadores;
+
+CREATE TABLE computadores
+(
+  id serial NOT NULL,
+  ipv4 character varying(255),
+  ipv6 character varying(255),
+  nome character varying(255) not null,
+  status boolean not null default true ,
+  CONSTRAINT computadores_pkey PRIMARY KEY (id )
+);
+
+-- Table: vendas
+
+-- DROP TABLE vendas;
+
+CREATE TABLE vendas
+(
+  id serial NOT NULL,
+  fechada boolean not null default false,
+  cancelada boolean not null default false,
+  data_criacao timestamp without time zone default now(),
+  data_fechamento timestamp without time zone ,
+  total double precision not null default 0,
+  computador_id integer not null,
+  CONSTRAINT vendas_pkey PRIMARY KEY (id ),
+  CONSTRAINT fk_vendas_computador_id FOREIGN KEY (computador_id)
+      REFERENCES computadores (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE vendas_produtos
+(
+  id serial NOT NULL,
+  preco_compra double precision not null default 0,
+  quantidade integer not null default 0,
+  preco_venda double precision not null default 0, 
+  produto_id bigint NOT NULL,
+  venda_id bigint NOT NULL,
+  CONSTRAINT vendas_produtos_pkey PRIMARY KEY (id ),
+  CONSTRAINT fk_vendas_produtos_produto_id FOREIGN KEY (produto_id)
+      REFERENCES produtos (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_vendas_produtos_venda_id FOREIGN KEY (venda_id)
+      REFERENCES vendas (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);

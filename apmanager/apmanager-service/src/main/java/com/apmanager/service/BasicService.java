@@ -3,6 +3,7 @@ package com.apmanager.service;
 import com.apmanager.domain.dao.GenericDAO;
 import com.apmanager.domain.entity.Entity;
 import com.apmanager.service.exceptions.ValidationException;
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.slf4j.Logger;
@@ -142,7 +143,9 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
         }
         emanager.getTransaction().commit();
     }
-    
+    public T getById(Serializable id){
+        return dao.getById(id);
+    }
     public List<T> search(String search){
         return dao.search(search);
     }

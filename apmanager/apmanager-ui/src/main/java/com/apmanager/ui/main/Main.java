@@ -4,17 +4,22 @@
  */
 package com.apmanager.ui.main;
 
+import com.apmanager.domain.entity.Computer;
 import com.apmanager.service.Config;
 import com.apmanager.service.Provider;
+import com.apmanager.service.impl.ComputerService;
 import com.apmanager.ui.menu.Application;
+import com.apmanager.ui.utils.FileUtils;
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 import java.awt.Frame;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -99,7 +104,7 @@ public class Main {
                     splash.setMessage("Aplicando alterações...", 60);
                     Application app = Application.getInstance();
                     splash.setMessage("Concluindo...", 95);
-
+                    loadComputer();
                     splash.setMessage("...Pronto", 100);
                     splash.setVisible(false);
                     app.setVisible(true);
@@ -112,6 +117,28 @@ public class Main {
             }
         });
         r.start();
+
+    }
+
+    private static void loadComputer() throws Exception {
+        Integer cpId = null;
+        try {
+            Properties p = FileUtils.loadProperties(System.getProperty("user.home") + System.getProperty("file.separator") + ".apmanager.properties");
+            if(p.getProperty("computer.id")!=null) {
+                cpId = Integer.valueOf(p.getProperty("computer.id"));
+            }
+        } catch (IOException ex) {
+            // Do Nothing;
+        }
+        
+        if (cpId != null) {
+            Application.computer = new ComputerService().getById(cpId);
+        } else {
+            Application.computer = new ComputerService().createComputerParameter();
+            String aux = "computer.id = " + Application.computer.getId();
+            FileUtils.writeToFile(new File(System.getProperty("user.home") +
+                    System.getProperty("file.separator") + ".apmanager.properties"), aux);
+        };
 
     }
 
@@ -197,7 +224,7 @@ public class Main {
                             Socket accept = server.accept();
                             Logger.getLogger(Main.class.getName()).log(Level.INFO, "Restoring view");
                             Application application = Application.getInstance();
-                            application.setState ( Frame.NORMAL );
+                            application.setState(Frame.NORMAL);
                             application.setExtendedState(JFrame.MAXIMIZED_BOTH);
                             application.setVisible(true);
                             application.requestFocus();

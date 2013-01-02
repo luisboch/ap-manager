@@ -14,7 +14,7 @@ import javax.persistence.Query;
 public class VehicleModelDAO extends GenericDAO<VehicleModel> {
 
     public VehicleModelDAO(EntityManager em) {
-        super(em);
+        super(em, VehicleModel.class);
     }
 
     @Override

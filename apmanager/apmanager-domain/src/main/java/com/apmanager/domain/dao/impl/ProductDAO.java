@@ -21,7 +21,7 @@ public class ProductDAO extends GenericDAO<Product> {
     private static final Logger log = LoggerFactory.getLogger(ProductDAO.class);
 
     public ProductDAO(EntityManager em) {
-        super(em);
+        super(em, Product.class);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ProductDAO extends GenericDAO<Product> {
 
         if (search == null || search.equals("")) {
             // Avoid to return all table
-            search = "%";
+            search = "";
             maxResults = 30;
         }
 

@@ -18,7 +18,7 @@ import javax.persistence.Query;
 public class ShelfDAO extends GenericDAO<Shelf> {
 
     public ShelfDAO(EntityManager em) {
-        super(em);
+        super(em, Shelf.class);
     }
     
     @Override
