@@ -11,10 +11,13 @@ import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.components.table.CellRender;
 import com.apmanager.ui.components.table.CellRenderListener;
 import com.apmanager.ui.listeners.KeyListener;
+import com.apmanager.ui.listeners.MouseListener;
 import com.towel.el.FieldResolver;
 import com.towel.swing.table.ObjectTableModel;
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTable;
@@ -24,6 +27,8 @@ import javax.swing.JTable;
  * @author ADMIN
  */
 public class JDialogSearchProduct extends JDialogEscape {
+
+    private Object selected;
 
     private ProductService service;
 
@@ -97,7 +102,6 @@ public class JDialogSearchProduct extends JDialogEscape {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -113,10 +117,10 @@ public class JDialogSearchProduct extends JDialogEscape {
     public void setVisible(boolean b) {
         super.setVisible(b);
         jTextFieldSearch.requestFocus();
-        
+
         clear();
-        
-        if(jTextFieldSearch.getText().equals(" ")){
+
+        if (jTextFieldSearch.getText().equals(" ")) {
             search();
         }
     }
@@ -170,6 +174,7 @@ public class JDialogSearchProduct extends JDialogEscape {
     }
 
     private void configureListener() {
+        final JDialogSearchProduct dialog = this;
         jTextFieldSearch.addKeyListener(new KeyListener(this) {
             @Override
             public void onKeyRelease(KeyEvent e) {
@@ -179,10 +184,48 @@ public class JDialogSearchProduct extends JDialogEscape {
                 }
             }
         });
+
+
+        jTableResults.addMouseListener(new MouseListener(this) {
+            @Override
+            public void onMouseClick(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    selected =
+                            ((Table<Product>) jTableResults).getSelected();
+                    dialog.setVisible(false);
+
+                }
+            }
+        });
+
+        jTableResults.addKeyListener(new KeyListener(this) {
+            @Override
+            public void onKeyRelease(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    List<Product> products =
+                            ((Table<Product>) jTableResults).getSelecteds();
+                    if (products != null && !products.isEmpty()) {
+                        selected = products;
+                        dialog.setVisible(false);
+                    }
+                }
+            }
+        });
     }
 
     private void search() {
         results = service.search(jTextFieldSearch.getText(), 15);
         populateResults();
     }
+
+    public Object getSelected() {
+        return selected;
+    }
+
+    @Override
+    protected void onHide(AWTEvent e) {
+        selected = null;
+    }
+    
+    
 }

@@ -1,5 +1,6 @@
 package com.apmanager.ui.panels;
 
+import com.apmanager.domain.entity.Product;
 import com.apmanager.ui.beans.ProductCart;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.ConfirmDialog;
@@ -16,6 +17,7 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
@@ -26,7 +28,9 @@ import javax.swing.JOptionPane;
 public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
     private static final Logger log = Logger.getLogger(JPanelSale.class.getSimpleName());
+
     private final JDialogSearchProduct dialog = new JDialogSearchProduct(Application.getInstance(), true);
+
     private final JDialogAlterQuantity dialogQuantity = new JDialogAlterQuantity(Application.getInstance(), true);
 
     /**
@@ -56,6 +60,9 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jButtonAlterQuantity = new Button(this, KeyEvent.VK_F7);
         jButtonRemove = new Button(this, KeyEvent.VK_DELETE);
         jButton1 = new Button(this, KeyEvent.VK_F6);
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         jTable1.setBackground(new java.awt.Color(245, 245, 245));
         jTable1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -82,7 +89,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(291, Short.MAX_VALUE)
                 .addComponent(jButtonRemove)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonAlterQuantity)
@@ -104,6 +111,34 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel1.setText("00,00");
+
+        jLabel2.setText("Total:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -112,14 +147,18 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 851, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -130,13 +169,16 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     private javax.swing.JButton jButtonAlterQuantity;
     private javax.swing.JButton jButtonCloseSale;
     private javax.swing.JButton jButtonRemove;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
     private void configureJTableProducts() {
-        
+
         FieldResolver nameResolver = new FieldResolver(ProductCart.class, "name", "Nome");
         FieldResolver unitaryValueResolver = new FieldResolver(ProductCart.class, "unitaryValue", "Preço Unitário (R$)");
         unitaryValueResolver.setFormatter(new Currency());
@@ -146,13 +188,10 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         totalResolver.setFormatter(new Currency());
 
         ObjectTableModel<ProductCart> towel = new ObjectTableModel<>(
-                new FieldResolver[]{nameResolver, unitaryValueResolver, quantityResolver, totalResolver}
-                );
-        
+                new FieldResolver[]{nameResolver, unitaryValueResolver, quantityResolver, totalResolver});
+
         java.util.List<ProductCart> produtoCarts = new ArrayList<>();
-        produtoCarts.add(new ProductCart(1595l, "Lampada frontal", 10.00f, 150f, 15));
-        produtoCarts.add(new ProductCart());
-        produtoCarts.add(new ProductCart(1595l, "Lampada frontal", 10.00f, 150f, 15));
+        
         towel.setData(produtoCarts);
 
         jTable1.setModel(towel);
@@ -170,7 +209,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                             // Verifica se foi um key Released
                             if (ev.getID() == KeyEvent.KEY_RELEASED) {
                                 if (!dialog.isVisible() && jPanel.isEnabled()) {
-                                    jPanel.setEnabled(false);
+
                                     if (ev.getKeyCode() == KeyEvent.VK_F1) {
 
                                         JOptionPane.showMessageDialog(jPanel, "Texto de ajuda");
@@ -178,11 +217,15 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                                     } else if (ev.getID() == KeyEvent.KEY_RELEASED && checkKeyAction(ev)) {
                                         dialog.setText(ev.getKeyChar() + "");
                                         dialog.setVisible(true);
+                                        Object object = dialog.getSelected();
+                                        if (object != null) {
+                                            addItem(object);
+                                        }
                                     } else if (ev.getKeyCode() == KeyEvent.VK_F5) {
                                         dialog.setText("");
                                         dialog.setVisible(true);
                                     }
-                                    jPanel.setEnabled(true);
+
                                 }
                             }
 
@@ -257,8 +300,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                 }
             }
         });
-        jButtonRemove.addActionListener(new ActionListener(this){
-
+        jButtonRemove.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 ConfirmDialog confirm = new ConfirmDialog(Application.getInstance());
@@ -270,18 +312,37 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                     log.info("Removing Itens");
                 }
             }
-            
         });
-        
-        jButtonAlterQuantity.addActionListener(new ActionListener(this){
 
+        jButtonAlterQuantity.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 panel.setEnabled(false);
                 dialogQuantity.setVisible(true);
                 panel.setEnabled(true);
             }
-            
         });
+    }
+
+    private void addItem(Object object) {
+        if (object instanceof List) {
+            addItem((List<Product>)object);
+        }else if (object instanceof Product){
+            addItem((Product) object);
+        } else {
+            throw new IllegalArgumentException(
+                    "Expected an instance of Product or instance of List<Product> found "
+                    + object.getClass());
+        }
+    }
+    
+    private void addItem(List<Product> products){
+        for(Product p:products){
+            addItem(p);
+        }
+        
+    }
+    private void addItem(Product product){
+        
     }
 }

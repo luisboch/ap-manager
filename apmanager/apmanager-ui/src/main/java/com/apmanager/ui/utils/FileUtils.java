@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.apache.log4j.Level;
-import org.eclipse.persistence.tools.file.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
