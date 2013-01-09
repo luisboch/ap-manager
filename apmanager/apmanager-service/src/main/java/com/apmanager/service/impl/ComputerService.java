@@ -7,6 +7,7 @@ package com.apmanager.service.impl;
 import com.apmanager.domain.dao.impl.ComputerDAO;
 import com.apmanager.domain.entity.Computer;
 import com.apmanager.service.BasicService;
+import com.apmanager.service.ServiceAction;
 import com.apmanager.service.exceptions.ValidationException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -27,7 +28,7 @@ public class ComputerService extends BasicService<Computer, ComputerDAO> {
     }
 
     @Override
-    public void validate(Computer c) throws ValidationException {
+    public void validate(Computer c, ServiceAction action) throws ValidationException {
         ValidationException ex = new ValidationException(Computer.class);
 
         if (c.getIpv4() == null && c.getIpv6() == null) {

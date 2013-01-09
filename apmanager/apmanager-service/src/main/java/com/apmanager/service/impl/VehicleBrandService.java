@@ -3,6 +3,7 @@ package com.apmanager.service.impl;
 import com.apmanager.domain.dao.impl.VehicleBrandDAO;
 import com.apmanager.domain.entity.VehicleBrand;
 import com.apmanager.service.BasicService;
+import com.apmanager.service.ServiceAction;
 import com.apmanager.service.exceptions.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ public class VehicleBrandService extends BasicService<VehicleBrand, VehicleBrand
     }
 
     @Override
-    public void validate(VehicleBrand object) throws ValidationException {
+    public void validate(VehicleBrand object, ServiceAction action) throws ValidationException {
         ValidationException e = new ValidationException(VehicleBrand.class);
         
         if(object.getName() ==  null || object.getName().equals("")){

@@ -9,6 +9,7 @@ import com.apmanager.domain.entity.Vehicle;
 import com.apmanager.domain.entity.VehicleBrand;
 import com.apmanager.domain.entity.VehicleModel;
 import com.apmanager.service.BasicService;
+import com.apmanager.service.ServiceAction;
 import com.apmanager.service.exceptions.ValidationException;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class VehicleService extends BasicService<Vehicle, VehicleDAO> {
     }
 
     @Override
-    public void validate(Vehicle object) throws ValidationException {
+    public void validate(Vehicle object, ServiceAction action) throws ValidationException {
 
         ValidationException v = new ValidationException(Vehicle.class);
 

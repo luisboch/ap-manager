@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -45,13 +46,14 @@ public class Sale implements Entity {
     @Column(name = "fechada")
     private boolean closed = false;
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale",
+    cascade = CascadeType.ALL, orphanRemoval = true, fetch= FetchType.LAZY)
     private List<SaleProduct> products;
-    
-    @ManyToOne(fetch= FetchType.EAGER,optional=false)
-    @JoinColumn(name="computador_id")
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "computador_id")
     private Computer computer;
-    
+
     @Override
     public Long getId() {
         return id;
@@ -116,7 +118,7 @@ public class Sale implements Entity {
     public void setComputer(Computer computer) {
         this.computer = computer;
     }
-    
+
     @Override
     public boolean isActive() {
         return true;

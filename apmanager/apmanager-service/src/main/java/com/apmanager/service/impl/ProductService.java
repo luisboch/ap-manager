@@ -3,6 +3,7 @@ package com.apmanager.service.impl;
 import com.apmanager.domain.dao.impl.ProductDAO;
 import com.apmanager.domain.entity.Product;
 import com.apmanager.service.BasicService;
+import com.apmanager.service.ServiceAction;
 import com.apmanager.service.exceptions.ValidationException;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class ProductService extends BasicService<Product, ProductDAO> {
     }
 
     @Override
-    public void validate(Product object) throws ValidationException {
+    public void validate(Product object, ServiceAction action) throws ValidationException {
         ValidationException v = new ValidationException();
 
 

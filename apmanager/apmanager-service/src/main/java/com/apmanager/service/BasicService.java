@@ -26,7 +26,7 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
      * @throws Exception
      */
     public void save(T object) throws Exception {
-        validate(object);
+        validate(object, ServiceAction.SAVE);
         emanager.getTransaction().begin();
         try {
             dao.save(object);
@@ -46,7 +46,7 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
      * @throws Exception
      */
     public void update(T object) throws Exception {
-        validate(object);
+        validate(object, ServiceAction.UPDATE);
         emanager.getTransaction().begin();
         try {
             dao.update(object);
@@ -89,7 +89,7 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
         emanager.getTransaction().begin();
         try {
             for (T obj : objects) {
-                validate(obj);
+                validate(obj, ServiceAction.SAVE);
                 dao.save(obj);
             }
         } catch (Exception e) {
@@ -111,7 +111,7 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
         emanager.getTransaction().begin();
         try {
             for (T obj : objects) {
-                validate(obj);
+                validate(obj, ServiceAction.UPDATE);
                 dao.update(obj);
             }
         } catch (Exception e) {
@@ -150,5 +150,5 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
         return dao.search(search);
     }
     
-    public abstract void validate(T object) throws ValidationException;
+    public abstract void validate(T object, ServiceAction action) throws ValidationException;
 }
