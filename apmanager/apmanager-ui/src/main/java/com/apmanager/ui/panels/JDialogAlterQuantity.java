@@ -4,8 +4,11 @@
  */
 package com.apmanager.ui.panels;
 
+import com.apmanager.service.exceptions.ValidationException;
 import com.apmanager.ui.components.Button;
+import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.listeners.ActionListener;
+import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -13,7 +16,9 @@ import java.awt.event.KeyEvent;
  *
  * @author luis
  */
-public class JDialogAlterQuantity extends javax.swing.JDialog {
+public class JDialogAlterQuantity extends JDialogEscape {
+
+    private Integer quantity;
 
     /**
      * Creates new form JDialogAlterQuantity
@@ -36,7 +41,7 @@ public class JDialogAlterQuantity extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabelProductName = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
@@ -51,7 +56,7 @@ public class JDialogAlterQuantity extends javax.swing.JDialog {
 
         jLabel1.setText("Produto:");
 
-        jLabel2.setText("Oleo ---------------------------------");
+        jLabelProductName.setText("Oleo ---------------------------------");
 
         jLabel3.setText("Quantidade:");
 
@@ -72,7 +77,7 @@ public class JDialogAlterQuantity extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabelProductName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -80,17 +85,17 @@ public class JDialogAlterQuantity extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabelProductName))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonSave.setText("Salvar");
+        jButtonSave.setText("Ok");
 
         jButtonCancel.setText("Cancelar");
 
@@ -138,13 +143,12 @@ public class JDialogAlterQuantity extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabelProductName;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField jTextField1;
@@ -152,17 +156,42 @@ public class JDialogAlterQuantity extends javax.swing.JDialog {
 
     private void addListeners() {
         final JDialogAlterQuantity dialog = this;
-        jButtonSave.addActionListener(new ActionListener(this){
+        jButtonSave.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
+                try {
+                    quantity = Integer.valueOf(jTextField1.getText());
+                    dialog.setVisible(false);
+                } catch (Exception ex) {
+                    ValidationException v = new ValidationException(ex);
+                    v.addError("Valor inválido");
+                    throw v;
+                }
+            }
+        });
+        jButtonCancel.addActionListener(new ActionListener(this) {
+            @Override
+            public void onActionPerformed(ActionEvent e) throws Exception {
+                quantity = null;
                 dialog.setVisible(false);
             }
         });
-        jButtonCancel.addActionListener(new ActionListener(this){
-            @Override
-            public void onActionPerformed(ActionEvent e) throws Exception {
-                dialog.setVisible(false);
-            }
-        });
+    }
+
+    void setText(String displayName) {
+        this.jLabelProductName.setText(displayName);
+    }
+
+    @Override
+    protected void onHide(AWTEvent e) {
+        quantity = null;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }

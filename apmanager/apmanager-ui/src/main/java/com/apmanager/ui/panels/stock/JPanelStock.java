@@ -149,4 +149,9 @@ public class JPanelStock extends javax.swing.JPanel implements AdminPanel{
             }
         });
     }
+    
+    @Override
+    public void unloadContent() {
+    
+    }
 }

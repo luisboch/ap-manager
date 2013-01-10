@@ -214,4 +214,9 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
     private void addButtonListeners() {
     }
     
+
+    @Override
+    public void unloadContent() {
+    
+    }
 }

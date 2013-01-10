@@ -254,5 +254,9 @@ public class JPanelVehicle extends AbstractAdminPanel<Vehicle,VehicleService> im
         model.setData(results);
     }
     
+    @Override
+    public void unloadContent() {
+    
+    }
     
 }

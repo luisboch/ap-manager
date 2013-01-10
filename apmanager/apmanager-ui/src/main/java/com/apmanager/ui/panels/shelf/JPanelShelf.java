@@ -270,4 +270,9 @@ public class JPanelShelf extends AbstractAdminPanel<Shelf,ShelfService> implemen
     protected void search() {
         search(jTextFieldSearch.getText());
     }
+
+    @Override
+    public void unloadContent() {
+    
+    }
 }

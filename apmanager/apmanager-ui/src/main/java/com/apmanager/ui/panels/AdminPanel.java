@@ -6,5 +6,6 @@ package com.apmanager.ui.panels;
  */
 public interface AdminPanel {
     void loadContent();
+    void unloadContent();
     boolean isEnabled();
 }

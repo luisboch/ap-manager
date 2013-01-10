@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -37,11 +38,29 @@ public class SaleProduct implements Entity {
     private Integer quantity;
 
     @Column(name = "preco_compra")
-    private Float buyPrice;
+    private Float purchuasePrice;
 
     @Column(name = "preco_venda")
     private Float sellPrice;
+    
+    @Transient
+    private Float total;
 
+    public SaleProduct() {
+    }
+
+    public SaleProduct(Product product, Integer quantity) {
+        this(product, quantity, null);
+    }
+    public SaleProduct(Product product, Integer quantity, Sale sale) {
+        this.product = product;
+        this.quantity = quantity;
+        this.purchuasePrice = product.getPurchuasePrice();
+        this.sellPrice = product.getSellPrice();
+        this.sale = sale;
+        this.total  = product.getSellPrice() * quantity;
+    }
+    
     @Override
     public Long getId() {
         return id;
@@ -67,12 +86,12 @@ public class SaleProduct implements Entity {
         this.quantity = quantity;
     }
 
-    public Float getBuyPrice() {
-        return buyPrice;
+    public Float getPurchuasePrice() {
+        return purchuasePrice;
     }
 
-    public void setBuyPrice(Float buyPrice) {
-        this.buyPrice = buyPrice;
+    public void setPurchuasePrice(Float buyPrice) {
+        this.purchuasePrice = buyPrice;
     }
 
     public Float getSellPrice() {
@@ -140,6 +159,14 @@ public class SaleProduct implements Entity {
             return false;
         }
         return true;
+    }
+
+    public Float getTotal() {
+        return total;
+    }
+
+    public void setTotal(Float total) {
+        this.total = total;
     }
 
 }

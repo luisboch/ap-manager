@@ -1,6 +1,9 @@
 package com.apmanager.ui.panels;
 
 import com.apmanager.domain.entity.Product;
+import com.apmanager.domain.entity.Sale;
+import com.apmanager.domain.entity.SaleProduct;
+import com.apmanager.service.impl.SaleService;
 import com.apmanager.ui.beans.ProductCart;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.ConfirmDialog;
@@ -16,8 +19,8 @@ import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
@@ -32,6 +35,10 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     private final JDialogSearchProduct dialog = new JDialogSearchProduct(Application.getInstance(), true);
 
     private final JDialogAlterQuantity dialogQuantity = new JDialogAlterQuantity(Application.getInstance(), true);
+
+    private Sale instance;
+
+    private SaleService service = new SaleService();
 
     /**
      * Creates new form JPanelVenda
@@ -178,23 +185,6 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     // End of variables declaration//GEN-END:variables
 
     private void configureJTableProducts() {
-
-        FieldResolver nameResolver = new FieldResolver(ProductCart.class, "name", "Nome");
-        FieldResolver unitaryValueResolver = new FieldResolver(ProductCart.class, "unitaryValue", "Preço Unitário (R$)");
-        unitaryValueResolver.setFormatter(new Currency());
-        FieldResolver quantityResolver = new FieldResolver(ProductCart.class, "quantity", "Quantidade");
-
-        FieldResolver totalResolver = new FieldResolver(ProductCart.class, "total", "Total (R$)");
-        totalResolver.setFormatter(new Currency());
-
-        ObjectTableModel<ProductCart> towel = new ObjectTableModel<>(
-                new FieldResolver[]{nameResolver, unitaryValueResolver, quantityResolver, totalResolver});
-
-        java.util.List<ProductCart> produtoCarts = new ArrayList<>();
-        
-        towel.setData(produtoCarts);
-
-        jTable1.setModel(towel);
     }
 
     private void configureListener() {
@@ -209,23 +199,35 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                             // Verifica se foi um key Released
                             if (ev.getID() == KeyEvent.KEY_RELEASED) {
                                 if (!dialog.isVisible() && jPanel.isEnabled()) {
-
+                                    jPanel.setEnabled(false);
                                     if (ev.getKeyCode() == KeyEvent.VK_F1) {
 
                                         JOptionPane.showMessageDialog(jPanel, "Texto de ajuda");
 
-                                    } else if (ev.getID() == KeyEvent.KEY_RELEASED && checkKeyAction(ev)) {
-                                        dialog.setText(ev.getKeyChar() + "");
-                                        dialog.setVisible(true);
+                                    } else {
+                                        if (ev.getID() == KeyEvent.KEY_RELEASED && checkKeyAction(ev)) {
+                                            dialog.setText(ev.getKeyChar() + "");
+                                            dialog.setVisible(true);
+                                        } else if (ev.getKeyCode() == KeyEvent.VK_F5) {
+                                            dialog.setText("");
+                                            dialog.setVisible(true);
+                                        }
+
                                         Object object = dialog.getSelected();
                                         if (object != null) {
-                                            addItem(object);
-                                        }
-                                    } else if (ev.getKeyCode() == KeyEvent.VK_F5) {
-                                        dialog.setText("");
-                                        dialog.setVisible(true);
-                                    }
+                                            if (object instanceof Product) {
+                                                dialogQuantity.setText(((Product) object).getDisplayName());
+                                                dialogQuantity.setVisible(true);
+                                                Integer quantity = dialogQuantity.getQuantity();
 
+                                                addItem((Product) object, quantity);
+
+                                            } else {
+                                                addItem(object);
+                                            }
+                                        }
+                                    }
+                                    jPanel.setEnabled(true);
                                 }
                             }
 
@@ -276,9 +278,6 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         return true;
     }
 
-    @Override
-    public void loadContent() {
-    }
 
     @Override
     public void setVisible(boolean aFlag) {
@@ -287,7 +286,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
     private void addButtonListeners() {
         final JPanelSale panel = this;
-        jButtonCloseSale.addActionListener(new ActionListener(jPanel1) {
+        jButtonCloseSale.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 ConfirmDialog confirm = new ConfirmDialog(Application.getInstance());
@@ -326,8 +325,8 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
     private void addItem(Object object) {
         if (object instanceof List) {
-            addItem((List<Product>)object);
-        }else if (object instanceof Product){
+            addItem((List<Product>) object);
+        } else if (object instanceof Product) {
             addItem((Product) object);
         } else {
             throw new IllegalArgumentException(
@@ -335,14 +334,61 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                     + object.getClass());
         }
     }
-    
-    private void addItem(List<Product> products){
-        for(Product p:products){
-            addItem(p);
+
+    private void addItem(List<Product> products) {
+        for (Product p : products) {
+            SaleProduct saleProduct = new SaleProduct(p, 1, instance);
+            instance.getProducts().add(saleProduct);
         }
-        
+        renderTable();
     }
-    private void addItem(Product product){
-        
+
+    private void addItem(Product product, Integer quantity) {
+        SaleProduct p = new SaleProduct(product, quantity, instance);
+        instance.getProducts().add(p);
+        renderTable();
+    }
+
+    private void renderTable() {
+
+        FieldResolver nameResolver = new FieldResolver(SaleProduct.class, "product.name", "Nome");
+        FieldResolver unitaryValueResolver = new FieldResolver(SaleProduct.class, "sellPrice", "Preço Unitário (R$)");
+        unitaryValueResolver.setFormatter(new Currency());
+        FieldResolver quantityResolver = new FieldResolver(SaleProduct.class, "quantity", "Quantidade");
+
+        FieldResolver totalResolver = new FieldResolver(SaleProduct.class, "total", "Total");
+        totalResolver.setFormatter(new Currency());
+
+        ObjectTableModel<SaleProduct> towel = new ObjectTableModel<>(
+                new FieldResolver[]{nameResolver, unitaryValueResolver,
+                    quantityResolver, totalResolver});
+
+        java.util.List<SaleProduct> produtoCarts = instance.getProducts();
+
+        towel.setData(produtoCarts);
+
+        jTable1.setModel(towel);
+    }
+
+    @Override
+    public void unloadContent() {
+        try {
+            this.service.save(instance);
+        } catch (Exception ex) {
+            log.log(Level.SEVERE, ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    @Override
+    public void loadContent() {
+        try {
+            instance = service.loadSale(Application.computer);
+            renderTable();
+        } catch (Exception ex) {
+            log.log(Level.SEVERE, ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+
+        }
     }
 }

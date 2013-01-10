@@ -21,6 +21,10 @@ import javax.persistence.NoResultException;
  */
 public class SaleService extends BasicService<Sale, SaleDAO> {
 
+    public SaleService() {
+        dao = new SaleDAO(emanager);
+    }
+    
     @Override
     public void validate(Sale object, ServiceAction action) throws ValidationException {
         ValidationException v = new ValidationException(Sale.class);

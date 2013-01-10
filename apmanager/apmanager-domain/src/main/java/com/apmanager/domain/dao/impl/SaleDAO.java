@@ -17,8 +17,8 @@ import javax.persistence.Query;
  */
 public class SaleDAO extends GenericDAO<Sale> {
 
-    public SaleDAO(EntityManager em, Class<Sale> targetEntity) {
-        super(em, targetEntity);
+    public SaleDAO(EntityManager em) {
+        super(em, Sale.class);
     }
 
     
@@ -26,7 +26,7 @@ public class SaleDAO extends GenericDAO<Sale> {
     public List<Sale> search(String search) {
         List<Sale> sales;
         String sql = "select distinct s "
-                + "from sale s "
+                + "from Sale s "
                 + "join s.products p "
                 + "where lower(p.name) like (:search) ";
         Query q = em.createQuery(sql);
@@ -38,7 +38,7 @@ public class SaleDAO extends GenericDAO<Sale> {
     public Sale getActive(Computer computer){
         Sale sales;
         String sql = "select distinct s "
-                + "from sale s "
+                + "from Sale s "
                 + "where s.computer = ?1 "
                 + "and s.closed = false "
                 + "and s.canceled = false";

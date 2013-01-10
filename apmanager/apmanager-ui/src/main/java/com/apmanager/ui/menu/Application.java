@@ -32,6 +32,8 @@ public class Application extends javax.swing.JFrame {
 
     private JMenuDinamic selected;
     private final JDialogLoading loading = new JDialogLoading(this);
+    
+    private AdminPanel currentPanel;
 
     private Application() {
         initComponents();
@@ -197,6 +199,11 @@ public class Application extends javax.swing.JFrame {
         if (this.jPanelRootPane.getComponents().length > 0) {
             this.jPanelRootPane.getComponent(0).setVisible(false);
         }
+        
+        if(currentPanel != null){
+            currentPanel.unloadContent();
+        }
+        
         this.jPanelRootPane.removeAll();
         this.jPanelRootPane.add(panel, java.awt.BorderLayout.CENTER);
         final Application frame = this;
@@ -205,6 +212,7 @@ public class Application extends javax.swing.JFrame {
             public void run() {
                 AdminPanel admPanel = (AdminPanel) panel;
                 admPanel.loadContent();
+                currentPanel = admPanel;
             }
         };
 

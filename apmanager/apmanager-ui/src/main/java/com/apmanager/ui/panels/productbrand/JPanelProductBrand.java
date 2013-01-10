@@ -268,4 +268,10 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand, Product
     protected void search() {
         search(jTextFieldSearch.getText());
     }
+    
+
+    @Override
+    public void unloadContent() {
+    
+    }
 }

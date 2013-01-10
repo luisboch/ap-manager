@@ -275,4 +275,9 @@ public class JPanelVehicleBrand extends AbstractAdminPanel<VehicleBrand, Vehicle
     protected void search() {
         search(jTextFieldSearch.getText());
     }
+
+    @Override
+    public void unloadContent() {
+    
+    }
 }
