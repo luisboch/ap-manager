@@ -51,7 +51,14 @@ public class SaleService extends BasicService<Sale, SaleDAO> {
         Sale s;
 
         try {
+            Float total = 0f;
             s = dao.getActive(computer);
+            for(SaleProduct p: s.getProducts()){
+                p.setTotal(p.getQuantity() * p.getSellPrice());
+                total += p.getTotal();
+            }
+            s.setTotal(total);
+           
         } catch (NoResultException ex) {
             s = new Sale();
             s.setOpenDate(new Date());

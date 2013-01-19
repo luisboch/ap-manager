@@ -3,12 +3,13 @@ package com.apmanager.ui.panels;
 import com.apmanager.domain.entity.Product;
 import com.apmanager.domain.entity.Sale;
 import com.apmanager.domain.entity.SaleProduct;
+import com.apmanager.service.exceptions.ValidationException;
 import com.apmanager.service.impl.SaleService;
-import com.apmanager.ui.beans.ProductCart;
 import com.apmanager.ui.components.Button;
 import com.apmanager.ui.components.ConfirmDialog;
 import com.apmanager.ui.components.Table;
 import com.apmanager.ui.formaters.Currency;
+import com.apmanager.ui.listeners.AWTEventListener;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.menu.Application;
 import com.apmanager.ui.menu.JDialogSearchProduct;
@@ -16,13 +17,12 @@ import com.towel.el.FieldResolver;
 import com.towel.swing.table.ObjectTableModel;
 import java.awt.AWTEvent;
 import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
  */
 public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
-    private static final Logger log = Logger.getLogger(JPanelSale.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(JPanelSale.class);
 
     private final JDialogSearchProduct dialog = new JDialogSearchProduct(Application.getInstance(), true);
 
@@ -68,7 +68,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jButtonRemove = new Button(this, KeyEvent.VK_DELETE);
         jButton1 = new Button(this, KeyEvent.VK_F6);
         jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelTotal = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
         jTable1.setBackground(new java.awt.Color(245, 245, 245));
@@ -96,7 +96,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(291, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonRemove)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonAlterQuantity)
@@ -121,7 +121,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel1.setText("00,00");
+        jLabelTotal.setText("00,00");
 
         jLabel2.setText("Total:");
 
@@ -133,7 +133,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
+                .addComponent(jLabelTotal)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -141,7 +141,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(jLabelTotal)
                     .addComponent(jLabel2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -163,7 +163,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addComponent(jScrollPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -176,8 +176,8 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     private javax.swing.JButton jButtonAlterQuantity;
     private javax.swing.JButton jButtonCloseSale;
     private javax.swing.JButton jButtonRemove;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelTotal;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -190,33 +190,38 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     private void configureListener() {
         final JPanelSale jPanel = this;
         Toolkit.getDefaultToolkit().addAWTEventListener(
-                new AWTEventListener() {
+                new AWTEventListener(jPanel) {
                     @Override
-                    public void eventDispatched(AWTEvent event) {
+                    public void onEventDispatched(AWTEvent event) {
                         // Verifica se este painel está sendo exibido
                         if (jPanel.isVisible()) {
                             KeyEvent ev = (KeyEvent) event;
                             // Verifica se foi um key Released
                             if (ev.getID() == KeyEvent.KEY_RELEASED) {
                                 if (!dialog.isVisible() && jPanel.isEnabled()) {
-                                    jPanel.setEnabled(false);
                                     if (ev.getKeyCode() == KeyEvent.VK_F1) {
 
                                         JOptionPane.showMessageDialog(jPanel, "Texto de ajuda");
 
                                     } else {
+                                        jPanel.setEnabled(false);
                                         if (ev.getID() == KeyEvent.KEY_RELEASED && checkKeyAction(ev)) {
                                             dialog.setText(ev.getKeyChar() + "");
                                             dialog.setVisible(true);
                                         } else if (ev.getKeyCode() == KeyEvent.VK_F5) {
                                             dialog.setText("");
                                             dialog.setVisible(true);
+                                        } else {
+                                            // Não pode avançar, pois se passar o dialog de quantidade vai ser exibido diversas vezes.
+                                            jPanel.setEnabled(true);
+                                            return;
                                         }
 
                                         Object object = dialog.getSelected();
                                         if (object != null) {
                                             if (object instanceof Product) {
-                                                dialogQuantity.setText(((Product) object).getDisplayName());
+                                                dialogQuantity.setText(((Product) object).getName());
+                                                dialogQuantity.setQuantity(1);
                                                 dialogQuantity.setVisible(true);
                                                 Integer quantity = dialogQuantity.getQuantity();
 
@@ -226,8 +231,8 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                                                 addItem(object);
                                             }
                                         }
+                                        jPanel.setEnabled(true);
                                     }
-                                    jPanel.setEnabled(true);
                                 }
                             }
 
@@ -278,7 +283,6 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         return true;
     }
 
-
     @Override
     public void setVisible(boolean aFlag) {
         super.setVisible(aFlag);
@@ -291,9 +295,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
             public void onActionPerformed(ActionEvent e) throws Exception {
                 ConfirmDialog confirm = new ConfirmDialog(Application.getInstance());
                 confirm.setText("Você deseja realmente fechar a venda?<br>Esta ação não pode ser desfeita");
-                panel.setEnabled(false);
                 confirm.setVisible(true);
-                panel.setEnabled(true);
                 if (confirm.getResponse()) {
                     log.info("Closing Sale");
                 }
@@ -304,21 +306,30 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
             public void onActionPerformed(ActionEvent e) throws Exception {
                 ConfirmDialog confirm = new ConfirmDialog(Application.getInstance());
                 confirm.setText("Você deseja realmente remover estes itens?<br>Esta ação não pode ser desfeita");
-                panel.setEnabled(false);
+
                 confirm.setVisible(true);
-                panel.setEnabled(true);
                 if (confirm.getResponse()) {
-                    log.info("Removing Itens");
+                    List<SaleProduct> products = ((Table<SaleProduct>) jTable1).getSelecteds();
+                    log.info("Removing {} Itens ", products.size());
+                    removeItems(products);
                 }
+
             }
         });
 
         jButtonAlterQuantity.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                panel.setEnabled(false);
-                dialogQuantity.setVisible(true);
-                panel.setEnabled(true);
+                SaleProduct saleProduct = ((Table<SaleProduct>) jTable1).getSelected();
+                if (saleProduct != null) {
+                    dialogQuantity.setText(saleProduct.getProduct().getDisplayName());
+                    dialogQuantity.setQuantity(saleProduct.getQuantity());
+                    dialogQuantity.setVisible(true);
+                    Integer quantity = dialogQuantity.getQuantity();
+                    if (quantity != null) {
+                        updateItem(saleProduct, quantity);
+                    }
+                }
             }
         });
     }
@@ -327,7 +338,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         if (object instanceof List) {
             addItem((List<Product>) object);
         } else if (object instanceof Product) {
-            addItem((Product) object);
+            addItem((Product) object, null);
         } else {
             throw new IllegalArgumentException(
                     "Expected an instance of Product or instance of List<Product> found "
@@ -340,13 +351,86 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
             SaleProduct saleProduct = new SaleProduct(p, 1, instance);
             instance.getProducts().add(saleProduct);
         }
-        renderTable();
+        reloadUi();
+        try {
+            this.service.save(instance);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     private void addItem(Product product, Integer quantity) {
+        quantity = quantity == null ? 1 : quantity;
         SaleProduct p = new SaleProduct(product, quantity, instance);
-        instance.getProducts().add(p);
+        if (!instance.getProducts().contains(p)) {
+            instance.getProducts().add(p);
+            reloadUi();
+            try {
+                this.service.save(instance);
+            } catch (Exception ex) {
+                log.error(ex.getMessage(), ex);
+                throw new RuntimeException(ex);
+            }
+        } else {
+            ValidationException e = new ValidationException();
+            e.addError("Este produto já foi adicionado! Altere a quantidade");
+        }
+    }
+
+    protected void updateItem(Product product, Integer quantity) {
+        for (SaleProduct p : instance.getProducts()) {
+            if (p.getProduct().equals(product)) {
+                p.setQuantity(quantity);
+                renderTable();
+                try {
+                    this.service.save(instance);
+                } catch (Exception ex) {
+                    log.error(ex.getMessage(), ex);
+                    throw new RuntimeException(ex);
+                }
+                return;
+            }
+        }
+    }
+
+    protected void updateItem(SaleProduct product, Integer quantity) {
+        product.setQuantity(quantity);
+        product.setTotal(quantity * product.getSellPrice());
+        reloadUi();
+        try {
+            this.service.save(instance);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    protected void removeItem(SaleProduct product) {
+        this.instance.getProducts().remove(product);
+        reloadUi();
+        try {
+            this.service.save(instance);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    protected void removeItems(List<SaleProduct> products) {
+        this.instance.getProducts().removeAll(products);
+        reloadUi();
+        try {
+            this.service.save(instance);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    protected void reloadUi() {
         renderTable();
+        this.jLabelTotal.setText(String.format("%5.2f", instance.getTotal()));
     }
 
     private void renderTable() {
@@ -375,18 +459,18 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         try {
             this.service.save(instance);
         } catch (Exception ex) {
-            log.log(Level.SEVERE, ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
             throw new RuntimeException(ex);
         }
     }
-    
+
     @Override
     public void loadContent() {
         try {
             instance = service.loadSale(Application.computer);
-            renderTable();
+            reloadUi();
         } catch (Exception ex) {
-            log.log(Level.SEVERE, ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
             throw new RuntimeException(ex);
 
         }

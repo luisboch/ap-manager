@@ -10,7 +10,7 @@ public class Currency  implements Formatter {
     
     @Override
     public String format(Object obj) {
-        return ""+(obj == null?"0,00":(obj+"").replace(".", ","));
+        return ""+(obj == null?"0,00":String.format("%5.2f",obj).replace(".", ","));
     }
 
     @Override

@@ -29,9 +29,9 @@ public class SaleProduct implements Entity {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "produto_id", nullable = false)
     private Product product;
-    
-    @ManyToOne(optional=false, fetch= FetchType.EAGER)
-    @JoinColumn(name="venda_id", nullable=false)
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "venda_id", nullable = false)
     private Sale sale;
 
     @Column(name = "quantidade")
@@ -42,7 +42,7 @@ public class SaleProduct implements Entity {
 
     @Column(name = "preco_venda")
     private Float sellPrice;
-    
+
     @Transient
     private Float total;
 
@@ -52,15 +52,16 @@ public class SaleProduct implements Entity {
     public SaleProduct(Product product, Integer quantity) {
         this(product, quantity, null);
     }
+
     public SaleProduct(Product product, Integer quantity, Sale sale) {
         this.product = product;
         this.quantity = quantity;
         this.purchuasePrice = product.getPurchuasePrice();
         this.sellPrice = product.getSellPrice();
         this.sale = sale;
-        this.total  = product.getSellPrice() * quantity;
+        this.total = product.getSellPrice() * quantity;
     }
-    
+
     @Override
     public Long getId() {
         return id;
@@ -137,9 +138,9 @@ public class SaleProduct implements Entity {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 31 * hash + Objects.hashCode(this.product);
-        hash = 31 * hash + Objects.hashCode(this.sale);
+        int hash = 5;
+        hash = 17 * hash + Objects.hashCode(this.product);
+        hash = 17 * hash + Objects.hashCode(this.sale);
         return hash;
     }
 
@@ -160,6 +161,7 @@ public class SaleProduct implements Entity {
         }
         return true;
     }
+    
 
     public Float getTotal() {
         return total;
@@ -168,5 +170,4 @@ public class SaleProduct implements Entity {
     public void setTotal(Float total) {
         this.total = total;
     }
-
 }

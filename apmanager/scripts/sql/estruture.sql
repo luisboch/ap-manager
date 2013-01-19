@@ -244,9 +244,9 @@ CREATE TABLE vendas
 CREATE TABLE vendas_produtos
 (
   id serial NOT NULL,
-  preco_compra double precision not null default 0,
-  quantidade integer not null default 0,
-  preco_venda double precision not null default 0, 
+  preco_compra double precision NOT NULL DEFAULT 0,
+  quantidade integer NOT NULL DEFAULT 0,
+  preco_venda double precision NOT NULL DEFAULT 0,
   produto_id bigint NOT NULL,
   venda_id bigint NOT NULL,
   CONSTRAINT vendas_produtos_pkey PRIMARY KEY (id ),
@@ -255,5 +255,8 @@ CREATE TABLE vendas_produtos
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT fk_vendas_produtos_venda_id FOREIGN KEY (venda_id)
       REFERENCES vendas (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-);
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT vendas_produtos_produto_id_venda_id_key UNIQUE (produto_id , venda_id )
+)
+
+ALTER TABLE vendas_produtos ADD UNIQUE (produto_id, venda_id);

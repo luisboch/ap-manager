@@ -51,7 +51,8 @@ public class Table<T extends Entity> extends javax.swing.JTable {
             ObjectTableModel model1 = (ObjectTableModel) model;
             return model1.getList(selectedsIndex);
         }
-        throw new IllegalStateException("Not implemented to another table model, only to ObjectTableModel.");
+        throw new IllegalStateException(
+                "Not implemented to another table model, only to ObjectTableModel.");
     }
 
     public T getSelected() {
@@ -66,6 +67,7 @@ public class Table<T extends Entity> extends javax.swing.JTable {
         } else {
             return null;
         }
-        throw new IllegalStateException("Not implemented to another table model, only to ObjectTableModel.");
+        throw new IllegalStateException(
+                "Not implemented to another table model, only to ObjectTableModel.");
     }
 }

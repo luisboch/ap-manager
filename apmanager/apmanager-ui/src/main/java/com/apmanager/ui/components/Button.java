@@ -1,10 +1,10 @@
 package com.apmanager.ui.components;
 
+import com.apmanager.ui.listeners.AWTEventListener;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -81,9 +81,9 @@ public class Button extends JButton {
     private void addListener() {
         final JButton jbutton = this;
         Toolkit.getDefaultToolkit().addAWTEventListener(
-                new AWTEventListener() {
+                new AWTEventListener(parent) {
                     @Override
-                    public void eventDispatched(AWTEvent event) {
+                    public void onEventDispatched(AWTEvent event) {
                         // Verifica se este painel está sendo exibido
                         if (jbutton.isVisible() && parent.isVisible() && parent.isEnabled()) {
                             KeyEvent ev = (KeyEvent) event;

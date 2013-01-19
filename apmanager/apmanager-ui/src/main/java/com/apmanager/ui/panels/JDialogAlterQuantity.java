@@ -43,7 +43,7 @@ public class JDialogAlterQuantity extends JDialogEscape {
         jLabel1 = new javax.swing.JLabel();
         jLabelProductName = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldQtd = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jButtonSave = new Button(this, KeyEvent.VK_F8);
         jButtonCancel = new Button(this, KeyEvent.VK_F9);
@@ -57,11 +57,12 @@ public class JDialogAlterQuantity extends JDialogEscape {
         jLabel1.setText("Produto:");
 
         jLabelProductName.setText("Oleo ---------------------------------");
+        jLabelProductName.setMaximumSize(new java.awt.Dimension(999999, 15));
 
         jLabel3.setText("Quantidade:");
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jTextField1.setText("15");
+        jTextFieldQtd.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldQtd.setText("15");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -75,9 +76,9 @@ public class JDialogAlterQuantity extends JDialogEscape {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldQtd, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jLabelProductName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabelProductName, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -85,11 +86,11 @@ public class JDialogAlterQuantity extends JDialogEscape {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabelProductName))
+                    .addComponent(jLabelProductName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldQtd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -151,7 +152,7 @@ public class JDialogAlterQuantity extends JDialogEscape {
     private javax.swing.JLabel jLabelProductName;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextFieldQtd;
     // End of variables declaration//GEN-END:variables
 
     private void addListeners() {
@@ -160,7 +161,7 @@ public class JDialogAlterQuantity extends JDialogEscape {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
                 try {
-                    quantity = Integer.valueOf(jTextField1.getText());
+                    quantity = Integer.valueOf(jTextFieldQtd.getText());
                     dialog.setVisible(false);
                 } catch (Exception ex) {
                     ValidationException v = new ValidationException(ex);
@@ -193,5 +194,6 @@ public class JDialogAlterQuantity extends JDialogEscape {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+        this.jTextFieldQtd.setText(quantity.toString());
     }
 }

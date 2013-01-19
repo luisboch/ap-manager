@@ -35,7 +35,6 @@ public abstract class JDialogEdit<T extends Entity, S extends BasicService> exte
             log.info("Creating new instance {}", instance.toString());
             getService().save(instance);
         } else {
-            buildObject();
             log.info("Updating {}", instance.toString());
             getService().update(instance);
         }

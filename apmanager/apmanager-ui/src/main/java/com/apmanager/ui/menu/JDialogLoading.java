@@ -41,6 +41,7 @@ public class JDialogLoading extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autopecas/images/ajax-loader.gif"))); // NOI18N
         jLabel1.setText("Carregando...");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -56,7 +57,7 @@ public class JDialogLoading extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
