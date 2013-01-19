@@ -24,7 +24,7 @@ public class SaleService extends BasicService<Sale, SaleDAO> {
     public SaleService() {
         dao = new SaleDAO(emanager);
     }
-    
+
     @Override
     public void validate(Sale object, ServiceAction action) throws ValidationException {
         ValidationException v = new ValidationException(Sale.class);
@@ -44,21 +44,36 @@ public class SaleService extends BasicService<Sale, SaleDAO> {
         if (!v.isEmpty()) {
             throw v;
         }
+
+        // Calcula o total
+
+        Float total = 0f;
+
+        for (SaleProduct p : object.getProducts()) {
+            p.setTotal(p.getQuantity() * p.getSellPrice());
+            total += p.getTotal();
+        }
+
+        object.setTotal(total);
+
     }
 
     public Sale loadSale(Computer computer) throws Exception {
-        
+
         Sale s;
 
         try {
-            Float total = 0f;
             s = dao.getActive(computer);
-            for(SaleProduct p: s.getProducts()){
+
+            Float total = 0f;
+
+            for (SaleProduct p : s.getProducts()) {
                 p.setTotal(p.getQuantity() * p.getSellPrice());
                 total += p.getTotal();
             }
+
             s.setTotal(total);
-           
+
         } catch (NoResultException ex) {
             s = new Sale();
             s.setOpenDate(new Date());

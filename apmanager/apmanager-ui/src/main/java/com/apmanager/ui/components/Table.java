@@ -40,6 +40,7 @@ public class Table<T extends Entity> extends javax.swing.JTable {
         t.setEnabled(false);
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) t.getDefaultRenderer();
         renderer.setHorizontalAlignment(JLabel.CENTER);
+        this.getTableHeader().setFocusable(false);
         
     }
 

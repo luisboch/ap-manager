@@ -11,6 +11,7 @@ import com.apmanager.ui.components.Table;
 import com.apmanager.ui.formaters.Currency;
 import com.apmanager.ui.listeners.AWTEventListener;
 import com.apmanager.ui.listeners.ActionListener;
+import com.apmanager.ui.listeners.KeyListener;
 import com.apmanager.ui.menu.Application;
 import com.apmanager.ui.menu.JDialogSearchProduct;
 import com.towel.el.FieldResolver;
@@ -61,7 +62,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new Table();
+        jTableResults = new Table();
         jPanel1 = new javax.swing.JPanel();
         jButtonCloseSale = new Button(this, KeyEvent.VK_F8);
         jButtonAlterQuantity = new Button(this, KeyEvent.VK_F7);
@@ -71,15 +72,15 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jLabelTotal = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
-        jTable1.setBackground(new java.awt.Color(245, 245, 245));
-        jTable1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jTable1.setForeground(new java.awt.Color(0, 51, 51));
-        jTable1.setGridColor(new java.awt.Color(152, 177, 255));
-        jTable1.setSelectionBackground(new java.awt.Color(225, 220, 84));
-        jTable1.setSelectionForeground(new java.awt.Color(0, 51, 51));
-        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTable1);
+        jTableResults.setBackground(new java.awt.Color(245, 245, 245));
+        jTableResults.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jTableResults.setForeground(new java.awt.Color(0, 51, 51));
+        jTableResults.setGridColor(new java.awt.Color(152, 177, 255));
+        jTableResults.setSelectionBackground(new java.awt.Color(225, 220, 84));
+        jTableResults.setSelectionForeground(new java.awt.Color(0, 51, 51));
+        jTableResults.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTableResults.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(jTableResults);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -181,7 +182,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableResults;
     // End of variables declaration//GEN-END:variables
 
     private void configureJTableProducts() {
@@ -309,7 +310,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
                 confirm.setVisible(true);
                 if (confirm.getResponse()) {
-                    List<SaleProduct> products = ((Table<SaleProduct>) jTable1).getSelecteds();
+                    List<SaleProduct> products = ((Table<SaleProduct>) jTableResults).getSelecteds();
                     log.info("Removing {} Itens ", products.size());
                     removeItems(products);
                 }
@@ -320,7 +321,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jButtonAlterQuantity.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                SaleProduct saleProduct = ((Table<SaleProduct>) jTable1).getSelected();
+                SaleProduct saleProduct = ((Table<SaleProduct>) jTableResults).getSelected();
                 if (saleProduct != null) {
                     dialogQuantity.setText(saleProduct.getProduct().getDisplayName());
                     dialogQuantity.setQuantity(saleProduct.getQuantity());
@@ -332,6 +333,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                 }
             }
         });
+        
     }
 
     private void addItem(Object object) throws ValidationException{
@@ -452,7 +454,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
         towel.setData(produtoCarts);
 
-        jTable1.setModel(towel);
+        jTableResults.setModel(towel);
     }
 
     @Override
