@@ -1,5 +1,6 @@
 package com.apmanager.ui.listeners;
 
+import com.apmanager.service.exceptions.ValidationException;
 import java.awt.AWTEvent;
 import java.awt.Component;
 
@@ -23,5 +24,5 @@ public abstract class AWTEventListener extends AbstractEventListener implements 
         }
     }
 
-    protected abstract void onEventDispatched(AWTEvent event);
+    protected abstract void onEventDispatched(AWTEvent event) throws ValidationException;
 }

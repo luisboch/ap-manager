@@ -192,7 +192,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         Toolkit.getDefaultToolkit().addAWTEventListener(
                 new AWTEventListener(jPanel) {
                     @Override
-                    public void onEventDispatched(AWTEvent event) {
+                    public void onEventDispatched(AWTEvent event) throws ValidationException {
                         // Verifica se este painel está sendo exibido
                         if (jPanel.isVisible()) {
                             KeyEvent ev = (KeyEvent) event;
@@ -334,7 +334,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         });
     }
 
-    private void addItem(Object object) {
+    private void addItem(Object object) throws ValidationException{
         if (object instanceof List) {
             addItem((List<Product>) object);
         } else if (object instanceof Product) {
@@ -360,7 +360,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         }
     }
 
-    private void addItem(Product product, Integer quantity) {
+    private void addItem(Product product, Integer quantity) throws ValidationException{
         quantity = quantity == null ? 1 : quantity;
         SaleProduct p = new SaleProduct(product, quantity, instance);
         if (!instance.getProducts().contains(p)) {
@@ -375,6 +375,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         } else {
             ValidationException e = new ValidationException();
             e.addError("Este produto já foi adicionado! Altere a quantidade");
+            throw e;
         }
     }
 
