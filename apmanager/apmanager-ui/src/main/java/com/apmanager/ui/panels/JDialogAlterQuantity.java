@@ -195,5 +195,16 @@ public class JDialogAlterQuantity extends JDialogEscape {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
         this.jTextFieldQtd.setText(quantity.toString());
+        this.jTextFieldQtd.setSelectionStart(0);
+        this.jTextFieldQtd.setSelectionEnd(jTextFieldQtd.getText().length());
     }
+
+    @Override
+    public void setVisible(boolean b) {
+        if(b){
+            jTextFieldQtd.requestFocus();
+        }
+        super.setVisible(b);
+    }
+    
 }

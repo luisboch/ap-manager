@@ -68,28 +68,34 @@ public class ProductService extends BasicService<Product, ProductDAO> {
     }
 
     public synchronized void generateNewCode(Product product) throws Exception {
-        if (product.getAdditionalCode() != null && 
-                !product.getAdditionalCode().equals("")) {
-            final ValidationException ex = new ValidationException();
-            ex.addError("Este produto já possui código adicional",
-                    "additionalCode", "product.have.additional.code");
+        try {
+            if (product.getAdditionalCode() != null
+                    && !product.getAdditionalCode().equals("")) {
+                final ValidationException ex = new ValidationException();
+                ex.addError("Este produto já possui código adicional",
+                        "additionalCode", "product.have.additional.code");
+                throw ex;
+            }
+            String code = this.dao.getNextValidCode();
+            product.setAdditionalCode(code);
+            this.save(product);
+        } catch (ValidationException ex) {
+            product.setAdditionalCode(null);
             throw ex;
         }
-        String code = this.dao.getNextValidCode();
-        product.setAdditionalCode(code);
-        this.save(product);
     }
-    
-    public List<Product> search(String search, Integer maxResults, 
-            Integer firstResult){
+
+    public List<Product> search(String search, Integer maxResults,
+            Integer firstResult) {
         return dao.search(search, maxResults, firstResult);
     }
-    
-    public List<Product> search(String search, Integer maxResults){
-        
+
+    public List<Product> search(String search, Integer maxResults) {
+
         return dao.search(search, maxResults);
     }
-    public List<Product> getProductsLessQuantity(){
+
+    public List<Product> getProductsLessQuantity() {
         return dao.getProductsLessQuantity();
     }
 }

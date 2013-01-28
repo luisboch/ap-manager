@@ -11,7 +11,6 @@ import com.apmanager.ui.components.Table;
 import com.apmanager.ui.formaters.Currency;
 import com.apmanager.ui.listeners.AWTEventListener;
 import com.apmanager.ui.listeners.ActionListener;
-import com.apmanager.ui.listeners.KeyListener;
 import com.apmanager.ui.menu.Application;
 import com.apmanager.ui.menu.JDialogSearchProduct;
 import com.towel.el.FieldResolver;
@@ -21,6 +20,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jButtonCloseSale = new Button(this, KeyEvent.VK_F8);
         jButtonAlterQuantity = new Button(this, KeyEvent.VK_F7);
         jButtonRemove = new Button(this, KeyEvent.VK_DELETE);
-        jButton1 = new Button(this, KeyEvent.VK_F6);
+        jButtonBudget = new Button(this, KeyEvent.VK_F6);
         jPanel2 = new javax.swing.JPanel();
         jLabelTotal = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -90,7 +90,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
         jButtonRemove.setText("Remover");
 
-        jButton1.setText("Orçamento");
+        jButtonBudget.setText("Orçamento");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -102,7 +102,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonAlterQuantity)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(jButtonBudget)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonCloseSale)
                 .addContainerGap())
@@ -115,7 +115,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                     .addComponent(jButtonCloseSale)
                     .addComponent(jButtonAlterQuantity)
                     .addComponent(jButtonRemove)
-                    .addComponent(jButton1))
+                    .addComponent(jButtonBudget))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -173,8 +173,8 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonAlterQuantity;
+    private javax.swing.JButton jButtonBudget;
     private javax.swing.JButton jButtonCloseSale;
     private javax.swing.JButton jButtonRemove;
     private javax.swing.JLabel jLabel2;
@@ -226,7 +226,9 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                                                 dialogQuantity.setVisible(true);
                                                 Integer quantity = dialogQuantity.getQuantity();
 
-                                                addItem((Product) object, quantity);
+                                                if (quantity != null) {
+                                                    addItem((Product) object, quantity);
+                                                }
 
                                             } else {
                                                 addItem(object);
@@ -334,9 +336,25 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
             }
         });
         
+        jButtonBudget.addActionListener(new ActionListener(this) {
+            @Override
+            protected void onActionPerformed(ActionEvent e) throws Exception {
+                Application.load(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException ex) {
+                            log.error(ex.getMessage(), ex);
+                        }
+                    }
+                });
+            }
+        });
     }
 
-    private void addItem(Object object) throws ValidationException{
+    private void addItem(Object object) throws ValidationException {
         if (object instanceof List) {
             addItem((List<Product>) object);
         } else if (object instanceof Product) {
@@ -362,7 +380,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         }
     }
 
-    private void addItem(Product product, Integer quantity) throws ValidationException{
+    private void addItem(Product product, Integer quantity) throws ValidationException {
         quantity = quantity == null ? 1 : quantity;
         SaleProduct p = new SaleProduct(product, quantity, instance);
         if (!instance.getProducts().contains(p)) {
@@ -400,35 +418,35 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     protected void updateItem(SaleProduct product, Integer quantity) {
         product.setQuantity(quantity);
         product.setTotal(quantity * product.getSellPrice());
-        reloadUi();
         try {
             this.service.save(instance);
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw new RuntimeException(ex);
         }
+        reloadUi();
     }
 
     protected void removeItem(SaleProduct product) {
         this.instance.getProducts().remove(product);
-        reloadUi();
         try {
             this.service.save(instance);
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw new RuntimeException(ex);
         }
+        reloadUi();
     }
 
     protected void removeItems(List<SaleProduct> products) {
         this.instance.getProducts().removeAll(products);
-        reloadUi();
         try {
             this.service.save(instance);
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw new RuntimeException(ex);
         }
+        reloadUi();
     }
 
     protected void reloadUi() {
