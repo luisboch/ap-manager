@@ -7,3 +7,6 @@
 /apmanager-domain/target/
 /apmanager-ui/target/
 /apmanager-service/target/
+/apmanager/apmanager-domain/target/
+/apmanager/apmanager-service/target/
+/apmanager/apmanager-ui/target/
