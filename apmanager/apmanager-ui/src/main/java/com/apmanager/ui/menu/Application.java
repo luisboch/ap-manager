@@ -10,14 +10,14 @@ import com.apmanager.ui.panels.AdminPanel;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 //import org.java.ayatana.ApplicationMenu;
 
 /**
@@ -25,14 +25,18 @@ import javax.swing.KeyStroke;
  * @author ADMIN
  */
 public class Application extends javax.swing.JFrame {
-    
+
     public static Computer computer;
-    private static final Logger log = Logger.getLogger(Application.class.getSimpleName());
+
+    private static final Logger log =
+            LoggerFactory.getLogger(Application.class);
+
     private static Application instance;
 
     private JMenuDinamic selected;
+
     private final JDialogLoading loading = new JDialogLoading(this);
-    
+
     private AdminPanel currentPanel;
 
     private Application() {
@@ -199,11 +203,11 @@ public class Application extends javax.swing.JFrame {
         if (this.jPanelRootPane.getComponents().length > 0) {
             this.jPanelRootPane.getComponent(0).setVisible(false);
         }
-        
-        if(currentPanel != null){
+
+        if (currentPanel != null) {
             currentPanel.unloadContent();
         }
-        
+
         this.jPanelRootPane.removeAll();
         this.jPanelRootPane.add(panel, java.awt.BorderLayout.CENTER);
         final Application frame = this;
@@ -224,8 +228,7 @@ public class Application extends javax.swing.JFrame {
         panel.setVisible(true);
         frame.revalidate();
         frame.repaint();
-        log.log(
-                Level.INFO, "panel '{'{0}'}' has add", panel.toString());
+        log.info("panel [{}] has add", panel.getName());
     }
 
     public static Application getInstance() {
@@ -245,7 +248,7 @@ public class Application extends javax.swing.JFrame {
         try {
             //ApplicationMenu.tryInstall(this);
         } catch (Throwable e) {
-            log.log(Level.INFO, "Error on integrate to Ubuntu Unity: {0}",
+            log.info("Error on integrate to Ubuntu Unity: {}",
                     e.getMessage());
         }
     }
@@ -255,12 +258,12 @@ public class Application extends javax.swing.JFrame {
         super.setTitle("APManager - " + title);
         jLabelTitle.setText(title);
     }
-    public static void load(Runnable run){
+
+    public static void load(Runnable run) {
         instance.loading.action(run);
         instance.loading.setVisible(true);
     }
-    
-    
+
     public static void showMessage(String salvo_com_sucesso) {
         // TODO incorporar mensagems ao aplicativo.
     }

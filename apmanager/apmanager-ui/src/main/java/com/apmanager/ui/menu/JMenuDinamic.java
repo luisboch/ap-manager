@@ -34,6 +34,7 @@ public class JMenuDinamic extends JMenuItem implements ActionListener {
         if (panel == null) {
             try {
                 panel = type.getDestined().newInstance();
+                panel.setName(type.getTitle());
             } catch (InstantiationException | IllegalAccessException e) {
                 log.error(e.getMessage(), e);
                 JOptionPane.showMessageDialog(app,
