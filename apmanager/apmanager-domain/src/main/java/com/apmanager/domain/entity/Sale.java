@@ -47,7 +47,7 @@ public class Sale implements Entity {
     private boolean closed = false;
 
     @OneToMany(mappedBy = "sale",
-    cascade = CascadeType.ALL, orphanRemoval = true, fetch= FetchType.LAZY)
+    cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<SaleProduct> products;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -137,6 +137,19 @@ public class Sale implements Entity {
     @Override
     public void setStatus(boolean newStatus) {
         // Do nothing
+    }
+
+    public int getProductQuantity() {
+        if (products == null) {
+            return 0;
+        }
+        int total = 0;
+        for (SaleProduct p : products) {
+            if (p.getQuantity() != null) {
+                total += p.getQuantity();
+            }
+        }
+        return total;
     }
 
     @Override

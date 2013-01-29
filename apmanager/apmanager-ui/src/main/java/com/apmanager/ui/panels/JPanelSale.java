@@ -20,7 +20,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
-import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     private final JDialogSearchProduct dialog = new JDialogSearchProduct(Application.getInstance(), true);
 
     private final JDialogAlterQuantity dialogQuantity = new JDialogAlterQuantity(Application.getInstance(), true);
-
+    private final JDialogCloseSale dialogCloseSale = new JDialogCloseSale(Application.getInstance(), true);
     private Sale instance;
 
     private SaleService service = new SaleService();
@@ -296,11 +295,10 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         jButtonCloseSale.addActionListener(new ActionListener(this) {
             @Override
             public void onActionPerformed(ActionEvent e) throws Exception {
-                ConfirmDialog confirm = new ConfirmDialog(Application.getInstance());
-                confirm.setText("Você deseja realmente fechar a venda?<br>Esta ação não pode ser desfeita");
-                confirm.setVisible(true);
-                if (confirm.getResponse()) {
-                    log.info("Closing Sale");
+                dialogCloseSale.setSale(instance);
+                dialogCloseSale.setVisible(true);
+                if(!dialogCloseSale.isCanceled()){
+                    log.info("closing sale");
                 }
             }
         });
