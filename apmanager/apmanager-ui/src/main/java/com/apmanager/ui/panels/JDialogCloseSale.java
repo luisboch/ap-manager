@@ -5,6 +5,9 @@
 package com.apmanager.ui.panels;
 
 import com.apmanager.domain.entity.Sale;
+import com.apmanager.domain.exceptions.OutOfDiscountException;
+import com.apmanager.service.impl.SaleService;
+import com.apmanager.ui.components.Button;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.listeners.FocusListener;
 import com.apmanager.ui.listeners.KeyListener;
@@ -14,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,9 +25,13 @@ import java.awt.event.MouseEvent;
  */
 public class JDialogCloseSale extends javax.swing.JDialog {
 
+    private SaleService service;
+
     private Sale current;
 
     private boolean canceled = false;
+
+    private Float selectedValue;
 
     /**
      * Creates new form JDialogCloseSale
@@ -33,7 +41,7 @@ public class JDialogCloseSale extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(parent);
         configureListener();
-
+        service = new SaleService();
     }
 
     /**
@@ -50,10 +58,10 @@ public class JDialogCloseSale extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabelTotalValue = new javax.swing.JLabel();
         jLabelQtd = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextFieldNewValue = new javax.swing.JTextField();
         jLabelSimbol = new javax.swing.JLabel();
-        jButtonCloseSale = new javax.swing.JButton();
-        jButtonCancelar = new javax.swing.JButton();
+        jButtonCloseSale = new Button(this, KeyEvent.VK_F6);
+        jButtonCancelar = new Button(this, KeyEvent.VK_F8);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -70,7 +78,7 @@ public class JDialogCloseSale extends javax.swing.JDialog {
 
         jLabelQtd.setText("7");
 
-        jTextField1.setText("35,60");
+        jTextFieldNewValue.setText("35,60");
 
         jLabelSimbol.setText("R$");
 
@@ -93,7 +101,7 @@ public class JDialogCloseSale extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addComponent(jLabelTotalValue, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldNewValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(101, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -103,7 +111,7 @@ public class JDialogCloseSale extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabelTotalValue, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldNewValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelSimbol))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -154,11 +162,13 @@ public class JDialogCloseSale extends javax.swing.JDialog {
     private javax.swing.JLabel jLabelSimbol;
     private javax.swing.JLabel jLabelTotalValue;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextFieldNewValue;
     // End of variables declaration//GEN-END:variables
 
     private void configureListener() {
+
         final JDialogCloseSale dialog = this;
+
         jLabelTotalValue.addMouseListener(new MouseListener(dialog) {
             @Override
             public void onMouseRelease(MouseEvent e) {
@@ -168,53 +178,62 @@ public class JDialogCloseSale extends javax.swing.JDialog {
             }
         });
 
-        jTextField1.addFocusListener(new FocusListener(dialog) {
+        jTextFieldNewValue.addFocusListener(new FocusListener(dialog) {
             @Override
             public void onBlur(FocusEvent e) throws Exception {
                 setEditing(false);
             }
         });
-        jTextField1.addKeyListener(new KeyListener(dialog) {
+
+        jTextFieldNewValue.addKeyListener(new KeyListener(dialog) {
             @Override
             public void onKeyRelease(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    setEditing(false);
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    setNewValue();
                     setEditing(false);
                 }
             }
         });
-        this.addMouseListener(new MouseListener(dialog){
+
+        this.addMouseListener(new MouseListener(dialog) {
             @Override
             public void onMouseClick(MouseEvent e) {
-                if(!e.getSource().equals(jTextField1)){
+                if (!e.getSource().equals(jTextFieldNewValue)) {
                     setEditing(false);
                 }
             }
-            
         });
-        
+
         jButtonCancelar.addActionListener(new ActionListener(this) {
             @Override
             protected void onActionPerformed(ActionEvent e) throws Exception {
                 dialog.setVisible(false);
             }
         });
-        
+
         jButtonCloseSale.addActionListener(new ActionListener(dialog) {
             @Override
             protected void onActionPerformed(ActionEvent e) throws Exception {
                 canceled = false;
-                dialog.setVisible(false);
+                current.setTotal(selectedValue);
+                try {
+                    service.closeSale(current);
+                    dialog.setVisible(false);
+                } catch (OutOfDiscountException ex) {
+                    showDiscountInfo(ex);
+                }
             }
         });
     }
 
     private void setEditing(boolean editing) {
         jLabelTotalValue.setVisible(!editing);
-        jTextField1.setVisible(editing);
-        if(!editing){
-            current.setTotal(NumberUtils.toFloat(jTextField1.getText()));
-            jLabelTotalValue.setText(jTextField1.getText());
-        }
+        jTextFieldNewValue.setVisible(editing);
+        current.setTotal(NumberUtils.toFloat(jTextFieldNewValue.getText()));
+        jLabelTotalValue.setText(jTextFieldNewValue.getText());
+
     }
 
     public boolean isCanceled() {
@@ -224,13 +243,36 @@ public class JDialogCloseSale extends javax.swing.JDialog {
     private void loadValues() {
         String value = NumberUtils.toString(current.getTotal());
         this.jLabelTotalValue.setText(value);
-        this.jTextField1.setText(value);
+        this.jTextFieldNewValue.setText(value);
         jLabelQtd.setText(String.valueOf(current.getProductQuantity()));
     }
-    
-    public void setSale(Sale sale){
+
+    public void setSale(Sale sale) {
         current = sale;
+        selectedValue = current.getTotal();
         loadValues();
         setEditing(false);
+    }
+
+    private void setNewValue() {
+        try {
+
+            selectedValue = NumberUtils.toFloat(jTextFieldNewValue.getText());
+            service.checkTotal(current, selectedValue);
+
+        } catch (OutOfDiscountException ex) {
+            showDiscountInfo(ex);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Valor inválido");
+        }
+    }
+
+    private void showDiscountInfo(OutOfDiscountException ex) {
+        JOptionPane.showMessageDialog(this, "Valor selecionado está abaixo do valor de desconto máximo\n"
+                + "Valor do desconto máximo:\t\tR$ " + NumberUtils.toString(ex.getMinValue()) + "\n"
+                + "Valor do percentual máximo de desconto:\t" + ex.getMaxDiscountPercent() + "%\n"
+                + "Valor do percentual aplicado:\t\t" + ex.getCurrentDiscoutPercent() + "%",
+                "Atenção", JOptionPane.WARNING_MESSAGE);
     }
 }

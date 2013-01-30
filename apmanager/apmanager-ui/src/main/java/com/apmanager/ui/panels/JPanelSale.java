@@ -298,7 +298,9 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                 dialogCloseSale.setSale(instance);
                 dialogCloseSale.setVisible(true);
                 if(!dialogCloseSale.isCanceled()){
-                    log.info("closing sale");
+                    log.info("sale is closed");
+                    instance = service.loadSale(Application.computer);
+                    reloadUi();
                 }
             }
         });
@@ -338,7 +340,6 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
             @Override
             protected void onActionPerformed(ActionEvent e) throws Exception {
                 Application.load(new Runnable() {
-
                     @Override
                     public void run() {
                         try {

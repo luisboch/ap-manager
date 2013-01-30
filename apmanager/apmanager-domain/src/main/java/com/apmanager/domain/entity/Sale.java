@@ -1,5 +1,6 @@
 package com.apmanager.domain.entity;
 
+import com.apmanager.domain.exceptions.OutOfDiscountException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;

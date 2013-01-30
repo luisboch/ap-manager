@@ -14,9 +14,11 @@ import org.slf4j.LoggerFactory;
  * @author luis
  */
 public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
-    
-    private static final Logger log =  LoggerFactory.getLogger(BasicService.class);
+
+    private static final Logger log = LoggerFactory.getLogger(BasicService.class);
+
     protected EntityManager emanager = Provider.getEntityManager();
+
     protected D dao;
 
     /**
@@ -32,7 +34,7 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
             dao.save(object);
             emanager.getTransaction().commit();
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
             emanager.getTransaction().rollback();
             throw e;
         }
@@ -46,22 +48,36 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
      * @throws Exception
      */
     public void update(T object) throws Exception {
-        validate(object, ServiceAction.UPDATE);
+        update(object, false);
+
+    }
+
+    /**
+     * Used when neet to save instance whitout valitation,
+     * When force is false, validation fase is executed.
+     * @param object
+     * @param force
+     * @throws Exception 
+     */
+    protected void update(T object, boolean force) throws Exception {
+        if (!force) {
+            validate(object, ServiceAction.UPDATE);
+        }
         emanager.getTransaction().begin();
         try {
             dao.update(object);
             emanager.getTransaction().commit();
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
             emanager.getTransaction().rollback();
             throw e;
         }
-
     }
 
     /**
-     * Delete an instance of com.apmanager.domain.entity.Entity
-     * Waring: this method only set objecto to active = false.
+     * Delete an instance of com.apmanager.domain.entity.Entity Waring: this
+     * method only set objecto to active = false.
+     *
      * @param object
      * @throws Exception
      */
@@ -72,7 +88,7 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
             dao.update(object);
             emanager.getTransaction().commit();
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
             emanager.getTransaction().rollback();
             throw e;
         }
@@ -93,7 +109,7 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
                 dao.save(obj);
             }
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
             emanager.getTransaction().rollback();
             throw e;
         }
@@ -115,7 +131,7 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
                 dao.update(obj);
             }
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
             emanager.getTransaction().rollback();
             throw e;
         }
@@ -124,31 +140,34 @@ public abstract class BasicService<T extends Entity, D extends GenericDAO<T>> {
     }
 
     /**
-     * Delete an List of com.apmanager.domain.entity.Entity
-     * Waring: this method only set objecto to active = false.
+     * Delete an List of com.apmanager.domain.entity.Entity Waring: this method
+     * only set objecto to active = false.
+     *
      * @param objects
      * @throws Exception
      */
     public void delete(List<T> objects) throws Exception {
         emanager.getTransaction().begin();
-         try {
+        try {
             for (T obj : objects) {
                 obj.setStatus(false);
                 dao.update(obj);
             }
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
             emanager.getTransaction().rollback();
             throw e;
         }
         emanager.getTransaction().commit();
     }
-    public T getById(Serializable id){
+
+    public T getById(Serializable id) {
         return dao.getById(id);
     }
-    public List<T> search(String search){
+
+    public List<T> search(String search) {
         return dao.search(search);
     }
-    
+
     public abstract void validate(T object, ServiceAction action) throws ValidationException;
 }
