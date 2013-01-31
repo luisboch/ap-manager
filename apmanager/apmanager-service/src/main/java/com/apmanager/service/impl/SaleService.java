@@ -137,6 +137,11 @@ public class SaleService extends BasicService<Sale, SaleDAO> {
 
     public void closeSale(Sale sale) throws Exception {
         checkTotal(sale, sale.getTotal());
+        if(sale.isEmpty()){
+            ValidationException v = new ValidationException(Sale.class);
+            v.addError("Esta venda está vazia, não pode ser fechada!");
+            throw v;
+        }
         validate(sale, ServiceAction.UPDATE);
         sale.setCanceled(false);
         sale.setCloseDate(new Date());

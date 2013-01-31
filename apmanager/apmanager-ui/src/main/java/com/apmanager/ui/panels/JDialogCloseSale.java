@@ -8,6 +8,7 @@ import com.apmanager.domain.entity.Sale;
 import com.apmanager.domain.exceptions.OutOfDiscountException;
 import com.apmanager.service.impl.SaleService;
 import com.apmanager.ui.components.Button;
+import com.apmanager.ui.components.abstractcomps.JDialogEscape;
 import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.listeners.FocusListener;
 import com.apmanager.ui.listeners.KeyListener;
@@ -23,7 +24,7 @@ import javax.swing.JOptionPane;
  *
  * @author luis
  */
-public class JDialogCloseSale extends javax.swing.JDialog {
+public class JDialogCloseSale extends JDialogEscape {
 
     private SaleService service;
 
@@ -231,8 +232,7 @@ public class JDialogCloseSale extends javax.swing.JDialog {
     private void setEditing(boolean editing) {
         jLabelTotalValue.setVisible(!editing);
         jTextFieldNewValue.setVisible(editing);
-        current.setTotal(NumberUtils.toFloat(jTextFieldNewValue.getText()));
-        jLabelTotalValue.setText(jTextFieldNewValue.getText());
+        jTextFieldNewValue.setText(jLabelTotalValue.getText());
 
     }
 
@@ -259,6 +259,7 @@ public class JDialogCloseSale extends javax.swing.JDialog {
 
             selectedValue = NumberUtils.toFloat(jTextFieldNewValue.getText());
             service.checkTotal(current, selectedValue);
+            jLabelTotalValue.setText(jTextFieldNewValue.getText());
 
         } catch (OutOfDiscountException ex) {
             showDiscountInfo(ex);

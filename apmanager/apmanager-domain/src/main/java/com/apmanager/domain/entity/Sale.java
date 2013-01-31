@@ -152,7 +152,11 @@ public class Sale implements Entity {
         }
         return total;
     }
-
+    
+    public boolean isEmpty(){
+        return getProductQuantity() == 0;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;
