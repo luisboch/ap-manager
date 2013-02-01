@@ -39,7 +39,7 @@ public class Sale implements Entity {
 
     @Column(name = "data_fechamento")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date closeDate;
+    private Date closedDate;
 
     @Column(name = "cancelada")
     private boolean canceled = false;
@@ -80,12 +80,12 @@ public class Sale implements Entity {
         this.openDate = openDate;
     }
 
-    public Date getCloseDate() {
-        return closeDate;
+    public Date getClosedDate() {
+        return closedDate;
     }
 
-    public void setCloseDate(Date closeDate) {
-        this.closeDate = closeDate;
+    public void setClosedDate(Date closeDate) {
+        this.closedDate = closeDate;
     }
 
     public boolean isCanceled() {
@@ -182,6 +182,6 @@ public class Sale implements Entity {
     @Override
     public String toString() {
         return "Sale{" + "id=" + id + ", total=" + total
-                + ", openDate=" + openDate + ", closeDate=" + closeDate + '}';
+                + ", openDate=" + openDate + ", closeDate=" + closedDate + '}';
     }
 }

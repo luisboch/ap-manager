@@ -1,26 +1,57 @@
 package com.apmanager.ui.panels.admin;
 
+import com.apmanager.domain.result.to.sales.SaleViewTO;
+import com.apmanager.domain.result.to.sales.SaleViewTotalTO;
+import com.apmanager.domain.utils.NumberUtils;
+import com.apmanager.service.impl.SaleService;
 import com.apmanager.ui.components.Button;
+import com.apmanager.ui.components.Table;
+import com.apmanager.ui.formaters.Currency;
+import com.apmanager.ui.formaters.DateFormatter;
+import com.apmanager.ui.formaters.PercentFormatter;
+import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.panels.*;
+import com.towel.bean.DefaultFormatter;
+import com.towel.el.FieldResolver;
+import com.towel.swing.table.ObjectTableModel;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author ADMIN
  */
-public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
+public class JPanelViewSales extends javax.swing.JPanel implements AdminPanel {
 
-    private static final Logger log = Logger.getLogger(JPanelSale.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(JPanelSale.class);
+
+    private SaleService service;
 
     /**
      * Creates new form JPanelVenda
      */
-    public JPanelVendas() {
+    public JPanelViewSales() {
         initComponents();
-        addButtonListeners();
         jDateChooser1.setDateFormatString("dd/MM/yyyy");
         jDateChooser2.setDateFormatString("dd/MM/yyyy");
+
+
+        // Seta as datas como hoje
+        Date endDate = new Date();
+        jDateChooser2.setDate(endDate);
+        jDateChooser1.setDate(endDate);
+
+        // Create Service;
+        log.info("Creating service...");
+        service = new SaleService();
+
+        log.info("Setting up listeners...");
+        addButtonListeners();
     }
 
     /**
@@ -37,15 +68,16 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
-        jButton1 = new Button(this, KeyEvent.VK_F5);
+        jButtonSearch = new Button(this, KeyEvent.VK_F5);
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jTableResults = new Table();
         jPanel1 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        jLabelTotalMargin = new javax.swing.JLabel();
+        jLabelTotal = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabelTotalL = new javax.swing.JLabel();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Pesquisar Vendas"));
 
@@ -53,7 +85,7 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
 
         jLabel2.setText("Data final:");
 
-        jButton1.setText("Pesquisar");
+        jButtonSearch.setText("Pesquisar");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -69,23 +101,23 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
                 .addGap(4, 4, 4)
                 .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(jButtonSearch)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
+                    .addComponent(jButtonSearch)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jDateChooser1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTableResults.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -111,24 +143,26 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
-        jTable2.getColumnModel().getColumn(0).setResizable(false);
-        jTable2.getColumnModel().getColumn(1).setResizable(false);
-        jTable2.getColumnModel().getColumn(2).setResizable(false);
-        jTable2.getColumnModel().getColumn(3).setResizable(false);
-        jTable2.getColumnModel().getColumn(4).setResizable(false);
+        jScrollPane2.setViewportView(jTableResults);
+        jTableResults.getColumnModel().getColumn(0).setResizable(false);
+        jTableResults.getColumnModel().getColumn(1).setResizable(false);
+        jTableResults.getColumnModel().getColumn(2).setResizable(false);
+        jTableResults.getColumnModel().getColumn(3).setResizable(false);
+        jTableResults.getColumnModel().getColumn(4).setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Totalizadores"));
 
         jLabel6.setText("Margem Obtida:");
 
-        jLabel5.setText("Total Líquido: R$ 359,53");
+        jLabel5.setText("Total Líquido:");
 
-        jLabel7.setText("28,07 %");
+        jLabelTotalMargin.setText("28,07 %");
 
-        jLabel4.setText("R$ 915,65");
+        jLabelTotal.setText("R$ 915,65");
 
         jLabel3.setText("Total Bruto:");
+
+        jLabelTotalL.setText("R$ 359,53");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -138,13 +172,15 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
+                .addComponent(jLabelTotal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelTotalL)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
+                .addComponent(jLabelTotalMargin)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -153,10 +189,11 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel4)
+                    .addComponent(jLabelTotal)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel7))
+                    .addComponent(jLabelTotalMargin)
+                    .addComponent(jLabelTotalL))
                 .addContainerGap())
         );
 
@@ -178,32 +215,33 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonSearch;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabelTotal;
+    private javax.swing.JLabel jLabelTotalL;
+    private javax.swing.JLabel jLabelTotalMargin;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTableResults;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void loadContent() {
+        reloadUI();
     }
 
     @Override
@@ -212,11 +250,57 @@ public class JPanelVendas extends javax.swing.JPanel implements AdminPanel {
     }
 
     private void addButtonListeners() {
+        jButtonSearch.addActionListener(new ActionListener(this) {
+            @Override
+            protected void onActionPerformed(ActionEvent e) throws Exception {
+                SaleViewTotalTO result =
+                        service.getSalesByDate(jDateChooser1.getDate(), jDateChooser2.getDate());
+                reloadUI(result);
+            }
+        });
     }
-    
 
     @Override
     public void unloadContent() {
-    
+    }
+
+    private void reloadUI() {
+        reloadUI(null);
+    }
+
+    private void reloadUI(SaleViewTotalTO result) {
+        if (result == null) {
+            // monta com valores vazios
+            populateTable(new ArrayList<SaleViewTO>());
+            jLabelTotal.setText(NumberUtils.currency(0f));
+            jLabelTotalL.setText(NumberUtils.currency(0f));
+            jLabelTotalMargin.setText(NumberUtils.formatPercent(0f));
+            return;
+        }
+
+
+        populateTable(result.getSales());
+        jLabelTotal.setText(NumberUtils.currency(result.getTotal()));
+        jLabelTotalL.setText(NumberUtils.currency(result.getTotalL()));
+        jLabelTotalMargin.setText(NumberUtils.formatPercent(result.getMargin()));
+    }
+
+    private void populateTable(List<SaleViewTO> sales) {
+        FieldResolver date = new FieldResolver(SaleViewTO.class,"sale.closedDate", "Data");
+        FieldResolver qtd = new FieldResolver(SaleViewTO.class,"productsQuantity", "Quantidade de Produtos");
+        FieldResolver total = new FieldResolver(SaleViewTO.class,"total", "Total Bruto");
+        FieldResolver totalL = new FieldResolver(SaleViewTO.class,"totalL", "Total Líquido");
+        FieldResolver margin = new FieldResolver(SaleViewTO.class,"margin", "Margem");
+        
+        total.setFormatter(new Currency());
+        totalL.setFormatter(new Currency());
+        date.setFormatter(new DateFormatter());
+        margin.setFormatter(new PercentFormatter());
+        
+        ObjectTableModel<SaleViewTO> model =
+                new ObjectTableModel<>(
+                new FieldResolver[]{date, qtd, total, totalL, margin});
+        model.setData(sales);
+        jTableResults.setModel(model);
     }
 }

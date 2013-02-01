@@ -9,6 +9,8 @@ import com.apmanager.domain.entity.Computer;
 import com.apmanager.domain.entity.Sale;
 import com.apmanager.domain.entity.SaleProduct;
 import com.apmanager.domain.exceptions.OutOfDiscountException;
+import com.apmanager.domain.result.to.sales.SaleViewTotalTO;
+import com.apmanager.domain.utils.DateUtils;
 import com.apmanager.service.BasicService;
 import com.apmanager.service.ServiceAction;
 import com.apmanager.service.exceptions.ValidationException;
@@ -144,8 +146,14 @@ public class SaleService extends BasicService<Sale, SaleDAO> {
         }
         validate(sale, ServiceAction.UPDATE);
         sale.setCanceled(false);
-        sale.setCloseDate(new Date());
+        sale.setClosedDate(new Date());
         sale.setClosed(true);
         update(sale, true);
+    }
+    
+    public SaleViewTotalTO getSalesByDate(Date startDate, Date endDate) {
+        startDate = DateUtils.toInitDay(startDate);
+        endDate = DateUtils.toFinalDay(endDate);
+        return dao.getSalesByDate(startDate, endDate);
     }
 }

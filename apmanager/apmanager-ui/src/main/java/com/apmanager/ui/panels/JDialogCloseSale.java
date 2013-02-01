@@ -13,7 +13,7 @@ import com.apmanager.ui.listeners.ActionListener;
 import com.apmanager.ui.listeners.FocusListener;
 import com.apmanager.ui.listeners.KeyListener;
 import com.apmanager.ui.listeners.MouseListener;
-import com.apmanager.ui.utils.NumberUtils;
+import com.apmanager.domain.utils.NumberUtils;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;

@@ -20,7 +20,7 @@ import com.apmanager.ui.panels.AbstractAdminPanel;
 import com.apmanager.ui.panels.productbrand.JDialogEdit;
 import com.apmanager.ui.panels.productbrand.JDialogProductBrandEdit;
 import com.apmanager.ui.panels.shelf.JDialogShelfEdit;
-import com.apmanager.ui.utils.NumberUtils;
+import com.apmanager.domain.utils.NumberUtils;
 import com.towel.el.FieldResolver;
 import com.towel.swing.table.ObjectTableModel;
 import java.awt.event.ActionEvent;
