@@ -208,6 +208,9 @@ CREATE TABLE produto_palavras_chave
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+-- Add index on search table.
+create index on produto_palavras_chave(palavra);
+
 -- Table: computadores
 
 -- DROP TABLE computadores;
@@ -257,6 +260,6 @@ CREATE TABLE vendas_produtos
       REFERENCES vendas (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT vendas_produtos_produto_id_venda_id_key UNIQUE (produto_id , venda_id )
-)
+);
 
 ALTER TABLE vendas_produtos ADD UNIQUE (produto_id, venda_id);
