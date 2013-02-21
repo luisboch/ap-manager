@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.apmanager.ui.main;
 
 import com.apmanager.domain.entity.Computer;
@@ -10,7 +6,6 @@ import com.apmanager.service.Provider;
 import com.apmanager.service.impl.ComputerService;
 import com.apmanager.ui.menu.Application;
 import com.apmanager.ui.utils.FileUtils;
-import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
@@ -70,10 +65,9 @@ public class Main {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
             String defaultLAF = UIManager.getSystemLookAndFeelClassName();
             if (defaultLAF.equals(MetalLookAndFeel.class.getName())) {
-                defaultLAF = GTKLookAndFeel.class.getName();
+                defaultLAF = "GTKLookAndFeel";
             }
             UIManager.setLookAndFeel(defaultLAF);
         } catch (ClassNotFoundException | InstantiationException |

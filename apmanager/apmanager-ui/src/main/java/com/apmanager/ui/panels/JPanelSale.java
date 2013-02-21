@@ -31,13 +31,10 @@ import org.slf4j.LoggerFactory;
 public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
     private static final Logger log = LoggerFactory.getLogger(JPanelSale.class);
-
     private final JDialogSearchProduct dialog = new JDialogSearchProduct(Application.getInstance(), true);
-
     private final JDialogAlterQuantity dialogQuantity = new JDialogAlterQuantity(Application.getInstance(), true);
     private final JDialogCloseSale dialogCloseSale = new JDialogCloseSale(Application.getInstance(), true);
     private Sale instance;
-
     private SaleService service = new SaleService();
 
     /**
@@ -191,56 +188,56 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         final JPanelSale jPanel = this;
         Toolkit.getDefaultToolkit().addAWTEventListener(
                 new AWTEventListener(jPanel) {
-                    @Override
-                    public void onEventDispatched(AWTEvent event) throws ValidationException {
-                        // Verifica se este painel está sendo exibido
-                        if (jPanel.isVisible()) {
-                            KeyEvent ev = (KeyEvent) event;
-                            // Verifica se foi um key Released
-                            if (ev.getID() == KeyEvent.KEY_RELEASED) {
-                                if (!dialog.isVisible() && jPanel.isEnabled()) {
-                                    if (ev.getKeyCode() == KeyEvent.VK_F1) {
+            @Override
+            public void onEventDispatched(AWTEvent event) throws ValidationException {
+                // Verifica se este painel está sendo exibido
+                if (jPanel.isVisible()) {
+                    KeyEvent ev = (KeyEvent) event;
+                    // Verifica se foi um key Released
+                    if (ev.getID() == KeyEvent.KEY_RELEASED) {
+                        if (!dialog.isVisible() && jPanel.isEnabled()) {
+                            if (ev.getKeyCode() == KeyEvent.VK_F1) {
 
-                                        JOptionPane.showMessageDialog(jPanel, "Texto de ajuda");
+                                JOptionPane.showMessageDialog(jPanel, "Texto de ajuda");
+
+                            } else {
+                                jPanel.setEnabled(false);
+                                if (ev.getID() == KeyEvent.KEY_RELEASED && checkKeyAction(ev)) {
+                                    dialog.setText(ev.getKeyChar() + "");
+                                    dialog.setVisible(true);
+                                } else if (ev.getKeyCode() == KeyEvent.VK_F5) {
+                                    dialog.setText("");
+                                    dialog.setVisible(true);
+                                } else {
+                                    // Não pode avançar, pois se passar o dialog de quantidade vai ser exibido diversas vezes.
+                                    jPanel.setEnabled(true);
+                                    return;
+                                }
+
+                                Object object = dialog.getSelected();
+                                if (object != null) {
+                                    if (object instanceof Product) {
+                                        dialogQuantity.setText(((Product) object).getName());
+                                        dialogQuantity.setQuantity(1);
+                                        dialogQuantity.setVisible(true);
+                                        Integer quantity = dialogQuantity.getQuantity();
+
+                                        if (quantity != null) {
+                                            addItem((Product) object, quantity);
+                                        }
 
                                     } else {
-                                        jPanel.setEnabled(false);
-                                        if (ev.getID() == KeyEvent.KEY_RELEASED && checkKeyAction(ev)) {
-                                            dialog.setText(ev.getKeyChar() + "");
-                                            dialog.setVisible(true);
-                                        } else if (ev.getKeyCode() == KeyEvent.VK_F5) {
-                                            dialog.setText("");
-                                            dialog.setVisible(true);
-                                        } else {
-                                            // Não pode avançar, pois se passar o dialog de quantidade vai ser exibido diversas vezes.
-                                            jPanel.setEnabled(true);
-                                            return;
-                                        }
-
-                                        Object object = dialog.getSelected();
-                                        if (object != null) {
-                                            if (object instanceof Product) {
-                                                dialogQuantity.setText(((Product) object).getName());
-                                                dialogQuantity.setQuantity(1);
-                                                dialogQuantity.setVisible(true);
-                                                Integer quantity = dialogQuantity.getQuantity();
-
-                                                if (quantity != null) {
-                                                    addItem((Product) object, quantity);
-                                                }
-
-                                            } else {
-                                                addItem(object);
-                                            }
-                                        }
-                                        jPanel.setEnabled(true);
+                                        addItem(object);
                                     }
                                 }
+                                jPanel.setEnabled(true);
                             }
-
                         }
                     }
-                }, AWTEvent.KEY_EVENT_MASK);
+
+                }
+            }
+        }, AWTEvent.KEY_EVENT_MASK);
     }
 
     private boolean checkKeyAction(KeyEvent ev) {
@@ -297,7 +294,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
             public void onActionPerformed(ActionEvent e) throws Exception {
                 dialogCloseSale.setSale(instance);
                 dialogCloseSale.setVisible(true);
-                if(!dialogCloseSale.isCanceled()){
+                if (!dialogCloseSale.isCanceled()) {
                     log.info("sale is closed");
                     instance = service.loadSale(Application.computer);
                     reloadUi();
@@ -335,7 +332,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
                 }
             }
         });
-        
+
         jButtonBudget.addActionListener(new ActionListener(this) {
             @Override
             protected void onActionPerformed(ActionEvent e) throws Exception {
@@ -368,11 +365,13 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
     private void addItem(List<Product> products) {
         for (Product p : products) {
             SaleProduct saleProduct = new SaleProduct(p, 1, instance);
-            instance.getProducts().add(saleProduct);
+            if(!instance.getProducts().contains(saleProduct)){
+                instance.getProducts().add(saleProduct);
+            }
         }
-        reloadUi();
         try {
             this.service.save(instance);
+            reloadUi();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw new RuntimeException(ex);
@@ -384,13 +383,14 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
         SaleProduct p = new SaleProduct(product, quantity, instance);
         if (!instance.getProducts().contains(p)) {
             instance.getProducts().add(p);
-            reloadUi();
+
             try {
                 this.service.save(instance);
             } catch (Exception ex) {
                 log.error(ex.getMessage(), ex);
                 throw new RuntimeException(ex);
             }
+            reloadUi();
         } else {
             ValidationException e = new ValidationException();
             e.addError("Este produto já foi adicionado! Altere a quantidade");
@@ -465,7 +465,7 @@ public class JPanelSale extends javax.swing.JPanel implements AdminPanel {
 
         ObjectTableModel<SaleProduct> towel = new ObjectTableModel<>(
                 new FieldResolver[]{nameResolver, unitaryValueResolver,
-                    quantityResolver, totalResolver});
+            quantityResolver, totalResolver});
 
         java.util.List<SaleProduct> produtoCarts = instance.getProducts();
 
