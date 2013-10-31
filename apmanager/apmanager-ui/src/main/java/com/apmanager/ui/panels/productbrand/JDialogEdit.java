@@ -61,5 +61,16 @@ public abstract class JDialogEdit<T extends Entity, S extends BasicService> exte
             restoreFields(instance);
         }
     }
+
+    @Override
+    public void setVisible(boolean visible) {
+        
+        if(getParent() != null && visible){
+            getParent().setEnabled(true);
+        }
+        
+        super.setVisible(visible); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     
 }

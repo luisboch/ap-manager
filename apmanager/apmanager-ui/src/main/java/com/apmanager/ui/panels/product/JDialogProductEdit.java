@@ -250,7 +250,7 @@ public class JDialogProductEdit extends JDialogEdit<Product, ProductService> {
                     .addComponent(jButtonEditAppliance)
                     .addComponent(jButtonAddAppliance))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
