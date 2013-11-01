@@ -61,13 +61,13 @@ public class ProductDAO extends GenericDAO<Product> {
                 + "p.PRATELEIRA_ID, "
                 + "p.QUANTIDADE_MIN, "
                 + "p.STATUS "
-                + "FROM "
-                + "public.produtos p ";
+                + "FROM public.produtos p ";
         for (int i = 0; i < pieces.length; i++) {
             int param = i + 1;
             sql += "JOIN produto_palavras_chave p" + param + " on (p.id = p" + param + ".produto_id and p" + param + ".palavra ilike ?" + param + " ) ";
         }
-
+        
+        sql += "WHERE p.status = true";
 
         Query q = em.createNativeQuery(sql, Product.class);
 

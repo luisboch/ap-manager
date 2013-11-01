@@ -45,20 +45,37 @@ public class JDialogSplash extends javax.swing.JDialog {
         setMinimumSize(new java.awt.Dimension(400, 120));
         setUndecorated(true);
         setResizable(false);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jProgressBar1.setForeground(new java.awt.Color(82, 143, 201));
-        getContentPane().add(jProgressBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 110, 400, 10));
 
         jLabelMessage.setBackground(new java.awt.Color(0, 153, 51));
         jLabelMessage.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabelMessage.setForeground(new java.awt.Color(102, 102, 102));
         jLabelMessage.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabelMessage.setText("Loading...");
-        getContentPane().add(jLabelMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 360, 20));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autopecas/images/logo.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 110));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jLabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addComponent(jLabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

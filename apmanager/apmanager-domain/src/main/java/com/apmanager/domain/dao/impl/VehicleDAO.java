@@ -65,7 +65,7 @@ public class VehicleDAO extends GenericDAO<Vehicle> {
         // seta para false os inativos;
         String sql = "update VehicleModel v set v.status = false where v.vehicle = :vehicle ";
         if (!ids.isEmpty()) {
-            sql += "and id not in :models";
+            sql += "and v.id not in :models";
         }
 
         Query q = em.createQuery(sql);

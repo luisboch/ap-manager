@@ -24,10 +24,11 @@ public abstract class ActionListener extends AbstractEventListener
         parent.setEnabled(false);
         try {
             onActionPerformed(e);
-        }catch (Throwable ex) {
+            parent.setEnabled(true);
+        } catch (Throwable ex) {
+            parent.setEnabled(true);
             onError(e, ex);
         }
-        parent.setEnabled(true);
     }
 
     protected abstract void onActionPerformed(ActionEvent e) throws Exception;

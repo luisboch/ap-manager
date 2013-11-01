@@ -89,11 +89,6 @@
             <version>1.0.3</version>
         </dependency>
         
-        <dependency>
-            <groupId>org.netbeans.external</groupId>
-            <artifactId>AbsoluteLayout</artifactId>
-            <version>RELEASE74</version>
-        </dependency>
         <!-- Integration to Unity -->
         <!--        <dependency>
             <groupId>com.jayatana</groupId>
