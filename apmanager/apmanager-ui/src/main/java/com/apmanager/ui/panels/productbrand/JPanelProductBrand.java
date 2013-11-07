@@ -225,10 +225,9 @@ public class JPanelProductBrand extends AbstractAdminPanel<ProductBrand, Product
             @Override
             public void onMouseRelease(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    final int selectedRow = jTableResults.getSelectedRow();
-                    if (selectedRow != -1) {
+                    ProductBrand brand = ((Table<ProductBrand>)jTableResults).getSelected();
+                    if (brand != null) {
                         panel.setEnabled(false);
-                        ProductBrand brand = model.getValue(selectedRow);
                         dialog.setInstance(brand);
                         dialog.setVisible(true);
                         panel.setEnabled(true);

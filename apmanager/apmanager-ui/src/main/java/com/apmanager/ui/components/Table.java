@@ -9,10 +9,13 @@ import com.apmanager.ui.components.table.CellRender;
 import com.towel.swing.table.ObjectTableModel;
 import java.awt.Dimension;
 import java.util.List;
+import javax.swing.DefaultRowSorter;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,8 +23,10 @@ import javax.swing.table.TableModel;
  */
 public class Table<T extends Entity> extends javax.swing.JTable {
 
+    private static final Logger log = LoggerFactory.getLogger(Table.class);
+
     public Table() {
-        
+
         super();
         final CellRender render = new CellRender();
         setDefaultRenderer(String.class, render);
@@ -29,7 +34,7 @@ public class Table<T extends Entity> extends javax.swing.JTable {
         setDefaultRenderer(Float.class, render);
         setDefaultRenderer(Double.class, render);
         setDefaultRenderer(Long.class, render);
-        
+
         setRowHeight(25);
 
         JTableHeader t = getTableHeader();
@@ -37,33 +42,53 @@ public class Table<T extends Entity> extends javax.swing.JTable {
         t.setPreferredSize(new Dimension(100, 35));
         t.setMinimumSize(new Dimension(20, 35));
 
-        t.setEnabled(false);
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) t.getDefaultRenderer();
         renderer.setHorizontalAlignment(JLabel.CENTER);
-        this.getTableHeader().setFocusable(false);
-        
     }
 
     public List<T> getSelecteds() {
         int[] selectedsIndex = getSelectedRows();
-        TableModel model = getModel();
-
-        if (model instanceof ObjectTableModel) {
-            ObjectTableModel model1 = (ObjectTableModel) model;
-            return model1.getList(selectedsIndex);
+        if (getModel() instanceof ObjectTableModel) {
+            selectedsIndex = getRealModelIndexes(selectedsIndex);
+            ObjectTableModel tableModel = (ObjectTableModel) getModel();
+            return tableModel.getList(selectedsIndex);
         }
         throw new IllegalStateException(
                 "Not implemented to another table model, only to ObjectTableModel.");
     }
 
+    private int[] getRealModelIndexes(int[] indexes) {
+        if (indexes != null) {
+
+            int[] results = new int[indexes.length];
+            
+            for (int i = 0; i < indexes.length; i++) {
+                results[i] = convertRowIndexToModel(indexes[i]);
+            }
+
+            return results;
+        } else {
+            return new int[0];
+        }
+    }
+
+    @Override
+    public void setModel(TableModel dataModel) {
+        super.setModel(dataModel);
+        log.debug("Creating default table row order...");
+        setAutoCreateRowSorter(true);
+    }
+
     public T getSelected() {
         int selectedIndex = getSelectedRow();
-        TableModel model = getModel();
 
         if (selectedIndex != -1) {
-            if (model instanceof ObjectTableModel) {
-                ObjectTableModel model1 = (ObjectTableModel) model;
-                return (T) model1.getData().get(selectedIndex);
+
+            selectedIndex = convertRowIndexToModel(selectedIndex);
+
+            if (getModel() instanceof ObjectTableModel) {
+                ObjectTableModel tableModel = (ObjectTableModel) getModel();
+                return (T) tableModel.getData().get(selectedIndex);
             }
         } else {
             return null;
@@ -71,4 +96,5 @@ public class Table<T extends Entity> extends javax.swing.JTable {
         throw new IllegalStateException(
                 "Not implemented to another table model, only to ObjectTableModel.");
     }
+
 }

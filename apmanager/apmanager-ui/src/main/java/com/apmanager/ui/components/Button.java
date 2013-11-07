@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -89,7 +90,7 @@ public class Button extends JButton {
                             KeyEvent ev = (KeyEvent) event;
                             // Verifica se foi um key Released
                             if (ev.getKeyCode() == key && ev.getID() == KeyEvent.KEY_RELEASED) {
-                                log.info("Performing click");
+                                log.log(Level.FINEST, "Performing click");
                                 jbutton.doClick();
                             }
                         }
